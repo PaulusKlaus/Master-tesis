@@ -4,6 +4,9 @@
 # https://arxiv.org/abs/1512.03385
 # adopted for the 1D timeseries data input, like vibration signal
 
+# A good and simple explanation of why and how does ResNet works can be found here:
+# https://www.youtube.com/watch?v=Q1JCrG1bJ-A
+
 import torch
 import torch.nn as nn
 
