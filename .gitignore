@@ -1,0 +1,11 @@
+*.pyc
+*.pth
+*.png
+*.pyc
+*.mat
+
+__pycache__/
+/__pycache__
+
+Raw data/
+Checkpoints/
