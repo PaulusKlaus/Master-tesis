@@ -3,9 +3,12 @@
 *.png
 *.pyc
 *.mat
+*.csv
+*.png
+*.pdf
+
 
 __pycache__/
 /__pycache__
 
-Raw data/
 Checkpoints/

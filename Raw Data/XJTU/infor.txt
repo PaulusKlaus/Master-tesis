@@ -1,0 +1,14 @@
+Overview: The XJTU-SY dataset is a high-quality resource for fault prognostics, containing complete run-to-failure data from 15 rolling element bearings under accelerated degradation.
+Experimental Setup: Bearings were run under stressful conditions until natural failure, capturing the entire degradation trajectory.
+Data Characteristics: Contains horizontal and vertical vibration signals sampled at 25.6 kHz, recorded in 1.28-second snapshots at one-minute intervals.
+Operating Conditions: Experiments were conducted under three different working conditions, varying in rotational speed and radial load (e.g., 2100 RPM/12 kN, 2250 RPM/11 kN).
+Source: GitHub Repository  https://github.com/WangBiaoXJTU/xjtu-sy-bearing-datasets
+
+
+XJTU-SY bearing datasets 
+were provided by the Institute of Design Science and Basic Component at Xi’an Jiaotong University and the Changxing Sumyoung Technology Co. [88,89]. 
+XJTU-SY datasets consisted of fifteen bearings run-to-failure data under three different working conditions.
+ The dataset was collected at 2.56 kHz. A total of 32 768 data points were recorded, and the sampling period was equal to one minute.
+  The details of bearing lifetime and fault elements were shown in Table 5.
+   In this paper, we used all the data described in Table 6 and the total number of classes was fifteen.
+    It should be noticed that we used collected data at the end of run-to-failure experiments.

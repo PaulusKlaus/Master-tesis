@@ -1,0 +1,19 @@
+Overview: A modern resource featuring artificially induced faults, designed to provide clean data for developing classification algorithms under different speed domains.
+Experimental Setup: Data was collected from a test rig using a single accelerometer. Faults were simulated by creating tiny dents on bearing components via wire-cutting.
+Data Characteristics: Contains vibration signals sampled at 50 kHz, provided in .csv format.
+Operating Conditions: Experiments were conducted under three distinct rotational speeds: 600, 800, and 1000 RPM.
+
+
+
+
+Jiangnan University (JNU) 
+bearing datasets were provided by Jiangnan University [92,93].
+ JNU datasets consisted of three bearing vibration datasets with different rotating speeds,
+  and the data were collected at 50 kHz. As shown in Table 7,
+   JNU datasets contained one health state and three fault modes which include inner ring fault, 
+   outer ring fault, and rolling element fault. 
+   Therefore, the total number of classes was equal to twelve according to different working conditions.
+
+
+
+   https://github.com/ClarkGableWang/JNU-Bearing-Dataset
