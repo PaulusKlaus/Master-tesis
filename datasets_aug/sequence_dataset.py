@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 
 
-from sequence_aug import *
+from .sequence_aug import *
 
 
 class OneViewDataset(Dataset):

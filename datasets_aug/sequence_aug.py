@@ -3,6 +3,7 @@ import random
 from scipy.signal import resample
 
 
+# ---- Preprocessing of the data ----
 
 class Compose(object):
     "Lets us chain multiple transforms together and treat them as one transform."
@@ -20,9 +21,18 @@ class Reshape(object):
     "(B, C, L) -> (L, C, B)"
     def __call__(self, seq):
         return seq.transpose()  
+    
+
+class Retype(object):
+    def __call__(self, seq):
+        return seq.astype(np.float32)
 
 
-class AddGausian(object):
+
+
+# ----- Data Augmentation ---------
+
+class AddGaussian(object):
     "Randomly add Gaussian noise into the input signal."
     def __init__(self, sigma = 0.01):
         self.sigma = sigma 
@@ -30,8 +40,6 @@ class AddGausian(object):
         # Since the centre of the normal distribution is around 0, scaling of the data should be done after the trandformation?
         return seq + np.random.normal(loc=0, scale = self.sigma, size = seq.shape)
     
-
-
 
 class Scale(object):
     "Ranbdomly multiplies the input signal with a scaler, distributed (1, 0.01)"
@@ -43,8 +51,6 @@ class Scale(object):
         scale_matrix = np.matmul(scale_factor, np.ones((1, seq.shape[1])))
         return seq*scale_matrix
     
-
-
 
 class RandomStretch(object):
     "Time-streach/time-warp data augmentetion."
@@ -116,6 +122,28 @@ def oneD_Fourier_transform(data: np.ndarray) -> np.ndarray:
     return out.reshape(N, 1, W)
 
     
+
+class RandomCrop(object):
+    def __init__(self, crop_len=20):
+        self.crop_len = crop_len
+
+    def __call__(self, seq):
+        if np.random.randint(2):
+            return seq
+        else:
+            max_index = seq.shape[1] - self.crop_len
+            random_index = np.random.randint(max_index)
+            seq[:, random_index:random_index+self.crop_len] = 0
+            return seq
+        
+
+# TODO: Add forth and back flipping (flips the signal up forth and back)
+# TODO: ADD Tructation ( Tranctation masks a random part of the signal with aero values)
+# TODO: Add Weighted moving average filter 
+
+
+# ---- Scaling -------
+
 
 class Normalize:
     def __init__(self, mode="zero_one", eps=1e-8):

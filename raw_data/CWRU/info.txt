@@ -1,0 +1,16 @@
+Case Western Reserve University (CWRU) datasets were provided by the Case Western Reserve University Bearing Data Center [83].
+ Vibration signals were collected at 12 kHz or 48 kHz for normal bearings and damaged bearings
+  with single-point defects under four different motor loads. Within each working condition, 
+  single-point faults were introduced with fault diameters of 0.007, 0.014, and 0.021 inches on the rolling element, 
+  the inner ring, and the outer ring, respectively. In this paper, we used the data collected from the drive end,
+   and the sampling frequency was equivalent to 12 kHz. In Table 1, one healthy bearing and three fault modes, 
+   including the inner ring fault, the rolling element fault, and the outer ring fault, 
+were classified into ten categories (one health state and 9 fault states) according to different fault sizes.
+
+
+
+For this experiment only the smallest faults were taken and their corresponding different motor loads. This correspondst to the 4 data groups:
+-normal data (0, 1, 2, 3) HP
+-inner race fault (0, 1, 2, 3) HP
+- Ball dault (0, 1, 2, 3) HP
+- outer race fault (0, 1, 2, 3) HP
