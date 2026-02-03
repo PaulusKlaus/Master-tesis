@@ -173,3 +173,26 @@ class Normalize:
 
         else:
             raise ValueError(f"Unknown normalization mode: {self.mode}")
+
+
+def data_transforms(dataset_type="train", normlize_type="-1-1"):
+    "A composed transform pipeline for dataset preprocessing / augmentation depending on whether it's training or validation."
+    transforms = {
+        'train': Compose([
+            Reshape(),
+            Normalize(normlize_type),
+            AddGaussian(),
+            # TODO: Check why are there every one of them here, does it mean that they are all done allt he time?
+            Scale(),
+            RandomStretch(),
+            RandomCrop(),
+            Retype()
+
+        ]),
+        'val': Compose([
+            Reshape(),
+            Normalize(normlize_type),
+            Retype()
+        ])
+    }
+    return transforms[dataset_type]
