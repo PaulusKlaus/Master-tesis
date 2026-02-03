@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 from datasets_aug.sequence_dataset import *  
 from datasets_aug.sequence_aug import *
+from data_utils.data_utils import *
 
 
 # 1 Undamaged (healthy) bearings(6X)

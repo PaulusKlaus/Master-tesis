@@ -1,6 +1,5 @@
 import os
-import numpy as np
-import pandas as pd
+
 from scipy.io import loadmat
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
@@ -8,7 +7,7 @@ from tqdm import tqdm
 
 from datasets_aug.sequence_dataset import *  #dataset 
 from datasets_aug.sequence_aug import *
-
+from data_utils.data_utils import *
 
 datasetname =["Normal Baseline Data", "12k Drive End Bearing Fault Data"]
 normalname = ["0_N_0.mat", "0_N_1.mat", "0_N_2.mat", "0_N_3.mat"]
@@ -47,34 +46,6 @@ def find_de_channel_key(mat_dict: dict):
             return k
     return None
 
-
-
-def train_test_split_order(data_pd, test_size=0.3, labels=None):
-    """
-    Ordered split within each class:
-    - first (1 - val_size) fraction -> train
-    - last val_size fraction -> val
-    Preserves the existing order in data_pd for each class.
-    """
-    if labels is None:
-        labels = sorted(data_pd["label"].unique())
-
-    train_parts = []
-    val_parts = []
-
-    for lbl in labels:
-        cls = data_pd[data_pd["label"] == lbl].reset_index(drop=True)
-        n = len(cls)
-        if n == 0:
-            continue
-
-        cut = int((1 - test_size) * n)  # number of train samples
-        train_parts.append(cls.iloc[:cut][["data", "label"]])
-        val_parts.append(cls.iloc[cut:][["data", "label"]])
-
-    train_pd = pd.concat(train_parts, ignore_index=True) if train_parts else pd.DataFrame(columns=["data","label"])
-    test_pd   = pd.concat(val_parts,   ignore_index=True) if val_parts else pd.DataFrame(columns=["data","label"])
-    return train_pd, test_pd
 
 
 class CWRU(object):
