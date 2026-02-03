@@ -6,13 +6,13 @@ from .sequence_aug import *
 
 
 class OneViewDataset(Dataset):
-    def __init__(self, data_list, test = False, transform  =None):
+    def __init__(self, data_list, test = False, transform_1 = None, transform_2 =None):
         self.test = test
 
-        if transform is None:
+        if transform_1 is None:
             self.transform = Compose([Reshape()])
         else:
-            self.transform = transform
+            self.transform = transform_1
 
         self.seq_data = data_list['data'].tolist()
         if not self.test:
@@ -74,6 +74,8 @@ class TwoViewDataset(Dataset):
         return data_1, data_2, label
 
 
+
+# Not used 
 
 class MultiViewDataset(Dataset):
     def __init__(self, data_list, transforms, test=False, return_index=False):

@@ -170,29 +170,50 @@ class Normalize:
         elif self.mode == "mean_std":
             mean, std = seq.mean(), seq.std()
             return (seq - mean) / (std + self.eps)
-
+        
+        elif self.mode == None:
+            return seq
         else:
             raise ValueError(f"Unknown normalization mode: {self.mode}")
 
 
-def data_transforms(dataset_type="train", normlize_type="-1-1"):
+def data_transforms(transform="fft", normlize_type="minus_one_one"):
     "A composed transform pipeline for dataset preprocessing / augmentation depending on whether it's training or validation."
     transforms = {
-        'train': Compose([
-            Reshape(),
+        'gaussian': Compose([
+            #Reshape(),
             Normalize(normlize_type),
             AddGaussian(),
-            # TODO: Check why are there every one of them here, does it mean that they are all done allt he time?
-            Scale(),
-            RandomStretch(),
-            RandomCrop(),
             Retype()
-
         ]),
-        'val': Compose([
+        'normal': Compose([
             Reshape(),
             Normalize(normlize_type),
             Retype()
-        ])
+        ]),
+        'scale': Compose([
+            Reshape(),
+            Normalize(normlize_type),
+            Scale(),
+            Retype()
+        ]),
+        'randomstrech': Compose([
+            #Reshape(),
+            Normalize(normlize_type),
+            RandomStretch(),
+            Retype()
+        ]),
+        'randomcrop': Compose([
+            Reshape(),
+            Normalize(normlize_type),
+            RandomCrop(),
+            Retype()
+        ]),
+        'fft': Compose([
+            Reshape(),
+            Normalize(normlize_type),
+            FFT(),
+            Retype()
+        ]),
     }
-    return transforms[dataset_type]
+    return transforms[transform]

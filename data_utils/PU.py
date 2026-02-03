@@ -9,77 +9,90 @@ from datasets_aug.sequence_dataset import *
 from datasets_aug.sequence_aug import *
 
 
-
-signal_size = 1024
-
-#1 Undamaged (healthy) bearings(6X)
+# 1 Undamaged (healthy) bearings(6X)
 HBdata = ['K001',"K002",'K003','K004','K005','K006']
-label1=[0,1,2,3,4,5]  #The undamaged (healthy) bearings data is labeled 1-9
-#2 Artificially damaged bearings(12X)
+label1=[0,1,2,3,4,5]  #The undamaged (healthy) bearings data is labeled 0-5
+
+# 2 Artificially damaged bearings(12X)
 ADBdata = ['KA01','KA03','KA05','KA06','KA07','KA08','KA09','KI01','KI03','KI05','KI07','KI08']
-label2=[6,7,8,9,10,11,12,13,14,15,16,17]    #The artificially damaged bearings data is labeled 4-15
-#3 Bearings with real damages caused by accelerated lifetime tests(14x)
-# RDBdata = ['KA04','KA15','KA16','KA22','KA30','KB23','KB24','KB27','KI04','KI14','KI16','KI17','KI18','KI21']
-# label3=[18,19,20,21,22,23,24,25,26,27,28,29,30,31]  #The artificially damaged bearings data is labeled 16-29
+label2=[6,7,8,9,10,11,12,13,14,15,16,17]    # The artificially damaged bearings data is labeled 6-17
+
+# 3 Bearings with real damages caused by accelerated lifetime tests(14x)
 RDBdata = ['KA04','KA15','KA16','KA22','KA30','KB23','KB24','KB27','KI14','KI16','KI17','KI18','KI21']
-label3=[i for i in range(13)]
+label3=[i for i in range(18,18+len(RDBdata))]
 
 #working condition
 WC = ["N15_M07_F10","N09_M07_F10","N15_M01_F10","N15_M07_F04"]
 state = WC[0] #WC[0] can be changed to different working states
 
-#generate Training Dataset and Testing Dataset
-def get_files(root, test=False):
-    '''
-    This function is used to generate the final training set and test set.
-    root:The location of the data set
-    '''
-    data = []
-    lab = []
+ALL_DATA  = HBdata + ADBdata + RDBdata
+ALL_LABEL = label1 + label2 + label3
 
-    for k in tqdm(range(len(RDBdata))):
-        name3 = state+"_"+RDBdata[k]+"_1"
-        path3=os.path.join(root,RDBdata[k],name3+".mat")        
-        data3, lab3= data_load(path3,name=name3,label=label3[k])
-        data +=data3
-        lab +=lab3
 
-    return [data,lab]
 
-def data_load(filename,name,label):
-    '''
-    This function is mainly used to generate test data and training data.
-    filename:Data location
-    '''
-    fl = loadmat(filename)[name]
-    fl = fl[0][0][2][0][6][2]  #Take out the data
-    fl = fl.reshape(-1,1)
-    data=[] 
-    lab=[]
-    start,end=0,signal_size
-    while end<=fl.shape[0]:
-        data.append(fl[start:end])
-        lab.append(label)
-        start +=signal_size
-        end +=signal_size
+class PU(object):
+    def __init__(self, data_dir, normlizetype, rand):
+        self.data_dir = data_dir
+        self.normlizetype = normlizetype
+        self.random_state = rand
 
-    return data, lab
+    def _get_files(self):
+        '''
+        This function is used to generate the final training set and test set.
+        root:The location of the data set
+        '''
+        data = []
+        lab = []
 
-def data_transforms(dataset_type="train", normlize_type="-1-1"):
-    transforms = {
-        'train': Compose([
-            Reshape(),
-            Normalize(normlize_type),
-            RandomStretch(),
-            RandomCrop(),
-            Retype()
+        for k in tqdm(range(len(ALL_DATA))):
+            bearing = ALL_DATA[k]
+            label = ALL_LABEL[k]
 
-        ]),
-        'val': Compose([
-            Reshape(),
-            Normalize(normlize_type),
-            Retype()
-        ])
-    }
-    return transforms[dataset_type]
+            name = state + "_" + bearing + "_1"
+            path = os.path.join(self.data_dir, bearing, name + ".mat")        
+            d, l = self._data_load(path, name=name, label=label)
+            data += d
+            lab += l
 
+        return [data,lab]
+
+    def _data_load(self, filename, name, label, signal_size = 1024):
+        '''
+        This function is mainly used to generate test data and training data.
+        filename:Data location
+        '''
+        data = [] 
+        lab = []
+        start, end = 0, signal_size
+
+        fl = loadmat(filename)[name]
+        fl = fl[0][0][2][0][6][2]  #Take out the data
+        fl = fl.reshape(-1,1)
+
+        while end <= fl.shape[0]:
+            data.append(fl[start:end])
+            lab.append(label)
+            start += signal_size
+            end += signal_size
+
+        return data, lab
+
+    def data_prepare(self, test = False):
+        list_data = self._get_files()
+
+        data_pd = pd.DataFrame({"data": list_data[0], "label": list_data[1]})
+
+        if test:
+            # You can keep labels even if test=True; OneViewDataset just won't use them
+            return OneViewDataset(data_pd, test=True, transform=None)
+
+        train_pd, val_pd = train_test_split(
+            data_pd,
+            test_size=0.20,
+            random_state=self.random_state,
+            stratify=data_pd["label"]
+        )
+
+        train_dataset = OneViewDataset(train_pd, transform=data_transforms('train', self.normlizetype))
+        val_dataset   = OneViewDataset(val_pd,   transform=data_transforms('val',   self.normlizetype))
+        return train_dataset, val_dataset
