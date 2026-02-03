@@ -1,5 +1,6 @@
 # Global imports 
 import os
+from collections import Counter
 
 
 # Local imports 
@@ -31,6 +32,8 @@ def test_CWRU_dataset():
     print("Loaded labels :", len(labels))
     assert len(data) == len(labels), "data/labels length mismatch"
     assert len(data) > 0, "no samples loaded"
+    print("\nRaw label counts:")
+    print(Counter(labels))
 
     # 4) check one sample shape
     print("All Labels:",  sorted(set(labels)))
@@ -52,7 +55,14 @@ def test_CWRU_dataset():
     train_data, train_l = train_ds[-1]
     print(train_data)
     print(train_l)
+    
+    def count_dataset_labels(ds):
+        labels = [int(ds[i][1]) for i in range(len(ds))]
+        return Counter(labels)
 
+    print("\nTrain label counts:", count_dataset_labels(train_ds))
+    print("Val label counts  :", count_dataset_labels(val_ds))
+    print("Test label counts :", count_dataset_labels(test_ds))
 
 def test_PU_dataset():
     """
