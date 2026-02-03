@@ -1,6 +1,11 @@
-Overview: A modern resource featuring artificially induced faults, designed to provide clean data for developing classification algorithms under different speed domains.
-Experimental Setup: Data was collected from a test rig using a single accelerometer. Faults were simulated by creating tiny dents on bearing components via wire-cutting.
+Overview: A modern resource featuring artificially induced faults,
+ designed to provide clean data for developing classification algorithms under different speed domains.
+
+Experimental Setup: Data was collected from a test rig using a single accelerometer. 
+Faults were simulated by creating tiny dents on bearing components via wire-cutting.
+
 Data Characteristics: Contains vibration signals sampled at 50 kHz, provided in .csv format.
+
 Operating Conditions: Experiments were conducted under three distinct rotational speeds: 600, 800, and 1000 RPM.
 
 

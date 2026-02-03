@@ -10,8 +10,6 @@ from datasets_aug.sequence_aug import *
 from data_utils.data_utils import *
 
 
-
-#Three working conditions
 WC1 = ["ib600_2.csv","n600_3_2.csv","ob600_2.csv","tb600_2.csv"]
 WC2 = ["ib800_2.csv","n800_3_2.csv","ob800_2.csv","tb800_2.csv"]
 WC3 = ["ib1000_2.csv","n1000_3_2.csv","ob1000_2.csv","tb1000_2.csv"]
