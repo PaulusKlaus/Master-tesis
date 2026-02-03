@@ -70,8 +70,6 @@ def data_transforms(dataset_type="train", normlize_type="-1-1"):
         'train': Compose([
             Reshape(),
             Normalize(normlize_type),
-            RandomAddGaussian(),
-            RandomScale(),
             RandomStretch(),
             RandomCrop(),
             Retype()
@@ -84,24 +82,4 @@ def data_transforms(dataset_type="train", normlize_type="-1-1"):
         ])
     }
     return transforms[dataset_type]
-#--------------------------------------------------------------------------------------------------------------------
-class PU(object):
-    num_classes = 13
-    inputchannel = 1
-
-    def __init__(self, data_dir,normlizetype):
-        self.data_dir = data_dir
-        self.normlizetype = normlizetype
-
-    def data_preprare(self, test=False):
-        list_data = get_files(self.data_dir, test)
-        if test:
-            test_dataset = dataset(list_data=list_data, test=True, transform=None)
-            return test_dataset
-        else:
-            data_pd = pd.DataFrame({"data": list_data[0], "label": list_data[1]})
-            train_pd, val_pd = train_test_split(data_pd, test_size=0.2, random_state=40, stratify=data_pd["label"])
-            train_dataset = dataset(list_data=train_pd, transform=data_transforms('train',self.normlizetype))
-            val_dataset = dataset(list_data=val_pd, transform=data_transforms('val',self.normlizetype))
-            return train_dataset, val_dataset
 

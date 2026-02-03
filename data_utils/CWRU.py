@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pandas as pd
 from scipy.io import loadmat
 from sklearn.model_selection import train_test_split
@@ -56,7 +57,7 @@ class CWRU(object):
         self.normlizetype = normlizetype
         self.random_state = rand
 
-    def _get_files(self,):
+    def _get_files(self):
         '''
         This function is used to generate the final training set and test set.
         root:The location of the data set
@@ -111,14 +112,21 @@ class CWRU(object):
 
 
     def data_preprare(self, test=False):
+        list_data = self._get_files()
 
-        list_data = self._get_files(self.data_dir)
+        data_pd = pd.DataFrame({"data": list_data[0], "label": list_data[1]})
+
         if test:
-            test_dataset = OneViewDataset(list_data=list_data, test=True, transform=None)
-            return test_dataset
-        else:
-            data_pd = pd.DataFrame({"data": list_data[0], "label": list_data[1]})
-            train_pd, val_pd = train_test_split(data_pd, test_size=0.20, random_state=self.random_state, stratify=data_pd["label"])
-            train_dataset = OneViewDataset(list_data=train_pd, transform=data_transforms('train',self.normlizetype))
-            val_dataset = OneViewDataset(list_data=val_pd, transform=data_transforms('val',self.normlizetype))
-            return train_dataset, val_dataset
+            # You can keep labels even if test=True; OneViewDataset just won't use them
+            return OneViewDataset(data_pd, test=True, transform=None)
+
+        train_pd, val_pd = train_test_split(
+            data_pd,
+            test_size=0.20,
+            random_state=self.random_state,
+            stratify=data_pd["label"]
+        )
+
+        train_dataset = OneViewDataset(train_pd, transform=data_transforms('train', self.normlizetype))
+        val_dataset   = OneViewDataset(val_pd,   transform=data_transforms('val',   self.normlizetype))
+        return train_dataset, val_dataset

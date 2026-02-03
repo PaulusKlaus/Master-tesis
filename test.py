@@ -4,7 +4,6 @@ import os
 
 # Local imports 
 from data_utils import *
-
 from datasets_aug import *
 
 
@@ -22,9 +21,11 @@ def test_CWRU_dataset():
     assert os.path.exists(fault_path), f"Missing: {fault_path}"
     print("✅ Files found")
 
+    # 2) create dataset object
+    ds = CWRU(data_dir=ROOT, normlizetype="-1-1", rand=42)
 
-    # 3) call your get_files and validate shapes/counts
-    data, labels = get_files(ROOT)
+    # 3) test "raw loading" via the class 
+    data, labels = ds._get_files()
 
     print("\nLoaded samples:", len(data))
     print("Loaded labels :", len(labels))
@@ -39,6 +40,17 @@ def test_CWRU_dataset():
     # sanity checks: each window should have 1024 points (or (1024,1) depending on mat format)
     assert x0.shape[0] == 1024, f"expected 1024 rows, got {x0.shape}"
     print("✅ Basic get_files() test passed")
+
+        # 5) test the public API: train/val datasets
+    train_ds, val_ds = ds.data_preprare(test=False)
+    assert len(train_ds) > 0
+    assert len(val_ds) > 0
+    print("✅ train/val dataset objects created")
+
+    # 6) test the test=True path
+    test_ds = ds.data_preprare(test=True)
+    assert len(test_ds) > 0
+    print("✅ test dataset object created")
 
 
 
