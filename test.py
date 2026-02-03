@@ -46,7 +46,7 @@ def test_CWRU_dataset():
     print("✅ Basic get_files() test passed")
 
     # 5) test the public API: train/val datasets
-    train_ds, val_ds, test_ds = ds.data_preprare()
+    train_ds, val_ds, test_ds = ds.data_prepare()
     assert len(train_ds) > 0
     assert len(val_ds) > 0
     assert len(test_ds) > 0
@@ -90,6 +90,8 @@ def test_PU_dataset():
     print("Loaded labels :", len(labels))
     assert len(data) == len(labels), "data/labels length mismatch"
     assert len(data) > 0, "no samples loaded from PU dataset"
+    print("\nRaw label counts:")
+    print(Counter(labels))
 
     # 4) check one sample shape
     print("All Labels in PU dataset:", sorted(set(labels)))
@@ -105,15 +107,23 @@ def test_PU_dataset():
     print("✅ Basic _get_files() test passed for PU")
 
     # 5) test the public API: train/val datasets
-    train_ds, val_ds = ds.data_prepare(test=False)
-    assert len(train_ds) > 0, "empty train dataset"
-    assert len(val_ds) > 0, "empty val dataset"
-    print("✅ train/val dataset objects created for PU")
+    train_ds, val_ds, test_ds = ds.data_prepare()
+    assert len(train_ds) > 0
+    assert len(val_ds) > 0
+    assert len(test_ds) > 0
+    print("✅ train/val and test dataset objects created")
+    print("Length of train, val, test", len(train_ds), len(val_ds), len(test_ds))
+    train_data, train_l = train_ds[-1]
+    print(train_data)
+    print(train_l)
+    
+    def count_dataset_labels(ds):
+        labels = [int(ds[i][1]) for i in range(len(ds))]
+        return Counter(labels)
 
-    # 6) test the test=True path
-    test_ds = ds.data_prepare(test=True)
-    assert len(test_ds) > 0, "empty test dataset"
-    print("✅ test dataset object created for PU")
+    print("\nTrain label counts:", count_dataset_labels(train_ds))
+    print("Val label counts  :", count_dataset_labels(val_ds))
+    print("Test label counts :", count_dataset_labels(test_ds))
 
 
 
@@ -122,4 +132,4 @@ def test_PU_dataset():
 if __name__ == "__main__":
     test_CWRU_dataset()
 
-    #test_PU_dataset()
+    test_PU_dataset()

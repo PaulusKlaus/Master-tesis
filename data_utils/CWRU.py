@@ -1,5 +1,5 @@
 import os
-
+import pandas as pd
 from scipy.io import loadmat
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
@@ -118,86 +118,54 @@ class CWRU(object):
 
         return data, lab
 
-    def data_preprare(self, split = "RA", view = OneViewDataset ):
+    def data_prepare(self, split="RA", view=OneViewDataset):
         """
-        Data preparation fuction that returns:
-        Train, validation and test OneViewDataset classes 
-        view can ve either OneViewDataset or TwoViewDataset
+        Returns: train_dataset, val_dataset, test_dataset
+        split:
+        - "RA"   : random split, augmentation on train
+        - "R_NA" : random split, no augmentation
+        - "O_A"  : ordered split, augmentation on train
+        view: OneViewDataset or TwoViewDataset
         """
-        list_data = self._get_files()
-        data_pd = pd.DataFrame({"data": list_data[0], "label": list_data[1]})
+        data, labels = self._get_files()
+        data_pd = pd.DataFrame({"data": data, "label": labels})
 
-        if split == "RA":
-            "Random split with augmentation"
+        # --- choose split function + splitting params ---
+        if split in ("RA", "R_NA"):
+            # stratified random split
             train_pd, temp_pd = train_test_split(
                 data_pd,
-                test_size=0.30,  # 70% train
+                test_size=0.30,
                 random_state=self.random_state,
-                stratify=data_pd["label"]
+                stratify=data_pd["label"],
             )
             val_pd, test_pd = train_test_split(
                 temp_pd,
-                test_size=0.5,   # 15% test, 15% val
+                test_size=0.5,
                 random_state=self.random_state,
-                stratify=temp_pd["label"]
+                stratify=temp_pd["label"],
             )
-            # Returning tensors for data and labels 
-            train_dataset = view(train_pd,
-                                 transform_1=data_transforms(self.augmentation_1, self.normlizetype),
-                                 transform_2=data_transforms(self.augmentation_2, self.normlizetype))
-            val_dataset   = view(val_pd, 
-                                 transform_1=data_transforms('normal', self.normlizetype),
-                                 transform_2=data_transforms('normal', self.normlizetype))
-            test_dataset  = view(test_pd, 
-                                 transform_1=data_transforms('normal', self.normlizetype),
-                                 transform_2=data_transforms('normal', self.normlizetype))
-        
-        elif split == "R_NA":
-            "Random split with no augmentation"
-            train_pd, temp_pd = train_test_split(
-                data_pd,
-                test_size=0.30,  # 20% val + 10% test
-                random_state=self.random_state,
-                stratify=data_pd["label"]
-            )
-            val_pd, test_pd = train_test_split(
-                temp_pd,
-                test_size=0.5,  
-                random_state=self.random_state,
-                stratify=temp_pd["label"]
-            )
-
-            train_dataset = view(train_pd,
-                                 transform_1=data_transforms('normal', self.normlizetype),
-                                 transform_2=data_transforms('normal', self.normlizetype))
-            val_dataset   = view(val_pd,
-                                 transform_1=data_transforms('normal',   self.normlizetype),
-                                 transform_2=data_transforms('normal', self.normlizetype))
-            test_dataset  = view(test_pd,
-                                 transform_1=data_transforms('normal',   self.normlizetype),
-                                 transform_2=data_transforms('normal', self.normlizetype))
-
         elif split == "O_A":
-            "Order split with augmentation"
-            train_pd, temp_pd = train_test_split_order(
-                data_pd,
-                test_size=0.30, 
-            )
+            # ordered split (your custom)
+            train_pd, temp_pd = train_test_split_order(data_pd, test_size=0.30)
+            val_pd, test_pd   = train_test_split_order(temp_pd, test_size=0.5)
+        else:
+            raise ValueError(f"Unknown split='{split}'. Use 'RA', 'R_NA', or 'O_A'.")
 
-            val_pd, test_pd = train_test_split_order(
-                temp_pd,
-                test_size=0.5, 
-            )
-            train_dataset = view(train_pd, 
-                                 transform_1=data_transforms(self.augmentation_1, self.normlizetype),
-                                 transform_2=data_transforms(self.augmentation_2, self.normlizetype))
-            val_dataset   = view(val_pd, 
-                                 transform_1=data_transforms('normal', self.normlizetype),
-                                 transform_2=data_transforms('normal', self.normlizetype))
-            test_dataset  = view(test_pd, 
-                                 transform_1=data_transforms('normal', self.normlizetype),
-                                 transform_2=data_transforms('normal', self.normlizetype))
+        # --- choose transforms ---
+        if split in ("RA", "O_A"):  # augmentation on train only
+            train_t1 = data_transforms(self.augmentation_1, self.normlizetype)
+            train_t2 = data_transforms(self.augmentation_2, self.normlizetype)
+        else:  # no augmentation
+            train_t1 = data_transforms("normal", self.normlizetype)
+            train_t2 = data_transforms("normal", self.normlizetype)
+
+        eval_t1 = data_transforms("normal", self.normlizetype)
+        eval_t2 = data_transforms("normal", self.normlizetype)
+
+        # --- build datasets ---
+        train_dataset = view(train_pd, transform_1=train_t1, transform_2=train_t2)
+        val_dataset   = view(val_pd,   transform_1=eval_t1,  transform_2=eval_t2)
+        test_dataset  = view(test_pd,  transform_1=eval_t1,  transform_2=eval_t2)
 
         return train_dataset, val_dataset, test_dataset
-        
-
