@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 from itertools import islice
-
+from pathlib import Path
 
 from datasets_aug.sequence_dataset import *  
 from datasets_aug.sequence_aug import *
@@ -30,9 +30,10 @@ class SEU(object):
         self.augmentation_2 = augmentype_2 
 
     def _get_files(self, return_gearset = False):
-        root = self.data_dir
-        bearing_dir = os.path.join(root, "bearing")
-        gear_dir    = os.path.join(root, "gearset")
+        root = Path(self.data_dir)   # <-- CRITICAL LINE
+
+        bearing_dir = root / "bearing"
+        gear_dir = root / "gearset"
 
         if not bearing_dir.is_dir():
             raise FileNotFoundError(f"Missing folder: {bearing_dir}")

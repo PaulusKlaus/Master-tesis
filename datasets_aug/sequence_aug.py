@@ -34,11 +34,13 @@ class Retype(object):
 
 class AddGaussian(object):
     "Randomly add Gaussian noise into the input signal."
-    def __init__(self, sigma = 0.01):
+    def __init__(self, sigma = 0.05):
         self.sigma = sigma 
     def __call__(self, seq):
+        seq = np.asarray(seq, dtype=np.float32)
+        noise = np.random.normal(0, self.sigma, seq.shape).astype(np.float32)
         # Since the centre of the normal distribution is around 0, scaling of the data should be done after the trandformation?
-        return seq + np.random.normal(loc=0, scale = self.sigma, size = seq.shape)
+        return seq + noise
     
 
 class Scale(object):
@@ -47,21 +49,41 @@ class Scale(object):
         self.sigma = sigma
 
     def __call__(self, seq):
+        seq = np.asarray(seq, dtype=np.float32)
         scale_factor = np.random.normal(loc=1, scale=self.sigma, size=(seq.shape[0], 1))
         scale_matrix = np.matmul(scale_factor, np.ones((1, seq.shape[1])))
         return seq*scale_matrix
     
 
+# NOTE : does not work 
+
 class RandomStretch(object):
     "Time-streach/time-warp data augmentetion."
-    def __init__(self, sigma=0.3):
+    def __init__(self, sigma=0.3, min_length=2):
         self.sigma = sigma
+        self.min_length = min_length
 
     def __call__(self, seq):
-        seq_aug = np.zeros(seq.shape)
-        T = seq.shape[1]
-        length = int(T * (1 + (random.random()-0.5)*self.sigma))
-        for i in range(seq.shape[0]):
+
+        seq = np.asarray(seq)
+        seq_aug = np.zeros_like(seq)
+
+        # Expecting (C, T)
+        if seq.ndim != 2:
+            raise ValueError(f"RandomStretch expects seq shape (C, T), got {seq.shape}")
+
+        C, T = seq.shape
+        if T < self.min_length:
+            # too short to stretch meaningfully; return unchanged
+            return seq.copy()
+        
+        factor = 1 + (random.random() - 0.5) * self.sigma
+        length = int(round(T * factor))
+
+        # critical clamp to avoid zero / negative
+        length = max(self.min_length, length)
+
+        for i in range(C):
             y = resample(seq[i, :], length)
             if length < T:
                 if random.random() < 0.5:
@@ -73,6 +95,7 @@ class RandomStretch(object):
                     seq_aug[i, :] = y[:T]
                 else:
                     seq_aug[i, :] = y[length-T:]
+
         return seq_aug
 
 
