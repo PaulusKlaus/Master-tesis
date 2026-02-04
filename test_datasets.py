@@ -120,11 +120,16 @@ def test_SEU_dataset():
     run_common_dataset_tests(ds, dataset_name="SEU")
 
 def test_JNU_dataset():
-    pass 
+    ROOT = r"raw_data\JNU\JNU-Bearing-Dataset-main"
+
+    ds = JNU(data_dir=ROOT, rand=42, normlizetype="minus_one_one")
+
+    run_common_dataset_tests(ds, dataset_name="JNU")
+
 
 # ---------- Run tests ----------
 if __name__ == "__main__":
     #test_CWRU_dataset()
     #test_PU_dataset()
     #test_XJTU_dataset()
-    test_SEU_dataset()
+    test_JNU_dataset()
