@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import torch
 
 # Local imports
-from data_utils import *
+from data_utils.datasets import *
 from datasets_aug import *
 
 import torch

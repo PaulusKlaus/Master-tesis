@@ -3,7 +3,7 @@ import os
 from collections import Counter
 
 # Local imports
-from data_utils import *
+from data_utils.datasets import *
 from datasets_aug import *
 
 

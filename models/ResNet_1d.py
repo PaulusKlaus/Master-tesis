@@ -209,19 +209,23 @@ def resnet152(**kwargs):
     model = ResNet(Bottleneck, [3, 8, 36, 3], **kwargs)
     return model
 
-# make model (adjust in_channel/out_channel to your use case)
-model = resnet18(in_channel=1, out_channel=10)
-model.eval()
 
-# Dummy input: (batch, channels, length)
-# length must be >= 32 as your comment says; use 256 to be safe
-x = torch.randn(4, 1, 256)
 
-with torch.no_grad():
-    y = model(x)
 
-print("input:", x.shape)
-print("output:", y.shape)
+if __name__ == "__main__":
+    # make model (adjust in_channel/out_channel to your use case)
+    model = resnet18(in_channel=1, out_channel=10)
+    model.eval()
 
-assert y.shape == (4, 10)
-print("✅ Forward pass OK")
+    # Dummy input: (batch, channels, length)
+    # length must be >= 32 as your comment says; use 256 to be safe
+    x = torch.randn(4, 1, 256)
+
+    with torch.no_grad():
+        y = model(x)
+
+    print("input:", x.shape)
+    print("output:", y.shape)
+
+    assert y.shape == (4, 10)
+    print("✅ Forward pass OK")

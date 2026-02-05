@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 from datasets_aug.sequence_dataset import *  #dataset 
 from datasets_aug.sequence_aug import *
-from data_utils.data_utils import *
+from .data_utils import *
 
 datasetname =["Normal Baseline Data", "12k Drive End Bearing Fault Data"]
 normalname = ["0_N_0.mat", "0_N_1.mat", "0_N_2.mat", "0_N_3.mat"]

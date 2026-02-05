@@ -7,7 +7,7 @@ from pathlib import Path
 
 from datasets_aug.sequence_dataset import *  
 from datasets_aug.sequence_aug import *
-from data_utils.data_utils import *
+from .data_utils import *
 
 
 

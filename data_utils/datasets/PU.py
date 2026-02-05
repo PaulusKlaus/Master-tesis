@@ -1,26 +1,36 @@
 import os
 import pandas as pd
+from scipy.io import loadmat
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 
+
 from datasets_aug.sequence_dataset import *  
 from datasets_aug.sequence_aug import *
-from data_utils.data_utils import *
+from .data_utils import *
+
+# 1 Undamaged (healthy) bearings(6X)
+HBdata = ['K001',"K002",'K003','K004','K005','K006']
+label1=[0,1,2,3,4,5]  #The undamaged (healthy) bearings data is labeled 0-5
+
+# 2 Artificially damaged bearings(12X)
+ADBdata = ['KA01','KA03', 'KA05','KA06','KA07','KA08','KA09','KI01','KI03','KI05','KI07','KI08']
+label2=[6,7,8,9,10,11,12,13,14,15,16,17]    # The artificially damaged bearings data is labeled 6-17
+
+# 3 Bearings with real damages caused by accelerated lifetime tests(14x)
+RDBdata = ['KA04','KA15','KA16','KA22','KA30','KB23','KB24','KB27','KI04','KI14','KI16','KI17','KI18','KI21']
+label3=[i for i in range(18,18+len(RDBdata))]
+
+#working condition
+WC = ["N15_M07_F10","N09_M07_F10","N15_M01_F10","N15_M07_F04"]
+state = WC[0] #WC[0] can be changed to different working states
+
+ALL_DATA  = HBdata + ADBdata + RDBdata
+ALL_LABEL = label1 + label2 + label3
 
 
-WC1 = ["ib600_2.csv", "n600_3_2.csv", "ob600_2.csv", "tb600_2.csv"]
-WC2 = ["ib800_2.csv", "n800_3_2.csv", "ob800_2.csv", "tb800_2.csv"]
-WC3 = ["ib1000_2.csv", "n1000_3_2.csv", "ob1000_2.csv", "tb1000_2.csv"]
 
-label1 = [i for i in range(0, 4)]
-label2 = [i for i in range(4, 8)]
-label3 = [i for i in range(8, 12)]
-
-
-class JNU(object):
-    num_classes = 12
-    inputchannel = 1
-
+class PU(object):
     def __init__(self, data_dir, rand, normlizetype, augmentype_1 = "normal", augmentype_2 = "fft"):
         self.data_dir = data_dir
         self.normlizetype = normlizetype
@@ -29,38 +39,39 @@ class JNU(object):
         self.augmentation_2 = augmentype_2 
 
     def _get_files(self):
-        root = self.data_dir
-
+        '''
+        This function is used to generate the final training set and test set.
+        root:The location of the data set
+        '''
         data = []
-        lab =[]
+        lab = []
 
-        for i in tqdm(range(len(WC1))):
-            path1 = os.path.join(root, WC1[i])
-            data1, lab1 = self._data_load(path1, label=label1[i])
-            data += data1
-            lab +=lab1
+        for k in tqdm(range(len(ALL_DATA))):
+            bearing = ALL_DATA[k]
+            label = ALL_LABEL[k]
 
-        for j in tqdm(range(len(WC2))):
-            path2 = os.path.join(root, WC2[j])
-            data2, lab2 = self._data_load(path2, label=label2[j])
-            data += data2
-            lab += lab2
+            #NOTE: This only uses 1 of 20 samples, which ends with _1.mat 
+            name = state + "_" + bearing + "_1"
+            path = os.path.join(self.data_dir, bearing, name + ".mat")        
+            d, l = self._data_load(path, name=name, label=label)
+            data += d
+            lab += l
 
-        for k in tqdm(range(len(WC3))):
-            path3 = os.path.join(root, WC3[k])
-            data3, lab3 = self._data_load(path3, label=label3[k])
-            data += data3
-            lab += lab3
+        return [data,lab]
 
-        return [data, lab]
-    
-    def _data_load(self, filename, label, signal_size=1024):
-
-        fl = np.loadtxt(filename)
-        fl = fl.reshape(-1, 1)
-
-        data, lab = [], []
+    def _data_load(self, filename, name, label, signal_size = 1024):
+        '''
+        This function is mainly used to generate test data and training data.
+        filename:Data location
+        '''
+        data = [] 
+        lab = []
         start, end = 0, signal_size
+
+        fl = loadmat(filename)[name]
+        fl = fl[0][0][2][0][6][2]  #Take out the data
+        fl = fl.reshape(-1,1)
+
         while end <= fl.shape[0]:
             data.append(fl[start:end])
             lab.append(label)
@@ -120,6 +131,3 @@ class JNU(object):
         test_dataset  = view(test_pd,  transform_1=eval_t1,  transform_2=eval_t2)
 
         return train_dataset, val_dataset, test_dataset
-
-
-
