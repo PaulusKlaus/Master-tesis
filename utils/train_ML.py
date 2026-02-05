@@ -16,7 +16,7 @@ import data_utils.datasets as datasets
 import datasets_aug.sequence_dataset as views
 from datasets_aug.sequence_aug import *
 import models as models
-
+from .logger import setlogger
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train')
@@ -55,7 +55,7 @@ def parse_args():
 
     # save, load and display information
     parser.add_argument('--max_epoch', type=int, default=5, help='max number of epoch')
-    parser.add_argument('--print_step', type=int, default=50, help='the interval of log training information')
+    parser.add_argument('--print_step', type=int, default=1, help='the interval of log training information')
     args = parser.parse_args()
     return args
 
@@ -195,6 +195,10 @@ class Trainer(object):
         self.model.train()
         epoch_loss = 0.0
         epoch_acc = 0
+        t_samples = 0
+
+        step_start = time.time()
+        step = 0
 
         train_loader = self.train_loader
         device = self.device
@@ -213,7 +217,7 @@ class Trainer(object):
                 outputs = self.model(inputs)
                 loss = self.criterion(outputs, labels)
                 pred = outputs.argmax(dim=1)
-
+        
             elif len(batch) == 3: 
                 x1, x2, labels = batch
                 x1 = x1.to(device, non_blocking = True); x2 = x2.to(device, non_blocking = True); labels = labels.to(device, non_blocking = True)
@@ -222,6 +226,7 @@ class Trainer(object):
                 z_1, z_2, p_1, p_2 = self.model(x1, x2)
                 loss = self.criterion(z_1, z_2, p_1, p_2) #TODO: Need to implement correct 
 
+                #TODO: Add std calculation per channel with torch.no_grad 
             else: 
                 raise ValueError("Unexpected batch format from DataLoader")
             
@@ -230,26 +235,82 @@ class Trainer(object):
             loss.backward()
             self.optimizer.step()
 
-            # accum ulate metrics
+
+            # Number of samples in a batch
+            assert labels.size(0) == inputs.size(0), "Batch size mismatch"
+            # loss.item() is the avarage loss per sample in this batch 
+            # accumulate metrics
+            temp_loss = loss.item() * labels.size(0)  # input.size(0)/labels  is the batch size 
+            epoch_loss += temp_loss
+            epoch_acc += (pred == labels).sum().item()
+            t_samples += labels.size(0)
+
+            avg_loss = epoch_loss / t_samples
+            avg_acc = epoch_acc / t_samples
+            loop.set_postfix(loss=f"{avg_loss:.4f}", acc=f"{avg_acc:.4f}")
+        
+        metrics = {"loss": avg_loss, "acc": avg_acc}
+        # Print the training information in logging 
+        if step % args.print_step == 0:
+            batch_loss = epoch_loss / t_samples
+            batch_acc = epoch_acc / t_samples
+            temp_time = time.time()
+            train_time = temp_time - step_start
+            step_start = temp_time
+            batch_time = train_time / args.print_step if step != 0 else train_time
+            sample_per_sec = 1.0 * t_samples / train_time
+            logging.info('Epoch: [{}/{}], Train Loss: {:.4f} Train Acc: {:.4f},'
+                            '{:.1f} examples/sec {:.2f} sec/batch'.format(
+                epoch, 
+                batch_loss, batch_acc, sample_per_sec, batch_time
+            ))
+            batch_acc = 0
+            batch_loss = 0.0
+            t_samples = 0
+        step += 1
+
+        return metrics
 
 
 
-    def _validate(self,):
+    def _validate_epoch(self, epoch):
         pass
 
     def train(self):
-
+        """
+        High level training organization
+        """
+        # Set up and arguments 
         args = self.args
         self.setup()
         
         step = 0
         best_acc = 0.0
-        step_start = time.time()
 
         for epoch in range(self.start_epoch, args.max_epoch):
-            logging.info('-'*5 + 'Epoch {}/{}'.format(epoch, args.max_epoch - 1) + '-'*5)
 
-            self._train_epoch(epoch)
+            logging.info('-'*5 + 'Epoch {}/{}'.format(epoch, args.max_epoch - 1) + '-'*5)
+            
+            start_time = time.time()
+            train_metric = self._train_epoch(epoch)
+            val_metric = self._validate_epoch(epoch)
+
+            # Update the learning rate
+            if self.lr_scheduler is not None:
+                # self.lr_scheduler.step(epoch)
+                logging.info('current lr: {}'.format(self.lr_scheduler.get_lr()))
+                try: 
+                    self.lr_scheduler.step()
+                except Exception:
+                    self.lr_scheduler.step(val_metric.get("val_loss", None))
+            else:
+                logging.info('current lr: {}'.format(args.lr))
+
+            
+
+            
+
+
 
 
 
@@ -262,7 +323,7 @@ if __name__ == "__main__":
         os.makedirs(save_dir)
 
     # set the logger
-    #setlogger(os.path.join(save_dir, 'training.log'))
+    setlogger(os.path.join(save_dir, 'training.log'))
 
     # save the args
     for k, v in args.__dict__.items():
