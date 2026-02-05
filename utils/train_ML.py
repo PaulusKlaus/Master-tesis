@@ -9,6 +9,7 @@ import argparse
 from datetime import datetime
 from torch.utils.data import DataLoader
 import tqdm
+import math
 
 import data_utils.datasets as datasets
 import datasets_aug.sequence_dataset as views
@@ -233,7 +234,6 @@ class Trainer(object):
             loss.backward()
             self.optimizer.step()
 
-
             # Number of samples in a batch
             assert labels.size(0) == inputs.size(0), "Batch size mismatch"
             # loss.item() is the avarage loss per sample in this batch 
@@ -273,7 +273,51 @@ class Trainer(object):
 
 
     def _validate_epoch(self, epoch):
-        pass
+        #TODO:Check this implemetnation 
+        """
+        Run validation epoch (no_grad).
+        Returns: dict with metrics
+        """
+        self.model.eval()
+        total_loss = 0.0
+        total_correct = 0
+        total_samples = 0
+
+        loader = self.val_loader
+        device = self.device
+
+        with torch.no_grad():
+            loop = tqdm.tqdm(loader, desc=f"Val Epoch {epoch}", leave=False)
+            for batch in loop:
+                if len(batch) == 2:
+                    inputs, labels = batch
+                    inputs = inputs.to(device)
+                    labels = labels.to(device)
+                    outputs = self.model(inputs)
+                    loss = self.criterion(outputs, labels)
+                    preds = outputs.argmax(dim=1)
+                elif len(batch) == 3:
+                    x1, x2, labels = batch
+                    x1 = x1.to(device); x2 = x2.to(device); labels = labels.to(device)
+                    out1 = self.model(x1)
+                    out2 = self.model(x2)
+                    outputs = (out1 + out2) / 2.0
+                    loss = self.criterion(outputs, labels)
+                    preds = outputs.argmax(dim=1)
+                else:
+                    raise ValueError("Unexpected batch format from DataLoader")
+
+                bs = labels.size(0)
+                total_loss += loss.item() * bs
+                total_correct += (preds == labels).sum().item()
+                total_samples += bs
+
+                avg_loss = total_loss / total_samples
+                avg_acc = total_correct / total_samples
+                loop.set_postfix(val_loss=f"{avg_loss:.4f}", val_acc=f"{avg_acc:.4f}")
+
+        metrics = {"val_loss": avg_loss, "val_acc": avg_acc}
+        return metrics
 
     def train(self):
         """
@@ -285,6 +329,7 @@ class Trainer(object):
         
         step = 0
         best_acc = 0.0
+        best_val_acc = -math.inf
 
         for epoch in range(self.start_epoch, args.max_epoch):
 
@@ -306,6 +351,17 @@ class Trainer(object):
             else:
                 current_lr = self.optimizer.param_groups[0]["lr"]
                 logging.info(f"current lr: {current_lr:.6g}")
+
+
+            # track best
+            if val_metric["val_acc"] > best_val_acc:
+                best_val_acc = val_metric["val_acc"]
+
+            logging.info(f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f} acc {train_metric['acc']:.4f} | "
+                         f"Val loss {val_metric['val_loss']:.4f} acc {val_metric['val_acc']:.4f}")
+
+        # TODO: save the last weigst and biases of the model
+
 
             
 
