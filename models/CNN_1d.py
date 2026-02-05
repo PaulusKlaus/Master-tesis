@@ -3,12 +3,9 @@ import torch.nn as nn
 
 class CNN_1d(nn.Module):
     """
-    Gereric 1D CNN 
-
-
+    Gereric 1D CNN
     - conv_channel can be used to change the depth of the model
     """
-
     def __init__(
             self,
             in_channel: int = 1,
@@ -45,8 +42,6 @@ class CNN_1d(nn.Module):
 
         self.encoder = nn.Sequential(*layers)
 
-
-
         # ----     Predictor of the CNN (MLP)   ----
         self.predictor = nn.Sequential(
             nn.Linear(prev_in * 4, 256),
@@ -58,7 +53,7 @@ class CNN_1d(nn.Module):
 
         self.fc = nn.Linear(64, out_channel)
 
-        
+
     def forward(self, x):
         
         x = self.encoder(x)
