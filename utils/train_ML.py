@@ -6,11 +6,9 @@ import torch
 from torch import nn
 from torch import optim
 import argparse
-import sys
 from datetime import datetime
 from torch.utils.data import DataLoader
-from tqdm import tqdm
-import math
+import tqdm
 
 import data_utils.datasets as datasets
 import datasets_aug.sequence_dataset as views
@@ -45,17 +43,17 @@ def parse_args():
 
     # optimization information
     parser.add_argument('--opt', type=str, choices=['sgd', 'adam'], default='sgd', help='the optimizer')
-    parser.add_argument('--lr', type=float, default=0.001, help='the initial learning rate')
+    parser.add_argument('--lr', type=float, default=0.01, help='the initial learning rate')
     parser.add_argument('--momentum', type=float, default=0.9, help='the momentum for sgd')
     parser.add_argument('--weight_decay', type=float, default=1e-5, help='the weight decay')
     parser.add_argument('--lr_scheduler', type=str, choices=['cos', 'exp', 'stepLR', 'fix'], default='cos', help='the learning rate schedule')
     parser.add_argument('--gamma', type=float, default=0.1, help='learning rate scheduler parameter for step and exp')
-    parser.add_argument('--eta_min', type=float, default=0.001, help='learning rate scheduler parameter for cos ')
+    parser.add_argument('--eta_min', type=float, default=0.00001, help='learning rate scheduler parameter for cos ')
 
 
     # save, load and display information
-    parser.add_argument('--max_epoch', type=int, default=5, help='max number of epoch')
-    parser.add_argument('--print_step', type=int, default=1, help='the interval of log training information')
+    parser.add_argument('--max_epoch', type=int, default=30, help='max number of epoch')
+    parser.add_argument('--print_step', type=int, default=2, help='the interval of log training information')
     args = parser.parse_args()
     return args
 
@@ -202,8 +200,8 @@ class Trainer(object):
 
         train_loader = self.train_loader
         device = self.device
-        loop = tqdm(train_loader, desc=f"Train Epoch {epoch}", leave=False)
-        for batch in loop:
+        loop = tqdm.tqdm(train_loader, desc=f"Train Epoch {epoch}", leave=False)
+        for batch_idx, batch in enumerate(loop):
             # Detect batch format:
             # - OneView: (input, labels)
             # - TwoView: (input1, input2, labels)
@@ -250,6 +248,7 @@ class Trainer(object):
             loop.set_postfix(loss=f"{avg_loss:.4f}", acc=f"{avg_acc:.4f}")
         
         metrics = {"loss": avg_loss, "acc": avg_acc}
+
         # Print the training information in logging 
         if step % args.print_step == 0:
             batch_loss = epoch_loss / t_samples
@@ -259,9 +258,9 @@ class Trainer(object):
             step_start = temp_time
             batch_time = train_time / args.print_step if step != 0 else train_time
             sample_per_sec = 1.0 * t_samples / train_time
-            logging.info('Epoch: [{}/{}], Train Loss: {:.4f} Train Acc: {:.4f},'
+            logging.info('Epoch: {} [{}/{}], Train Loss: {:.4f} Train Acc: {:.4f},'
                             '{:.1f} examples/sec {:.2f} sec/batch'.format(
-                epoch, 
+                epoch,  (batch_idx) * args.batch_size, len(train_loader.dataset),
                 batch_loss, batch_acc, sample_per_sec, batch_time
             ))
             batch_acc = 0
@@ -298,13 +297,15 @@ class Trainer(object):
             # Update the learning rate
             if self.lr_scheduler is not None:
                 # self.lr_scheduler.step(epoch)
-                logging.info('current lr: {}'.format(self.lr_scheduler.get_lr()))
+                logging.info(f"current lr2: {self.lr_scheduler.get_last_lr()[0]:.6g}")
+
                 try: 
                     self.lr_scheduler.step()
                 except Exception:
                     self.lr_scheduler.step(val_metric.get("val_loss", None))
             else:
-                logging.info('current lr: {}'.format(args.lr))
+                current_lr = self.optimizer.param_groups[0]["lr"]
+                logging.info(f"current lr: {current_lr:.6g}")
 
             
 
