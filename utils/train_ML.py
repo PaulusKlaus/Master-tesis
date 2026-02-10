@@ -17,11 +17,22 @@ from datasets_aug.sequence_aug import *
 import models as models
 from .logger import setlogger
 
+
+
+DATA_DIRS = {
+    "CWRU": r"raw_data/CWRU",
+    "JNU": r"raw_data/JNU/JNU-Bearing-Dataset-main",
+    "PU": r"raw_data/PU",
+    "SEU": r"raw_data/SEU/gearbox",
+    "XJTU": r"raw_data/XJTU",
+}
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Train')
 
     # Model parameters 
-    parser.add_argument('--model_name', type=str, choices = ['CNN_1d', 'SimSiam', 'SSF', 'resnet18_1d', 'AE_1d', 'MLP'], default='resnet18_1d', help='the name of the model')
+    parser.add_argument('--model_name', type=str, choices = ['CNN_1d', 'SimSiam', 'SSF', 'resnet18_1d', 'AE_1d', 'MLP'], default='CNN_1d', help='the name of the model')
     parser.add_argument('--cuda_device', type=str, default='0', help='assign device')
     parser.add_argument('--checkpoint_dir', type=str, default='./checkpoint', help='the directory to save the model')
     parser.add_argument("--pretrained", type=bool, default=True, help='whether to load the pretrained model')
@@ -29,12 +40,19 @@ def parse_args():
     parser.add_argument('--num_workers', type=int, default=0, help='the number of training process')
 
     # Data parameters 
-    parser.add_argument('--data_name', type=str, choices=['CWRU', 'JNU', 'PU', 'SEU', 'XJTU'], default='PU', help='the name of the data')
-    parser.add_argument('--data_dir', type=str,choices=[r"raw_data\CWRU",
-                                                          r"raw_data\JNU\JNU-Bearing-Dataset-main",
-                                                            r"raw_data\PU", r"raw_data\SEU\gearbox",
-                                                              r"raw_data\XJTU"],
-                                                         default= r"raw_data\PU", help='the directory of the data')
+    #parser.add_argument('--data_name', type=str, choices=['CWRU', 'JNU', 'PU', 'SEU', 'XJTU'], default='CWRU', help='the name of the data')
+    parser.add_argument("--data_name",
+                        type=str,
+                        choices=DATA_DIRS.keys(),
+                        default="JNU",
+                        help="the name of the dataset",
+                    )
+    parser.add_argument("--data_dir",
+                        type=str,
+                        default=None,
+                        help="optional override for dataset directory",
+                    )
+                    
     parser.add_argument('--normlizetype', type=str, choices=["zero_one", "minus_one_one", 'mean_std'], default='minus_one_one', help='data normalization methods')
     parser.add_argument('--processing_type', type=str, choices=['RA', 'R_NA', 'O_A'], default='RA',
                         help='RA: random split with data augmentation, R_NA: random split without data augmentation, O_A: order split with data augmentation')
@@ -53,7 +71,7 @@ def parse_args():
 
 
     # save, load and display information
-    parser.add_argument('--max_epoch', type=int, default=30, help='max number of epoch')
+    parser.add_argument('--max_epoch', type=int, default=10, help='max number of epoch')
     parser.add_argument('--print_step', type=int, default=2, help='the interval of log training information')
     args = parser.parse_args()
     return args
@@ -104,10 +122,59 @@ class Trainer(object):
         checkpoint = torch.load(filename, map_location='cuda:0')
         start_epoch = checkpoint['epoch']
         model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimoptimizer_state_dictizer'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         print("Loaded weights, start_epoch and optimizer from chechpoint")
 
         return start_epoch, model, optimizer
+
+    def _data_loading(self):
+
+        args = self.args
+
+         # --- Load the dataset ----
+        Dataset = getattr(datasets, args.data_name) # PU, CWRU ...
+        dataset_view = getattr(views, args.data_view) # OneViewDataset, TwoViewDataset
+
+        print("Dataset: ", Dataset)
+
+        self.train_ds, self.val_ds, self.test_ds = Dataset(data_dir = args.data_dir, 
+                                                                                      normlizetype= args.normlizetype,
+                                                                                      augmentype_1 = args.aug_1,
+                                                                                      augmentype_2 = args.aug_2,
+                                                                                      rand = 42).data_prepare(split = args.processing_type,
+                                                                                                              view = dataset_view)
+
+        # ---- DataLoader -----
+        self.train_loader = DataLoader(self.train_ds, batch_size=args.batch_size, shuffle=False)
+        #drop_last=True,              # keep pairs aligned for contrastive loss
+        self.val_loader = DataLoader(self.val_ds, batch_size=args.batch_size, shuffle=False)
+        self.test_loader = DataLoader(self.test_ds, batch_size=args.batch_size, shuffle=False)
+
+    def _optimizer_lr_sch(self):
+         # ---- Define Optimizer -----
+        if args.opt == 'sgd':
+            self.optimizer = optim.SGD(self.model.parameters(), lr=args.lr,
+                                       momentum=args.momentum, weight_decay=args.weight_decay)
+        elif args.opt == 'adam':
+            self.optimizer = optim.Adam(self.model.parameters(), lr=args.lr,
+                                        weight_decay=args.weight_decay)
+        else:
+            raise Exception("optimizer not implement")
+        
+        # ---- Define the Learning rate decay ----
+        if args.lr_scheduler == 'cos':
+            self.lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max = args.max_epoch, eta_min=args.eta_min)
+        elif args.lr_scheduler == 'exp':
+            self.lr_scheduler = optim.lr_scheduler.ExponentialLR(self.optimizer, args.gamma)
+        elif args.lr_scheduler == 'stepLR':
+            steps = int(9)
+            self.lr_scheduler = optim.lr_scheduler.StepLR(self.optimizer, steps, args.gamma)
+        elif args.lr_scheduler == 'fix':
+            self.lr_scheduler = None
+        else:
+            raise Exception("lr schedule not implement")
+
+
 
     def setup(self):
         """
@@ -127,57 +194,16 @@ class Trainer(object):
             self.device_count = 1
             logging.info('using {} cpu'.format(self.device_count))
 
-        # --- Load the dataset ----
-        Dataset = getattr(datasets, args.data_name) # PU, CWRU ...
-        dataset_view = getattr(views, args.data_view) # OneViewDataset, TwoViewDataset
+        if self.device_count > 1:
+                    self.model = torch.nn.DataParallel(self.model)
 
-        print("Dataset: ", Dataset)
-
-        self.train_ds, self.val_ds, self.test_ds = Dataset(data_dir = args.data_dir, 
-                                                                                      normlizetype= args.normlizetype,
-                                                                                      augmentype_1 = args.aug_1,
-                                                                                      augmentype_2 = args.aug_2,
-                                                                                      rand = 42).data_prepare(split = args.processing_type,
-                                                                                                              view = dataset_view)
-        
-
-        # ---- DataLoader -----
-        self.train_loader = DataLoader(self.train_ds, batch_size=args.batch_size, shuffle=False)
-        #drop_last=True,              # keep pairs aligned for contrastive loss
-        self.val_loader = DataLoader(self.val_ds, batch_size=args.batch_size, shuffle=False)
-        self.test_loader = DataLoader(self.test_ds, batch_size=args.batch_size, shuffle=False)
+        self._data_loading()
 
         # ---- Define model -----
         self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = 32)
-        
-        if self.device_count > 1:
-            self.model = torch.nn.DataParallel(self.model)
 
-        # ---- Define Optimizer -----
-        if args.opt == 'sgd':
-            self.optimizer = optim.SGD(self.model.parameters(), lr=args.lr,
-                                       momentum=args.momentum, weight_decay=args.weight_decay)
-        elif args.opt == 'adam':
-            self.optimizer = optim.Adam(self.model.parameters(), lr=args.lr,
-                                        weight_decay=args.weight_decay)
-        else:
-            raise Exception("optimizer not implement")
+        self._optimizer_lr_sch()
         
-
-        # ---- Define the Learning rate decay ----
-        if args.lr_scheduler == 'cos':
-            self.lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max = args.max_epoch, eta_min=args.eta_min)
-        elif args.lr_scheduler == 'exp':
-            self.lr_scheduler = optim.lr_scheduler.ExponentialLR(self.optimizer, args.gamma)
-        elif args.lr_scheduler == 'stepLR':
-            steps = int(9)
-            self.lr_scheduler = optim.lr_scheduler.StepLR(self.optimizer, steps, args.gamma)
-        elif args.lr_scheduler == 'fix':
-            self.lr_scheduler = None
-        else:
-            raise Exception("lr schedule not implement")
-        
-
         # ---- Load checkpoint ------
         # TODO: implement
         self.start_epoch = 0
@@ -191,6 +217,7 @@ class Trainer(object):
         Run one training epoch.
         Return: dict with metrics {'loss': .., 'acc': ..}
         """
+        args = self.args
         self.model.train()
         epoch_loss = 0.0
         epoch_acc = 0
@@ -318,6 +345,46 @@ class Trainer(object):
 
         metrics = {"val_loss": avg_loss, "val_acc": avg_acc}
         return metrics
+    
+
+    def _test(self):
+        """
+        Run a test on self.test_loader (no_grad)
+        """
+        self.model.eval()
+
+        total_loss = 0.0
+        total_correct = 0
+        total_samples = 0
+
+        loader = self.test_loader
+        device = self.device
+
+        with torch.no_grad():
+            for batch in loader:
+                if len(batch) == 2: 
+                    input, label = batch
+                    input, label = input.to(device), label.to(device)
+
+                    outputs = self.model(input)
+                    loss = self.criterion(outputs, label)
+                    preds = outputs.argmax(dim=1)
+
+                elif len(batch) ==3: 
+                    continue
+                else: 
+                    raise ValueError(" Unexpected batch format from DataLoader: ", len(batch))
+                
+                bs = label.size(0)
+                total_loss += loss.item() * bs
+                total_correct += (preds == label).sum().item()
+                total_samples += bs
+
+                avg_loss = total_loss / total_samples
+                avg_acc = total_correct / total_samples
+        #loop.set_postfix(test_loss=f"{avg_loss:.4f}", test_acc=f"{avg_acc:.4f}")
+
+        return {"test_loss": avg_loss, "test_acc": avg_acc}
 
     def train(self):
         """
@@ -327,53 +394,73 @@ class Trainer(object):
         args = self.args
         self.setup()
         
-        step = 0
-        best_acc = 0.0
+
         best_val_acc = -math.inf
+        best_ckpt_path = os.path.join(self.save_dir, "best_pt")
 
         for epoch in range(self.start_epoch, args.max_epoch):
 
             logging.info('-'*5 + 'Epoch {}/{}'.format(epoch, args.max_epoch - 1) + '-'*5)
             
-            start_time = time.time()
             train_metric = self._train_epoch(epoch)
             val_metric = self._validate_epoch(epoch)
 
             # Update the learning rate
             if self.lr_scheduler is not None:
                 # self.lr_scheduler.step(epoch)
-                logging.info(f"current lr2: {self.lr_scheduler.get_last_lr()[0]:.6g}")
-
-                try: 
-                    self.lr_scheduler.step()
-                except Exception:
-                    self.lr_scheduler.step(val_metric.get("val_loss", None))
-            else:
-                current_lr = self.optimizer.param_groups[0]["lr"]
-                logging.info(f"current lr: {current_lr:.6g}")
-
+                logging.info(f"current lr: {self.lr_scheduler.get_last_lr()[0]:.6g}")
+                self.lr_scheduler.step()
 
             # track best
             if val_metric["val_acc"] > best_val_acc:
                 best_val_acc = val_metric["val_acc"]
+                torch.save(
+                    {
+                        "epoch": epoch,
+                        "model_state_dict": self.model.state_dict(),
+                        "optimizer_state_dict": self.optimizer.state_dict(),
+                        "scheduler_state_dict": None if self.lr_scheduler is None else self.lr_scheduler.state_dict(),
+                        "val_acc": best_val_acc,
+                    },
+                    best_ckpt_path
+                )
+                logging.info(f"Saved best checkpoint to {best_ckpt_path} (val_acc={best_val_acc:.4f})")
 
-            logging.info(f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f} acc {train_metric['acc']:.4f} | "
-                         f"Val loss {val_metric['val_loss']:.4f} acc {val_metric['val_acc']:.4f}")
+
+            logging.info(
+                f"Epoch {epoch:03d} "
+                f"Train loss {train_metric['loss']:.4f} acc {train_metric['acc']:.4f} | "
+                f"Val loss {val_metric['val_loss']:.4f} acc {val_metric['val_acc']:.4f}"
+            )
+
+        # ---- Test at the end ----
+        test_metric = self._test()
+        logging.info(f"TEST: loss {test_metric['test_loss']:.4f} acc {test_metric['test_acc']:.4f}")
+
+        # ---- Test using best checkpoint ----
+        if os.path.exists(best_ckpt_path):
+            ckpt = torch.load(best_ckpt_path, map_location=self.device)
+            self.model.load_state_dict(ckpt["model_state_dict"])
+            logging.info(f"Loaded best checkpoint from {best_ckpt_path} (val_acc={ckpt.get('val_acc')})")
+
+        test_metric = self._test()
+        logging.info(f"TEST: loss {test_metric['test_loss']:.4f} acc {test_metric['test_acc']:.4f}")
+
 
         # TODO: save the last weigst and biases of the model
 
 
             
 
-            
-
-
-
+        
 
 
 if __name__ == "__main__":
 
     args = parse_args()
+    if args.data_dir is None:
+        args.data_dir = DATA_DIRS[args.data_name]
+
     sub_dir = args.model_name+'_'+args.data_name + '_' + datetime.strftime(datetime.now(), '%m%d-%H%M%S')
     save_dir = os.path.join(args.checkpoint_dir, sub_dir)
     if not os.path.exists(save_dir):
