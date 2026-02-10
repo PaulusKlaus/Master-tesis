@@ -16,35 +16,77 @@ import datasets_aug.sequence_dataset as views
 from datasets_aug.sequence_aug import *
 import models as models
 from .logger import setlogger
+from .loss_SSL  import SimSiamLoss
 
 
 
 DATA_DIRS = {
-    "CWRU": r"raw_data/CWRU",
-    "JNU": r"raw_data/JNU/JNU-Bearing-Dataset-main",
-    "PU": r"raw_data/PU",
-    "SEU": r"raw_data/SEU/gearbox",
-    "XJTU": r"raw_data/XJTU",
+    "CWRU": [r"raw_data/CWRU", 3],
+    "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 12],
+    "PU": [r"raw_data/PU", 32],
+    "SEU": [r"raw_data/SEU/gearbox", 10],
+    "XJTU": [r"raw_data/XJTU", 10]  # TODO: Check this 
 }
 
+MODEL_CONFIG = {
+    "CNN_1d": {
+        "data_view": "OneViewDataset",
+        "task": "supervised",
+        "criterion": nn.CrossEntropyLoss,
+    },
+    "AE_1d": {
+        "data_view": "OneViewDataset",
+        "task": "reconstruction",
+        "criterion": nn.MSELoss,
+    },
+    "SimSiam": {
+        "data_view": "TwoViewDataset",
+        "task": "self_supervised",
+        "criterion": SimSiamLoss,
+    },
+    "resnet18_1d": {
+        "data_view": "OneViewDataset",
+        "task": "supervised",
+        "criterion": nn.CrossEntropyLoss,
+    },
+    "MLP": {
+        "data_view": "OneViewDataset",
+        "task": "supervised",
+        "criterion": nn.CrossEntropyLoss,
+    },
+    "SSF": {
+        "data_view": "TwoViewDataset",
+        "task": "self_supervised",
+        "criterion": SimSiamLoss,
+    },
+}
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train')
 
     # Model parameters 
-    parser.add_argument('--model_name', type=str, choices = ['CNN_1d', 'SimSiam', 'SSF', 'resnet18_1d', 'AE_1d', 'MLP'], default='CNN_1d', help='the name of the model')
+    parser.add_argument('--model_name', 
+                        type=str, 
+                        choices = MODEL_CONFIG.keys(),
+                        default='SimSiam', 
+                        help='the name of the model'
+                        )
+    parser.add_argument('--data_view', 
+                        type=str, 
+                        default=None, 
+                        help='Dataset view with either one or two tensors'
+                        )
+    
     parser.add_argument('--cuda_device', type=str, default='0', help='assign device')
     parser.add_argument('--checkpoint_dir', type=str, default='./checkpoint', help='the directory to save the model')
-    parser.add_argument("--pretrained", type=bool, default=True, help='whether to load the pretrained model')
+    #parser.add_argument("--pretrained", type=bool, default=True, help='whether to load the pretrained model')
     parser.add_argument('--batch_size', type=int, default=64, help='batchsize of the training process')
-    parser.add_argument('--num_workers', type=int, default=0, help='the number of training process')
-
+    
     # Data parameters 
-    #parser.add_argument('--data_name', type=str, choices=['CWRU', 'JNU', 'PU', 'SEU', 'XJTU'], default='CWRU', help='the name of the data')
     parser.add_argument("--data_name",
                         type=str,
                         choices=DATA_DIRS.keys(),
-                        default="JNU",
+                        default="PU",
                         help="the name of the dataset",
                     )
     parser.add_argument("--data_dir",
@@ -52,13 +94,18 @@ def parse_args():
                         default=None,
                         help="optional override for dataset directory",
                     )
+    parser.add_argument("--out_channel",
+                        type=int,
+                        default=None,
+                        help="output classes",
+                    )
+                    
                     
     parser.add_argument('--normlizetype', type=str, choices=["zero_one", "minus_one_one", 'mean_std'], default='minus_one_one', help='data normalization methods')
     parser.add_argument('--processing_type', type=str, choices=['RA', 'R_NA', 'O_A'], default='RA',
                         help='RA: random split with data augmentation, R_NA: random split without data augmentation, O_A: order split with data augmentation')
     parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
     parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='fft', help='Augmentation type on the target pipeline')
-    parser.add_argument('--data_view', type=str, choices=['OneViewDataset', 'TwoViewDataset'], default='OneViewDataset', help='Dataset view with either one or two tensors')
 
     # optimization information
     parser.add_argument('--opt', type=str, choices=['sgd', 'adam'], default='sgd', help='the optimizer')
@@ -71,7 +118,7 @@ def parse_args():
 
 
     # save, load and display information
-    parser.add_argument('--max_epoch', type=int, default=10, help='max number of epoch')
+    parser.add_argument('--max_epoch', type=int, default=20, help='max number of epoch')
     parser.add_argument('--print_step', type=int, default=2, help='the interval of log training information')
     args = parser.parse_args()
     return args
@@ -126,24 +173,43 @@ class Trainer(object):
         print("Loaded weights, start_epoch and optimizer from chechpoint")
 
         return start_epoch, model, optimizer
+    
+    
+    def _build_criterion(self, model_name: str) -> nn.Module:
+        # supervised classifiers
+        if model_name in {"CNN_1d", "resnet18_1d", "MLP"}:
+            return nn.CrossEntropyLoss()
 
+        # self-supervised
+        if model_name in {"SimSiam", "SSF"}:
+            return SimSiamLoss()
+
+        # example: autoencoder reconstruction
+        if model_name == "AE_1d":
+            return nn.MSELoss()
+
+        # if SSF has its own loss, put it here
+        if model_name == "SSF":
+            # TODO: replace with actual SSF loss
+            return nn.CrossEntropyLoss()
+
+        raise ValueError(f"Unknown model_name for criterion: {model_name}")
+    
     def _data_loading(self):
 
         args = self.args
 
-         # --- Load the dataset ----
+        # --- Load the dataset ----
         Dataset = getattr(datasets, args.data_name) # PU, CWRU ...
         dataset_view = getattr(views, args.data_view) # OneViewDataset, TwoViewDataset
 
         print("Dataset: ", Dataset)
-
         self.train_ds, self.val_ds, self.test_ds = Dataset(data_dir = args.data_dir, 
                                                                                       normlizetype= args.normlizetype,
                                                                                       augmentype_1 = args.aug_1,
                                                                                       augmentype_2 = args.aug_2,
                                                                                       rand = 42).data_prepare(split = args.processing_type,
                                                                                                               view = dataset_view)
-
         # ---- DataLoader -----
         self.train_loader = DataLoader(self.train_ds, batch_size=args.batch_size, shuffle=False)
         #drop_last=True,              # keep pairs aligned for contrastive loss
@@ -174,14 +240,12 @@ class Trainer(object):
         else:
             raise Exception("lr schedule not implement")
 
-
-
     def setup(self):
         """
         Initialise model, dataset, loss, and optimizer from the argparse arguments
         """
         args = self.args
-
+        
         # Consider the gpu or cpu condition
         if torch.cuda.is_available():
             self.device = torch.device("cuda")
@@ -194,14 +258,12 @@ class Trainer(object):
             self.device_count = 1
             logging.info('using {} cpu'.format(self.device_count))
 
-        if self.device_count > 1:
-                    self.model = torch.nn.DataParallel(self.model)
-
         self._data_loading()
 
         # ---- Define model -----
-        self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = 32)
-
+        self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = args.out_channel)
+        if self.device_count > 1:
+                            self.model = torch.nn.DataParallel(self.model)
         self._optimizer_lr_sch()
         
         # ---- Load checkpoint ------
@@ -210,7 +272,8 @@ class Trainer(object):
         self.model.to(self.device)
 
         # This need to be different for different models !!!!!
-        self.criterion = nn.CrossEntropyLoss()
+        
+        self.criterion = args.critetion()
 
     def _train_epoch(self, epoch):
         """
@@ -230,161 +293,150 @@ class Trainer(object):
         device = self.device
         loop = tqdm.tqdm(train_loader, desc=f"Train Epoch {epoch}", leave=False)
         for batch_idx, batch in enumerate(loop):
-            # Detect batch format:
-            # - OneView: (input, labels)
-            # - TwoView: (input1, input2, labels)
-            #print("Length of the batch in the loop: ", len(batch))
-            if len(batch) == 2:
-                inputs, labels = batch 
+            self.optimizer.zero_grad()
+
+            # ---- Supervised ----
+            if args.task == "supervised":
+                inputs, labels = batch
                 inputs = inputs.to(device, non_blocking = True)
                 labels = labels.to(device, non_blocking = True)
 
-                # forward pass 
-                outputs = self.model(inputs)
-                loss = self.criterion(outputs, labels)
-                pred = outputs.argmax(dim=1)
-        
-            elif len(batch) == 3: 
+                output = self.model(inputs)
+                loss = self.criterion(output, labels)
+                preds = output.argmax(dim=1)
+                bs = labels.size(0)
+
+            # ---- Self-Supervised (two views) ----
+            elif args.task == "self_supervised":
                 x1, x2, labels = batch
-                x1 = x1.to(device, non_blocking = True); x2 = x2.to(device, non_blocking = True); labels = labels.to(device, non_blocking = True)
+                x1 = x1.to(device, non_blocking=True)
+                x2 = x2.to(device, non_blocking=True)
 
-                # forward pass for contrastive learning 
-                z_1, z_2, p_1, p_2 = self.model(x1, x2)
-                loss = self.criterion(z_1, z_2, p_1, p_2) #TODO: Need to implement correct 
+                z1, z2, p1, p2 = self.model(x1, x2)
+                loss = self.criterion(z1, z2, p1, p2)
 
-                #TODO: Add std calculation per channel with torch.no_grad 
+                preds = None
+                bs = labels.size(0)
+                labels = None 
+
+            elif args.task == "reconstruction":
+                inputs, labels = batch
+                inputs = inputs.to(device, non_blocking=True)
+
+                recon = self.model(inputs)
+                loss = self.criterion(recon, inputs)
+                bs = inputs.size(0)
+                preds = None
+                labels = None
             else: 
                 raise ValueError("Unexpected batch format from DataLoader")
             
-            # backward 
-            self.optimizer.zero_grad()
+            # backward + step
             loss.backward()
             self.optimizer.step()
 
-            # Number of samples in a batch
-            assert labels.size(0) == inputs.size(0), "Batch size mismatch"
-            # loss.item() is the avarage loss per sample in this batch 
-            # accumulate metrics
-            temp_loss = loss.item() * labels.size(0)  # input.size(0)/labels  is the batch size 
-            epoch_loss += temp_loss
-            epoch_acc += (pred == labels).sum().item()
-            t_samples += labels.size(0)
+            # metrics
+            epoch_loss += loss.item() * bs
+            t_samples += bs
 
             avg_loss = epoch_loss / t_samples
-            avg_acc = epoch_acc / t_samples
-            loop.set_postfix(loss=f"{avg_loss:.4f}", acc=f"{avg_acc:.4f}")
-        
-        metrics = {"loss": avg_loss, "acc": avg_acc}
 
-        # Print the training information in logging 
-        if step % args.print_step == 0:
-            batch_loss = epoch_loss / t_samples
-            batch_acc = epoch_acc / t_samples
-            temp_time = time.time()
-            train_time = temp_time - step_start
-            step_start = temp_time
-            batch_time = train_time / args.print_step if step != 0 else train_time
-            sample_per_sec = 1.0 * t_samples / train_time
-            logging.info('Epoch: {} [{}/{}], Train Loss: {:.4f} Train Acc: {:.4f},'
-                            '{:.1f} examples/sec {:.2f} sec/batch'.format(
-                epoch,  (batch_idx) * args.batch_size, len(train_loader.dataset),
-                batch_loss, batch_acc, sample_per_sec, batch_time
-            ))
-            batch_acc = 0
-            batch_loss = 0.0
-            t_samples = 0
-        step += 1
+            # accuracy only for supervised
+            if args.task == "supervised":
+                epoch_acc += (preds == labels).sum().item()
+                avg_acc = epoch_acc / t_samples
+                loop.set_postfix(loss=f"{avg_loss:.4f}", acc=f"{avg_acc:.4f}")
+            else:
+                loop.set_postfix(loss=f"{avg_loss:.4f}")
+        
+            # return metrics
+        metrics = {"loss": avg_loss}
+        if args.task == "supervised":
+            metrics["acc"] = avg_acc
 
         return metrics
 
 
 
-    def _validate_epoch(self, epoch):
+    def _val_test_epoch(self, val : bool = True):
         #TODO:Check this implemetnation 
         """
         Run validation epoch (no_grad).
         Returns: dict with metrics
         """
+        args = self.args 
         self.model.eval()
+
         total_loss = 0.0
         total_correct = 0
         total_samples = 0
 
-        loader = self.val_loader
+        loader = self.val_loader if val else self.test_loader
         device = self.device
+        prefix = "val" if val else "test"
 
         with torch.no_grad():
-            loop = tqdm.tqdm(loader, desc=f"Val Epoch {epoch}", leave=False)
+            loop = tqdm.tqdm(loader, desc=f"{prefix} Epoch", leave=False)
             for batch in loop:
-                if len(batch) == 2:
+                # ----- supervised -----
+                if args.task == "supervised":
                     inputs, labels = batch
-                    inputs = inputs.to(device)
-                    labels = labels.to(device)
+                    inputs = inputs.to(device, non_blocking=True)
+                    labels = labels.to(device, non_blocking=True)
+
                     outputs = self.model(inputs)
                     loss = self.criterion(outputs, labels)
                     preds = outputs.argmax(dim=1)
-                elif len(batch) == 3:
-                    x1, x2, labels = batch
-                    x1 = x1.to(device); x2 = x2.to(device); labels = labels.to(device)
-                    out1 = self.model(x1)
-                    out2 = self.model(x2)
-                    outputs = (out1 + out2) / 2.0
-                    loss = self.criterion(outputs, labels)
-                    preds = outputs.argmax(dim=1)
-                else:
-                    raise ValueError("Unexpected batch format from DataLoader")
 
-                bs = labels.size(0)
+                    bs = labels.size(0)
+                    total_correct += (preds == labels).sum().item()
+
+                # ----- self-supervised -----
+                elif args.task == "self_supervised":
+                    x1, x2, _labels = batch
+                    x1 = x1.to(device, non_blocking=True)
+                    x2 = x2.to(device, non_blocking=True)
+
+                    # SimSiam-style forward
+                    z1, z2, p1, p2 = self.model(x1, x2)
+                    loss = self.criterion(z1, z2, p1, p2)
+
+
+                    bs = x1.size(0)
+
+                # ----- reconstruction -----
+                elif args.task == "reconstruction":
+                    inputs, _labels = batch
+                    inputs = inputs.to(device, non_blocking=True)
+
+                    recon = self.model(inputs)
+                    loss = self.criterion(recon, inputs)
+
+                    bs = inputs.size(0)
+
+                else:
+                    raise ValueError(f"Unknown task: {args.task}")
+
+           
                 total_loss += loss.item() * bs
-                total_correct += (preds == labels).sum().item()
                 total_samples += bs
 
                 avg_loss = total_loss / total_samples
-                avg_acc = total_correct / total_samples
-                loop.set_postfix(val_loss=f"{avg_loss:.4f}", val_acc=f"{avg_acc:.4f}")
 
-        metrics = {"val_loss": avg_loss, "val_acc": avg_acc}
+                if args.task == "supervised":
+                    avg_acc = total_correct / total_samples
+                    loop.set_postfix(**{f"{prefix}_loss": f"{avg_loss:.4f}",
+                                        f"{prefix}_acc": f"{avg_acc:.4f}"})
+                else:
+                    loop.set_postfix(**{f"{prefix}_loss": f"{avg_loss:.4f}"})
+
+        metrics = {f"{prefix}_loss": avg_loss}
+        if args.task == "supervised":
+            metrics[f"{prefix}_acc"] = avg_acc
         return metrics
     
 
-    def _test(self):
-        """
-        Run a test on self.test_loader (no_grad)
-        """
-        self.model.eval()
-
-        total_loss = 0.0
-        total_correct = 0
-        total_samples = 0
-
-        loader = self.test_loader
-        device = self.device
-
-        with torch.no_grad():
-            for batch in loader:
-                if len(batch) == 2: 
-                    input, label = batch
-                    input, label = input.to(device), label.to(device)
-
-                    outputs = self.model(input)
-                    loss = self.criterion(outputs, label)
-                    preds = outputs.argmax(dim=1)
-
-                elif len(batch) ==3: 
-                    continue
-                else: 
-                    raise ValueError(" Unexpected batch format from DataLoader: ", len(batch))
-                
-                bs = label.size(0)
-                total_loss += loss.item() * bs
-                total_correct += (preds == label).sum().item()
-                total_samples += bs
-
-                avg_loss = total_loss / total_samples
-                avg_acc = total_correct / total_samples
-        #loop.set_postfix(test_loss=f"{avg_loss:.4f}", test_acc=f"{avg_acc:.4f}")
-
-        return {"test_loss": avg_loss, "test_acc": avg_acc}
+    
 
     def train(self):
         """
@@ -395,7 +447,16 @@ class Trainer(object):
         self.setup()
         
 
-        best_val_acc = -math.inf
+        # pick selection metric based on task
+        if args.task == "supervised":
+            best_value = -math.inf
+            better = lambda current, best: current > best
+            select_key = "val_acc"
+        else:
+            best_value = math.inf
+            better = lambda current, best: current < best
+            select_key = "val_loss"
+
         best_ckpt_path = os.path.join(self.save_dir, "best_pt")
 
         for epoch in range(self.start_epoch, args.max_epoch):
@@ -403,7 +464,7 @@ class Trainer(object):
             logging.info('-'*5 + 'Epoch {}/{}'.format(epoch, args.max_epoch - 1) + '-'*5)
             
             train_metric = self._train_epoch(epoch)
-            val_metric = self._validate_epoch(epoch)
+            val_metric = self._val_test_epoch()
 
             # Update the learning rate
             if self.lr_scheduler is not None:
@@ -411,55 +472,72 @@ class Trainer(object):
                 logging.info(f"current lr: {self.lr_scheduler.get_last_lr()[0]:.6g}")
                 self.lr_scheduler.step()
 
-            # track best
-            if val_metric["val_acc"] > best_val_acc:
-                best_val_acc = val_metric["val_acc"]
+            # ----- save best checkpoint -----
+            current_value = val_metric[select_key]
+            if better(current_value, best_value):
+                best_value = current_value
                 torch.save(
                     {
                         "epoch": epoch,
                         "model_state_dict": self.model.state_dict(),
                         "optimizer_state_dict": self.optimizer.state_dict(),
                         "scheduler_state_dict": None if self.lr_scheduler is None else self.lr_scheduler.state_dict(),
-                        "val_acc": best_val_acc,
+                        "best_key": select_key,
+                        "best_value": best_value,
+                        "task": args.task,
                     },
-                    best_ckpt_path
+                    best_ckpt_path,
                 )
-                logging.info(f"Saved best checkpoint to {best_ckpt_path} (val_acc={best_val_acc:.4f})")
+                logging.info(f"Saved best checkpoint to {best_ckpt_path} ({select_key}={best_value:.4f})")
 
 
-            logging.info(
-                f"Epoch {epoch:03d} "
-                f"Train loss {train_metric['loss']:.4f} acc {train_metric['acc']:.4f} | "
-                f"Val loss {val_metric['val_loss']:.4f} acc {val_metric['val_acc']:.4f}"
-            )
+            # ----- logging (conditional acc) -----
+            msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f}"
+            if "acc" in train_metric:
+                msg += f" acc {train_metric['acc']:.4f}"
 
-        # ---- Test at the end ----
-        test_metric = self._test()
-        logging.info(f"TEST: loss {test_metric['test_loss']:.4f} acc {test_metric['test_acc']:.4f}")
+            msg += f" | Val loss {val_metric['val_loss']:.4f}"
+            if "val_acc" in val_metric:
+                msg += f" acc {val_metric['val_acc']:.4f}"
 
-        # ---- Test using best checkpoint ----
+            logging.info(msg)
+
+         # ---- test at end (current model) ----
+        test_metric = self._val_test_epoch(val=False)
+        msg = f"TEST (last): loss {test_metric['test_loss']:.4f}"
+        if "test_acc" in test_metric:
+            msg += f" acc {test_metric['test_acc']:.4f}"
+        logging.info(msg)
+
+        # ---- test best checkpoint ----
         if os.path.exists(best_ckpt_path):
             ckpt = torch.load(best_ckpt_path, map_location=self.device)
             self.model.load_state_dict(ckpt["model_state_dict"])
-            logging.info(f"Loaded best checkpoint from {best_ckpt_path} (val_acc={ckpt.get('val_acc')})")
+            logging.info(f"Loaded best checkpoint from {best_ckpt_path} "
+                        f"({ckpt.get('best_key')}={ckpt.get('best_value')})")
 
-        test_metric = self._test()
-        logging.info(f"TEST: loss {test_metric['test_loss']:.4f} acc {test_metric['test_acc']:.4f}")
-
-
-        # TODO: save the last weigst and biases of the model
-
-
-            
+            test_metric = self._val_test_epoch(val=False)
+            msg = f"TEST (best): loss {test_metric['test_loss']:.4f}"
+            if "test_acc" in test_metric:
+                msg += f" acc {test_metric['test_acc']:.4f}"
+            logging.info(msg)
 
         
+
+
 
 
 if __name__ == "__main__":
 
     args = parse_args()
+
     if args.data_dir is None:
-        args.data_dir = DATA_DIRS[args.data_name]
+        args.data_dir = DATA_DIRS[args.data_name][0]
+        args.out_channel = DATA_DIRS[args.data_name][1]
+
+    args.data_view =  MODEL_CONFIG[args.model_name]["data_view"]
+    args.task = MODEL_CONFIG[args.model_name]["task"]
+    args.critetion = MODEL_CONFIG[args.model_name]["criterion"]
 
     sub_dir = args.model_name+'_'+args.data_name + '_' + datetime.strftime(datetime.now(), '%m%d-%H%M%S')
     save_dir = os.path.join(args.checkpoint_dir, sub_dir)
