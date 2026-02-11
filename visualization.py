@@ -178,7 +178,7 @@ if __name__ == "__main__":
     ROOT_SEU = r"raw_data\SEU\gearbox"
     ROOT_JNU = r"raw_data\JNU\JNU-Bearing-Dataset-main"
 
-    ds = JNU(data_dir=ROOT_JNU, normlizetype="minus_one_one", rand=42, augmentype_1 = "normal", augmentype_2 = "fft")
+    ds = PU(data_dir=ROOT_PU, normlizetype="minus_one_one", rand=42, augmentype_1 = "randomcrop", augmentype_2 = "gaussian")
     # Augmentetion methods:
     # randomstrech(does not work), gaussian, normal, scale, randomcrop, fft
     train_ds, val_ds, test_ds = ds.data_prepare()

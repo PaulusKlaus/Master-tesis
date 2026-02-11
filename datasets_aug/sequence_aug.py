@@ -55,7 +55,7 @@ class Scale(object):
         return seq*scale_matrix
     
 
-# NOTE : does not work 
+
 
 class RandomStretch(object):
     "Time-streach/time-warp data augmentetion."

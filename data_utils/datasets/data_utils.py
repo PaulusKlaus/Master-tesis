@@ -9,7 +9,7 @@ def data_transforms(transform="fft", normlize_type="minus_one_one"):
     "A composed transform pipeline for dataset preprocessing / augmentation depending on whether it's training or validation."
     transforms = {
         'gaussian': Compose([
-            #Reshape(),
+            Reshape(),
             Normalize(normlize_type),
             AddGaussian(),
             Retype()
@@ -26,7 +26,7 @@ def data_transforms(transform="fft", normlize_type="minus_one_one"):
             Retype()
         ]),
         'randomstrech': Compose([
-            #Reshape(),
+            Reshape(),
             Normalize(normlize_type),
             RandomStretch(),
             Retype()

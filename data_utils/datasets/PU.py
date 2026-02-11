@@ -3,7 +3,7 @@ import pandas as pd
 from scipy.io import loadmat
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
-
+from itertools import repeat
 
 from datasets_aug.sequence_dataset import *  
 from datasets_aug.sequence_aug import *
@@ -11,22 +11,39 @@ from .data_utils import *
 
 # 1 Undamaged (healthy) bearings(6X)
 HBdata = ['K001',"K002",'K003','K004','K005','K006']
-label1=[0,1,2,3,4,5]  #The undamaged (healthy) bearings data is labeled 0-5
+#label1=[0,1,2,3,4,5]  #The undamaged (healthy) bearings data is labeled 0-5
+#label1 = [0,0,0,0,0,0]
+
 
 # 2 Artificially damaged bearings(12X)
-ADBdata = ['KA01','KA03', 'KA05','KA06','KA07','KA08','KA09','KI01','KI03','KI05','KI07','KI08']
-label2=[6,7,8,9,10,11,12,13,14,15,16,17]    # The artificially damaged bearings data is labeled 6-17
+#ADBdata = ['KA01','KA03', 'KA05','KA06','KA07','KA08','KA09','KI01','KI03','KI05','KI07','KI08']
+#label2=[6,7,8,9,10,11,12,13,14,15,16,17]    # The artificially damaged bearings data is labeled 6-17
 
 # 3 Bearings with real damages caused by accelerated lifetime tests(14x)
-RDBdata = ['KA04','KA15','KA16','KA22','KA30','KB23','KB24','KB27','KI04','KI14','KI16','KI17','KI18','KI21']
-label3=[i for i in range(18,18+len(RDBdata))]
+#RDBdata = ['KA04','KA15','KA16','KA22','KA30','KB23','KB24','KB27','KI04','KI14','KI16','KI17','KI18','KI21']
+#label3=[i for i in range(18,18+len(RDBdata))]
 
+
+ir_faults  = ['KA01','KA03','KA05','KA06','KA07','KA08','KA09','KA04','KA15','KA16','KA22','KA30']
+com_faults = ['KB23','KB24','KB27']
+or_faults  = ['KI01','KI03','KI05','KI07','KI08','KI04','KI14','KI16','KI17','KI18','KI21']
+
+samples = (
+    list(zip(HBdata,     repeat("healthy"))) +
+    list(zip(ir_faults,  repeat("inner_race"))) +
+    list(zip(com_faults, repeat("combined"))) +
+    list(zip(or_faults,  repeat("outer_race")))
+)
+
+# stable mapping
+class_to_idx = {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
+
+ALL_DATA  = [sid for sid, _ in samples]
+ALL_LABEL = [class_to_idx[c] for _, c in samples]
 #working condition
 WC = ["N15_M07_F10","N09_M07_F10","N15_M01_F10","N15_M07_F04"]
 state = WC[0] #WC[0] can be changed to different working states
 
-ALL_DATA  = HBdata + ADBdata + RDBdata
-ALL_LABEL = label1 + label2 + label3
 
 
 

@@ -444,7 +444,7 @@ class Trainer(object):
         return {"best_val_acc": best_acc, "test_acc": test_acc, "ckpt_path": out_path}
 
 
-    def train(self, pretrained =True):
+    def train(self, pretrained =True, continue_from_best_val_loss_checkopoint = False):
         """
         High level training organization
         """
@@ -514,19 +514,25 @@ class Trainer(object):
             if "test_acc" in test_metric:
                 msg += f" acc {test_metric['test_acc']:.4f}"
             logging.info(msg)
+# ------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------
 
+# --------------------Important -----------------------------------
+# Classification head lears from the best checkpont model not the latest 
         # ---- test best checkpoint ----
-        if os.path.exists(best_ckpt_path):
-            ckpt = torch.load(best_ckpt_path, map_location=self.device)
-            self.model.load_state_dict(ckpt["model_state_dict"])
-            logging.info(f"Loaded best checkpoint from {best_ckpt_path} "
-                        f"({ckpt.get('best_key')}={ckpt.get('best_value')})")
+        if continue_from_best_val_loss_checkopoint: 
 
-            test_metric = self._val_test_epoch(val=False)
-            msg = f"TEST (best): loss {test_metric['test_loss']:.4f}"
-            if "test_acc" in test_metric:
-                msg += f" acc {test_metric['test_acc']:.4f}"
-            logging.info(msg)
+            if os.path.exists(best_ckpt_path):
+                ckpt = torch.load(best_ckpt_path, map_location=self.device)
+                self.model.load_state_dict(ckpt["model_state_dict"])
+                logging.info(f"Loaded best checkpoint from {best_ckpt_path} "
+                            f"({ckpt.get('best_key')}={ckpt.get('best_value')})")
+
+                test_metric = self._val_test_epoch(val=False)
+                msg = f"TEST (best): loss {test_metric['test_loss']:.4f}"
+                if "test_acc" in test_metric:
+                    msg += f" acc {test_metric['test_acc']:.4f}"
+                logging.info(msg)
 
         # Freeze weights 
         for p in self.model.parameters():

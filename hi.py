@@ -1,14 +1,23 @@
-datasetname =["Normal Baseline Data", "12k Drive End Bearing Fault Data"]
-normalname = ["0_N_0.mat", "0_N_1.mat", "0_N_2.mat", "0_N_3.mat"]
+from itertools import repeat
 
-ir_faults = ['1_IR007_0.mat', '1_IR007_1.mat', '1_IR007_2.mat', '1_IR007_3.mat']
-b_faults = ['2_B007_0.mat', '2_B007_1.mat', '2_B007_2.mat', '2_B007_3.mat']
-or_faults = ['3_OR007_6_0.mat', '3_OR007_6_1.mat', '3_OR007_6_2.mat', '3_OR007_6_3.mat']
+HBdata = ['K001',"K002",'K003','K004','K005','K006']
 
-load_0 = ['1_IR007_0.mat', '2_B007_0.mat', '3_OR007_6_0.mat', ]
-load_1 = ['1_IR007_1.mat', '2_B007_1.mat', '3_OR007_6_1.mat', ]
-load_2 = ['1_IR007_2.mat', '2_B007_2.mat', '3_OR007_6_2.mat', ]
-load_3 = ['1_IR007_3.mat', '2_B007_3.mat', '3_OR007_6_3.mat', ]
+ir_faults  = ['KA01','KA03','KA05','KA06','KA07','KA08','KA09','KA04','KA15','KA16','KA22','KA30']
+com_faults = ['KB23','KB24','KB27']
+or_faults  = ['KI01','KI03','KI05','KI07','KI08','KI04','KI14','KI16','KI17','KI18','KI21']
 
-load_ALL = load_0 + load_1 + load_2 + load_3
-print(load_ALL)
+samples = (
+    list(zip(HBdata,     repeat("healthy"))) +
+    list(zip(ir_faults,  repeat("inner_race"))) +
+    list(zip(com_faults, repeat("combined"))) +
+    list(zip(or_faults,  repeat("outer_race")))
+)
+
+# stable mapping
+class_to_idx = {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
+
+ALL_DATA  = [sid for sid, _ in samples]
+ALL_LABEL = [class_to_idx[c] for _, c in samples]
+
+print(ALL_DATA)
+print(ALL_LABEL)
