@@ -142,9 +142,9 @@ class Trainer(object):
             latent_dim = 16 
             # Define the classifier
             self.classifier = models.cls(latent_dim = latent_dim, classes = args.out_channel )
-            self.cls_opt = optim.SGD(self.classifier.parameters(), lr=args.lr/10,
+            self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01,
                                        momentum=args.momentum, weight_decay=args.weight_decay)
-            self.cls_lr = optim.lr_scheduler.ExponentialLR(self.cls_opt, args.gamma)
+            self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = 20, eta_min=1e-05 )
             self.cls_criterion = nn.CrossEntropyLoss()
 
         self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim)
@@ -335,12 +335,12 @@ class Trainer(object):
         best_state = None
         no_improve = 0
 
-        for epoch in range (5):
+        for epoch in range (20):
             classifier.train()
             tot_loss = 0.0
             tot_correct = 0
             tot_samp = 0
-
+            # TODO: I think i should train only on a part of the trainin g loader of a part of the validation loader ???
             loop = tqdm.tqdm(self.train_loader, desc = f"Classifier train {epoch}", leave=False)
             for x1, x2, y in loop:
                 x1, x2, y = x1.to(device, non_blocking  = True), x2.to(device, non_blocking  = True), y.to(device, non_blocking= True)
@@ -351,6 +351,7 @@ class Trainer(object):
                     z1, z2, p1, p2 = encoder(x1, x2)
 
                 outputs = classifier(z1)
+
                 loss = criterion(outputs, y)
                 preds = outputs.argmax(dim=1)
                 loss.backward()
@@ -361,7 +362,9 @@ class Trainer(object):
                 tot_samp += bs
                 tot_correct += (preds == y ).sum().item()
                 loop.set_postfix(loss=f"{tot_loss/tot_samp:.4f}", acc=f"{tot_correct/tot_samp:.4f}")
-
+            
+            train_loss = tot_loss / max(1, tot_samp)
+            train_acc  = tot_correct / max(1, tot_samp)
             # --- validation -----
             classifier.eval()
             val_correct = 0 
@@ -387,7 +390,12 @@ class Trainer(object):
 
             val_acc = val_correct / max(1, val_samp)
 
-
+            logging.info(
+                f"[LP epoch {epoch:02d}] "
+                f"train_loss={train_loss:.4f} train_acc={train_acc:.4f} | "
+                f"val_loss={val_loss:.4f} val_acc={val_acc:.4f} | "
+                f"lr={lr_sch.get_last_lr()[0]:.6g}"
+            )
             if val_acc > best_acc:
                 best_acc = val_acc 
                 best_state = {
@@ -397,7 +405,7 @@ class Trainer(object):
                     "optimizer_state_dict": optimizer.state_dict(),
                     "best_val_acc": best_acc,
                 }
-            logging.info(f"current lr for classifier: {lr_sch.get_last_lr()[0]:.6g}")
+            
             lr_sch.step()
             
         # 5) Save best
@@ -507,7 +515,6 @@ class Trainer(object):
                 msg += f" acc {test_metric['test_acc']:.4f}"
             logging.info(msg)
 
-        best_ckpt_path = './checkpoint\SimSiam_PU_0211-103117\best_pt'
         # ---- test best checkpoint ----
         if os.path.exists(best_ckpt_path):
             ckpt = torch.load(best_ckpt_path, map_location=self.device)

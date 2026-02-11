@@ -15,7 +15,7 @@ from utils.train_ML import Trainer
 
 
 DATA_DIRS = {
-    "CWRU": [r"raw_data/CWRU", 3],
+    "CWRU": [r"raw_data/CWRU", 4],
     "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 16],
     "PU": [r"raw_data/PU", 32],
     "SEU": [r"raw_data/SEU/gearbox", 10],
@@ -55,34 +55,30 @@ MODEL_CONFIG = {
     },
 }
 
+max_epoc = 20
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Train')
 
     # Model parameters 
-    parser.add_argument('--model_name', 
-                        type=str, 
-                        choices = MODEL_CONFIG.keys(),
-                        default='SimSiam', 
-                        help='the name of the model'
-                        )
-    parser.add_argument('--data_view', 
-                        type=str, 
-                        default=None, 
-                        help='Dataset view with either one or two tensors'
-                        )
+    parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SimSiam', help='the name of the model')
+        # Data parameters 
+    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="CWRU", help="the name of the dataset",
+                    )
+    parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
+    parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='fft', help='Augmentation type on the target pipeline')
+    # save, load and display information
+    parser.add_argument('--max_epoch', type=int, default=max_epoc, help='max number of epoch')
+
+    parser.add_argument('--data_view', type=str, default=None, help='Dataset view with either one or two tensors')
     
     parser.add_argument('--cuda_device', type=str, default='0', help='assign device')
     parser.add_argument('--checkpoint_dir', type=str, default='./checkpoint', help='the directory to save the model')
     #parser.add_argument("--pretrained", type=bool, default=True, help='whether to load the pretrained model')
     parser.add_argument('--batch_size', type=int, default=16, help='batchsize of the training process')
     
-    # Data parameters 
-    parser.add_argument("--data_name",
-                        type=str,
-                        choices=DATA_DIRS.keys(),
-                        default="PU",
-                        help="the name of the dataset",
-                    )
+
     parser.add_argument("--data_dir",
                         type=str,
                         default=None,
@@ -97,8 +93,7 @@ def parse_args():
     parser.add_argument('--normlizetype', type=str, choices=["zero_one", "minus_one_one", 'mean_std'], default='minus_one_one', help='data normalization methods')
     parser.add_argument('--processing_type', type=str, choices=['RA', 'R_NA', 'O_A'], default='RA',
                         help='RA: random split with data augmentation, R_NA: random split without data augmentation, O_A: order split with data augmentation')
-    parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
-    parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='scale', help='Augmentation type on the target pipeline')
+
 
     # optimization information
     parser.add_argument('--opt', type=str, choices=['sgd', 'adam'], default='sgd', help='the optimizer')
@@ -110,8 +105,7 @@ def parse_args():
     parser.add_argument('--eta_min', type=float, default=0.00001, help='learning rate scheduler parameter for cos ')
 
 
-    # save, load and display information
-    parser.add_argument('--max_epoch', type=int, default=5, help='max number of epoch')
+
     args = parser.parse_args()
     return args
 
@@ -140,8 +134,10 @@ if __name__ == "__main__":
     # save the args
     for k, v in args.__dict__.items():
         logging.info("{}: {}".format(k, v))
-    trainer = Trainer(args, save_dir)
-    trainer.train()
+    for i in range (5):
+        i+=1
+        trainer = Trainer(args, save_dir)
+        trainer.train(False)
 
 
 
