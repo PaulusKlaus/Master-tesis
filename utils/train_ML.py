@@ -14,6 +14,22 @@ from datasets_aug.sequence_aug import *
 import models as models
 
 
+from collections import Counter
+
+def count_labels(loader):
+    c = Counter()
+    for batch in loader:
+        *_, y = batch
+        c.update(y.numpy().tolist())
+    return c
+
+def uniq(loader):
+    s = set()
+    for *_, y in loader:
+        s |= set(y.numpy().tolist())
+    return sorted(s)
+
+
 
 
 
@@ -86,6 +102,12 @@ class Trainer(object):
         #drop_last=True,              # keep pairs aligned for contrastive loss
         self.val_loader = DataLoader(self.val_ds, batch_size=args.batch_size, shuffle=False)
         self.test_loader = DataLoader(self.test_ds, batch_size=args.batch_size, shuffle=False)
+        print("train", count_labels(self.train_loader))
+        print("val  ", count_labels(self.val_loader))
+        print("test ", count_labels(self.test_loader))
+        print("train uniq:", uniq(self.train_loader))
+        print("val uniq:", uniq(self.val_loader))
+        print("test uniq:", uniq(self.test_loader))
 
     def _optimizer_lr_sch(self):
         args = self.args
@@ -142,10 +164,12 @@ class Trainer(object):
             latent_dim = 16 
             # Define the classifier
             self.classifier = models.cls(latent_dim = latent_dim, classes = args.out_channel )
-            self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01,
-                                       momentum=args.momentum, weight_decay=args.weight_decay)
-            self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = 20, eta_min=1e-05 )
+            #self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01, momentum=args.momentum, weight_decay=args.weight_decay)
+            #self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = 20, eta_min=1e-05 )
             self.cls_criterion = nn.CrossEntropyLoss()
+            self.cls_opt = torch.optim.Adam(self.classifier.parameters(), lr=1e-3, weight_decay=args.weight_decay)
+            self.cls_lr = None
+
 
         self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim)
 
@@ -405,8 +429,9 @@ class Trainer(object):
                     "optimizer_state_dict": optimizer.state_dict(),
                     "best_val_acc": best_acc,
                 }
-            
-            lr_sch.step()
+            if lr_sch is not None:
+
+                lr_sch.step()
             
         # 5) Save best
         out_path = os.path.join(self.save_dir, "linear_probe_best.pt")
