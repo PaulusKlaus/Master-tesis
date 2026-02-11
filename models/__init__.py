@@ -8,3 +8,4 @@ from models.ResNet_1d import resnet34 as resnet34_1d
 from models.ResNet_1d import resnet50 as resnet50_1d
 import models.AE_1d as AE_1d
 from models.MLP_1d import MLP as MLP
+from models.Classifier import Classifier as cls

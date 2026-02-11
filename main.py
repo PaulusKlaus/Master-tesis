@@ -74,13 +74,13 @@ def parse_args():
     parser.add_argument('--cuda_device', type=str, default='0', help='assign device')
     parser.add_argument('--checkpoint_dir', type=str, default='./checkpoint', help='the directory to save the model')
     #parser.add_argument("--pretrained", type=bool, default=True, help='whether to load the pretrained model')
-    parser.add_argument('--batch_size', type=int, default=64, help='batchsize of the training process')
+    parser.add_argument('--batch_size', type=int, default=16, help='batchsize of the training process')
     
     # Data parameters 
     parser.add_argument("--data_name",
                         type=str,
                         choices=DATA_DIRS.keys(),
-                        default="JNU",
+                        default="PU",
                         help="the name of the dataset",
                     )
     parser.add_argument("--data_dir",
@@ -98,7 +98,7 @@ def parse_args():
     parser.add_argument('--processing_type', type=str, choices=['RA', 'R_NA', 'O_A'], default='RA',
                         help='RA: random split with data augmentation, R_NA: random split without data augmentation, O_A: order split with data augmentation')
     parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
-    parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='gaussian', help='Augmentation type on the target pipeline')
+    parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='scale', help='Augmentation type on the target pipeline')
 
     # optimization information
     parser.add_argument('--opt', type=str, choices=['sgd', 'adam'], default='sgd', help='the optimizer')
@@ -111,7 +111,7 @@ def parse_args():
 
 
     # save, load and display information
-    parser.add_argument('--max_epoch', type=int, default=20, help='max number of epoch')
+    parser.add_argument('--max_epoch', type=int, default=5, help='max number of epoch')
     args = parser.parse_args()
     return args
 

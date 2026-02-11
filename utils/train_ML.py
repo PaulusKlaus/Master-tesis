@@ -1,8 +1,8 @@
 import logging
 import os
-import time
 import warnings
 import torch
+import torch.nn as nn
 from torch import optim
 from torch.utils.data import DataLoader
 import tqdm
@@ -65,8 +65,7 @@ class Trainer(object):
         print("Loaded weights, start_epoch and optimizer from chechpoint")
 
         return start_epoch, model, optimizer
-    
-    
+       
     def _data_loading(self):
 
         args = self.args
@@ -134,7 +133,22 @@ class Trainer(object):
         self._data_loading()
 
         # ---- Define model -----
-        self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = args.out_channel)
+        # For the self-supervised models the latent space is 16 dimentional features, 
+        # while for the traditional models output the classes 
+
+        if args.model_name in {"CNN_1d", "resnet18_1d", "MLP"}:
+            latent_dim = args.out_channel
+        else: 
+            latent_dim = 16 
+            # Define the classifier
+            self.classifier = models.cls(latent_dim = latent_dim, classes = args.out_channel )
+            self.cls_opt = optim.SGD(self.classifier.parameters(), lr=args.lr/10,
+                                       momentum=args.momentum, weight_decay=args.weight_decay)
+            self.cls_lr = optim.lr_scheduler.ExponentialLR(self.cls_opt, args.gamma)
+            self.cls_criterion = nn.CrossEntropyLoss()
+
+        self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim)
+
         if self.device_count > 1:
                             self.model = torch.nn.DataParallel(self.model)
 
@@ -228,8 +242,6 @@ class Trainer(object):
 
         return metrics
 
-
-
     def _val_test_epoch(self, val : bool = True):
         #TODO:Check this implemetnation 
         """
@@ -306,81 +318,124 @@ class Trainer(object):
         if args.task == "supervised":
             metrics[f"{prefix}_acc"] = avg_acc
         return metrics
-    
 
-    
+    def _train_classifier (self, frozen_encoder):
+        args = self.args
+        device = self.device
+        encoder = frozen_encoder.eval()
 
-    def train(self):
+        # 2) Build head  
+        classifier = self.classifier.to(device)
+        optimizer = self.cls_opt
+        lr_sch = self.cls_lr
+        criterion = self.cls_criterion
+
+        # 3) Train Loop 
+        best_acc = -math.inf
+        best_state = None
+        no_improve = 0
+
+        for epoch in range (20):
+            classifier.train()
+            tot_loss = 0.0
+            tot_correct = 0
+            tot_samp = 0
+
+            loop = tqdm.tqdm(self.train_loader, desc = f"Classifier train {epoch}", leave=False)
+            for x1, x2, y in loop:
+                x1, x2, y = x1.to(device, non_blocking  = True), x2.to(device, non_blocking  = True), y.to(device, non_blocking= True)
+
+                optimizer.zero_grad()
+
+                with torch.no_grad():
+                    z1, z2, p1, p2 = encoder(x1, x2)
+
+                outputs = classifier(p1)
+                loss = criterion(outputs, y)
+                preds = outputs.argmax(dim=1)
+                loss.backward()
+                optimizer.step()
+
+                bs = y.size(0)
+                tot_loss += loss.item()*bs
+                tot_samp += bs
+                tot_correct += (preds == y ).sum().item()
+                loop.set_postfix(loss=f"{tot_loss/tot_samp:.4f}", acc=f"{tot_correct/tot_samp:.4f}")
+
+
+
+    def train(self, pretrained =True):
         """
         High level training organization
         """
         # Set up and arguments 
         args = self.args
         self.setup()
-        
+        if pretrained == False: 
 
-        # pick selection metric based on task
-        if args.task == "supervised":
-            best_value = -math.inf
-            better = lambda current, best: current > best
-            select_key = "val_acc"
-        else:
-            best_value = math.inf
-            better = lambda current, best: current < best
-            select_key = "val_loss"
+            # pick selection metric based on task
+            if args.task == "supervised":
+                best_value = -math.inf
+                better = lambda current, best: current > best
+                select_key = "val_acc"
+            else:
+                best_value = math.inf
+                better = lambda current, best: current < best
+                select_key = "val_loss"
 
-        best_ckpt_path = os.path.join(self.save_dir, "best_pt")
+            best_ckpt_path = os.path.join(self.save_dir, "best_pt")
 
-        for epoch in range(self.start_epoch, args.max_epoch):
+            for epoch in range(self.start_epoch, args.max_epoch):
 
-            logging.info('-'*5 + 'Epoch {}/{}'.format(epoch, args.max_epoch - 1) + '-'*5)
-            
-            train_metric = self._train_epoch(epoch)
-            val_metric = self._val_test_epoch()
+                logging.info('-'*5 + 'Epoch {}/{}'.format(epoch, args.max_epoch - 1) + '-'*5)
+                
+                train_metric = self._train_epoch(epoch)
+                val_metric = self._val_test_epoch()
 
-            # Update the learning rate
-            if self.lr_scheduler is not None:
-                # self.lr_scheduler.step(epoch)
-                logging.info(f"current lr: {self.lr_scheduler.get_last_lr()[0]:.6g}")
-                self.lr_scheduler.step()
+                # Update the learning rate
+                if self.lr_scheduler is not None:
+                    # self.lr_scheduler.step(epoch)
+                    logging.info(f"current lr: {self.lr_scheduler.get_last_lr()[0]:.6g}")
+                    self.lr_scheduler.step()
 
-            # ----- save best checkpoint -----
-            current_value = val_metric[select_key]
-            if better(current_value, best_value):
-                best_value = current_value
-                torch.save(
-                    {
-                        "epoch": epoch,
-                        "model_state_dict": self.model.state_dict(),
-                        "optimizer_state_dict": self.optimizer.state_dict(),
-                        "scheduler_state_dict": None if self.lr_scheduler is None else self.lr_scheduler.state_dict(),
-                        "best_key": select_key,
-                        "best_value": best_value,
-                        "task": args.task,
-                    },
-                    best_ckpt_path,
-                )
-                logging.info(f"Saved best checkpoint to {best_ckpt_path} ({select_key}={best_value:.4f})")
+                # ----- save best checkpoint -----
+                current_value = val_metric[select_key]
+                if better(current_value, best_value):
+                    best_value = current_value
+                    torch.save(
+                        {
+                            "epoch": epoch,
+                            "model_state_dict": self.model.state_dict(),
+                            "optimizer_state_dict": self.optimizer.state_dict(),
+                            "scheduler_state_dict": None if self.lr_scheduler is None else self.lr_scheduler.state_dict(),
+                            "best_key": select_key,
+                            "best_value": best_value,
+                            "task": args.task,
+                        },
+                        best_ckpt_path,
+                    )
+                    logging.info(f"Saved best checkpoint to {best_ckpt_path} ({select_key}={best_value:.4f})")
 
 
-            # ----- logging (conditional acc) -----
-            msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f}"
-            if "acc" in train_metric:
-                msg += f" acc {train_metric['acc']:.4f}"
+                # ----- logging (conditional acc) -----
+                msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f}"
+                if "acc" in train_metric:
+                    msg += f" acc {train_metric['acc']:.4f}"
 
-            msg += f" | Val loss {val_metric['val_loss']:.4f}"
-            if "val_acc" in val_metric:
-                msg += f" acc {val_metric['val_acc']:.4f}"
+                msg += f" | Val loss {val_metric['val_loss']:.4f}"
+                if "val_acc" in val_metric:
+                    msg += f" acc {val_metric['val_acc']:.4f}"
 
+                logging.info(msg)
+
+            # ---- test at end (current model) ----
+            test_metric = self._val_test_epoch(val=False)
+            msg = f"TEST (last): loss {test_metric['test_loss']:.4f}"
+            if "test_acc" in test_metric:
+                msg += f" acc {test_metric['test_acc']:.4f}"
             logging.info(msg)
 
-         # ---- test at end (current model) ----
-        test_metric = self._val_test_epoch(val=False)
-        msg = f"TEST (last): loss {test_metric['test_loss']:.4f}"
-        if "test_acc" in test_metric:
-            msg += f" acc {test_metric['test_acc']:.4f}"
-        logging.info(msg)
-
+        best_ckpt_path = './checkpoint\SimSiam_PU_0211-122602\best_pt'
         # ---- test best checkpoint ----
         if os.path.exists(best_ckpt_path):
             ckpt = torch.load(best_ckpt_path, map_location=self.device)
@@ -393,6 +448,15 @@ class Trainer(object):
             if "test_acc" in test_metric:
                 msg += f" acc {test_metric['test_acc']:.4f}"
             logging.info(msg)
+
+        # Freeze weights 
+        for p in self.model.parameters():
+            p.requires_grad = False 
+
+        encoder = self.model.eval()
+
+        self._train_classifier(frozen_encoder = encoder)
+         
 
         
 
