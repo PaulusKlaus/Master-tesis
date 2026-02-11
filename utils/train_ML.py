@@ -335,7 +335,7 @@ class Trainer(object):
         best_state = None
         no_improve = 0
 
-        for epoch in range (20):
+        for epoch in range (5):
             classifier.train()
             tot_loss = 0.0
             tot_correct = 0
@@ -350,7 +350,7 @@ class Trainer(object):
                 with torch.no_grad():
                     z1, z2, p1, p2 = encoder(x1, x2)
 
-                outputs = classifier(p1)
+                outputs = classifier(z1)
                 loss = criterion(outputs, y)
                 preds = outputs.argmax(dim=1)
                 loss.backward()
@@ -362,6 +362,78 @@ class Trainer(object):
                 tot_correct += (preds == y ).sum().item()
                 loop.set_postfix(loss=f"{tot_loss/tot_samp:.4f}", acc=f"{tot_correct/tot_samp:.4f}")
 
+            # --- validation -----
+            classifier.eval()
+            val_correct = 0 
+            val_samp = 0
+            val_loss = 0.0 
+
+            with torch.no_grad():
+                vloop = tqdm.tqdm(self.val_loader, desc=f"LP Val {epoch}", leave=False)
+                for  x1, x2, y in vloop:
+                    x1, x2, y = x1.to(device, non_blocking  = True), x2.to(device, non_blocking  = True), y.to(device, non_blocking= True)
+
+                    z1, z2, p1, p2 = encoder(x1, x2)
+                    outputs = classifier(z1)
+                    loss = criterion(outputs, y)
+
+                    bs = y.size(0)
+                    val_loss += loss.item() * bs
+                    val_samp += bs
+                    val_correct += (outputs.argmax(1) == y).sum().item()
+
+                    vloop.set_postfix(val_loss=f"{val_loss/val_samp:.4f}",
+                                    val_acc=f"{val_correct/val_samp:.4f}")
+
+            val_acc = val_correct / max(1, val_samp)
+
+
+            if val_acc > best_acc:
+                best_acc = val_acc 
+                best_state = {
+                    "epoch": epoch,
+                    "backbone_state_dict": encoder.state_dict(),
+                    "head_state_dict": classifier.state_dict(),
+                    "optimizer_state_dict": optimizer.state_dict(),
+                    "best_val_acc": best_acc,
+                }
+            logging.info(f"current lr for classifier: {lr_sch.get_last_lr()[0]:.6g}")
+            lr_sch.step()
+            
+        # 5) Save best
+        out_path = os.path.join(self.save_dir, "linear_probe_best.pt")
+        torch.save(best_state, out_path)
+        logging.info(f"Saved linear-probe checkpoint: {out_path} (best_val_acc={best_acc:.4f})")
+
+        # 6) Test best
+        encoder.load_state_dict(best_state["backbone_state_dict"])
+        classifier.load_state_dict(best_state["head_state_dict"])
+        encoder.eval()
+        classifier.eval()
+
+        test_correct = 0
+        test_samples = 0
+        test_loss = 0.0
+
+        with torch.no_grad():
+            for x1, x2, y in self.test_loader:
+                x1 = x1.to(device, non_blocking=True)
+                x2 = x2.to(device, non_blocking=True)
+                
+                y = y.to(device, non_blocking=True)
+                z1, z2, p1, p2 = encoder(x1, x2)
+                logits = classifier(z1)
+                loss = criterion(logits, y)
+
+                bs = y.size(0)
+                test_loss += loss.item() * bs
+                test_samples += bs
+                test_correct += (logits.argmax(1) == y).sum().item()
+
+        test_acc = test_correct / max(1, test_samples)
+        logging.info(f"TEST linear-probe: loss={test_loss/test_samples:.4f} acc={test_acc:.4f}")
+
+        return {"best_val_acc": best_acc, "test_acc": test_acc, "ckpt_path": out_path}
 
 
     def train(self, pretrained =True):
@@ -435,7 +507,7 @@ class Trainer(object):
                 msg += f" acc {test_metric['test_acc']:.4f}"
             logging.info(msg)
 
-        best_ckpt_path = './checkpoint\SimSiam_PU_0211-122602\best_pt'
+        best_ckpt_path = './checkpoint\SimSiam_PU_0211-103117\best_pt'
         # ---- test best checkpoint ----
         if os.path.exists(best_ckpt_path):
             ckpt = torch.load(best_ckpt_path, map_location=self.device)
