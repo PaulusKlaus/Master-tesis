@@ -3,10 +3,7 @@ import os
 import time
 import warnings
 import torch
-from torch import nn
 from torch import optim
-import argparse
-from datetime import datetime
 from torch.utils.data import DataLoader
 import tqdm
 import math
@@ -15,113 +12,8 @@ import data_utils.datasets as datasets
 import datasets_aug.sequence_dataset as views
 from datasets_aug.sequence_aug import *
 import models as models
-from .logger import setlogger
-from .loss_SSL  import SimSiamLoss
 
 
-
-DATA_DIRS = {
-    "CWRU": [r"raw_data/CWRU", 3],
-    "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 12],
-    "PU": [r"raw_data/PU", 32],
-    "SEU": [r"raw_data/SEU/gearbox", 10],
-    "XJTU": [r"raw_data/XJTU", 10]  # TODO: Check this 
-}
-
-MODEL_CONFIG = {
-    "CNN_1d": {
-        "data_view": "OneViewDataset",
-        "task": "supervised",
-        "criterion": nn.CrossEntropyLoss,
-    },
-    "AE_1d": {
-        "data_view": "OneViewDataset",
-        "task": "reconstruction",
-        "criterion": nn.MSELoss,
-    },
-    "SimSiam": {
-        "data_view": "TwoViewDataset",
-        "task": "self_supervised",
-        "criterion": SimSiamLoss,
-    },
-    "resnet18_1d": {
-        "data_view": "OneViewDataset",
-        "task": "supervised",
-        "criterion": nn.CrossEntropyLoss,
-    },
-    "MLP": {
-        "data_view": "OneViewDataset",
-        "task": "supervised",
-        "criterion": nn.CrossEntropyLoss,
-    },
-    "SSF": {
-        "data_view": "TwoViewDataset",
-        "task": "self_supervised",
-        "criterion": SimSiamLoss,
-    },
-}
-
-def parse_args():
-    parser = argparse.ArgumentParser(description='Train')
-
-    # Model parameters 
-    parser.add_argument('--model_name', 
-                        type=str, 
-                        choices = MODEL_CONFIG.keys(),
-                        default='SimSiam', 
-                        help='the name of the model'
-                        )
-    parser.add_argument('--data_view', 
-                        type=str, 
-                        default=None, 
-                        help='Dataset view with either one or two tensors'
-                        )
-    
-    parser.add_argument('--cuda_device', type=str, default='0', help='assign device')
-    parser.add_argument('--checkpoint_dir', type=str, default='./checkpoint', help='the directory to save the model')
-    #parser.add_argument("--pretrained", type=bool, default=True, help='whether to load the pretrained model')
-    parser.add_argument('--batch_size', type=int, default=64, help='batchsize of the training process')
-    
-    # Data parameters 
-    parser.add_argument("--data_name",
-                        type=str,
-                        choices=DATA_DIRS.keys(),
-                        default="PU",
-                        help="the name of the dataset",
-                    )
-    parser.add_argument("--data_dir",
-                        type=str,
-                        default=None,
-                        help="optional override for dataset directory",
-                    )
-    parser.add_argument("--out_channel",
-                        type=int,
-                        default=None,
-                        help="output classes",
-                    )
-                    
-                    
-    parser.add_argument('--normlizetype', type=str, choices=["zero_one", "minus_one_one", 'mean_std'], default='minus_one_one', help='data normalization methods')
-    parser.add_argument('--processing_type', type=str, choices=['RA', 'R_NA', 'O_A'], default='RA',
-                        help='RA: random split with data augmentation, R_NA: random split without data augmentation, O_A: order split with data augmentation')
-    parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
-    parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='fft', help='Augmentation type on the target pipeline')
-
-    # optimization information
-    parser.add_argument('--opt', type=str, choices=['sgd', 'adam'], default='sgd', help='the optimizer')
-    parser.add_argument('--lr', type=float, default=0.01, help='the initial learning rate')
-    parser.add_argument('--momentum', type=float, default=0.9, help='the momentum for sgd')
-    parser.add_argument('--weight_decay', type=float, default=1e-5, help='the weight decay')
-    parser.add_argument('--lr_scheduler', type=str, choices=['cos', 'exp', 'stepLR', 'fix'], default='cos', help='the learning rate schedule')
-    parser.add_argument('--gamma', type=float, default=0.1, help='learning rate scheduler parameter for step and exp')
-    parser.add_argument('--eta_min', type=float, default=0.00001, help='learning rate scheduler parameter for cos ')
-
-
-    # save, load and display information
-    parser.add_argument('--max_epoch', type=int, default=20, help='max number of epoch')
-    parser.add_argument('--print_step', type=int, default=2, help='the interval of log training information')
-    args = parser.parse_args()
-    return args
 
 
 
@@ -175,26 +67,6 @@ class Trainer(object):
         return start_epoch, model, optimizer
     
     
-    def _build_criterion(self, model_name: str) -> nn.Module:
-        # supervised classifiers
-        if model_name in {"CNN_1d", "resnet18_1d", "MLP"}:
-            return nn.CrossEntropyLoss()
-
-        # self-supervised
-        if model_name in {"SimSiam", "SSF"}:
-            return SimSiamLoss()
-
-        # example: autoencoder reconstruction
-        if model_name == "AE_1d":
-            return nn.MSELoss()
-
-        # if SSF has its own loss, put it here
-        if model_name == "SSF":
-            # TODO: replace with actual SSF loss
-            return nn.CrossEntropyLoss()
-
-        raise ValueError(f"Unknown model_name for criterion: {model_name}")
-    
     def _data_loading(self):
 
         args = self.args
@@ -217,6 +89,7 @@ class Trainer(object):
         self.test_loader = DataLoader(self.test_ds, batch_size=args.batch_size, shuffle=False)
 
     def _optimizer_lr_sch(self):
+        args = self.args
          # ---- Define Optimizer -----
         if args.opt == 'sgd':
             self.optimizer = optim.SGD(self.model.parameters(), lr=args.lr,
@@ -264,6 +137,8 @@ class Trainer(object):
         self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = args.out_channel)
         if self.device_count > 1:
                             self.model = torch.nn.DataParallel(self.model)
+
+        
         self._optimizer_lr_sch()
         
         # ---- Load checkpoint ------
@@ -285,9 +160,6 @@ class Trainer(object):
         epoch_loss = 0.0
         epoch_acc = 0
         t_samples = 0
-
-        step_start = time.time()
-        step = 0
 
         train_loader = self.train_loader
         device = self.device
@@ -524,31 +396,3 @@ class Trainer(object):
 
         
 
-
-
-
-if __name__ == "__main__":
-
-    args = parse_args()
-
-    if args.data_dir is None:
-        args.data_dir = DATA_DIRS[args.data_name][0]
-        args.out_channel = DATA_DIRS[args.data_name][1]
-
-    args.data_view =  MODEL_CONFIG[args.model_name]["data_view"]
-    args.task = MODEL_CONFIG[args.model_name]["task"]
-    args.critetion = MODEL_CONFIG[args.model_name]["criterion"]
-
-    sub_dir = args.model_name+'_'+args.data_name + '_' + datetime.strftime(datetime.now(), '%m%d-%H%M%S')
-    save_dir = os.path.join(args.checkpoint_dir, sub_dir)
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-
-    # set the logger
-    setlogger(os.path.join(save_dir, 'training.log'))
-
-    # save the args
-    for k, v in args.__dict__.items():
-        logging.info("{}: {}".format(k, v))
-    trainer = Trainer(args, save_dir)
-    trainer.train()

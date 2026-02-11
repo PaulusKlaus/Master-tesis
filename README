@@ -7,3 +7,13 @@ Hi, this is my master tesis.
 
 
 - 
+
+
+
+Main things to do in code: 
+- Implement earcly stopping 
+- implement collapse monitoring 
+- implement classification head 
+- implement anomaly detection head 
+- show an overview of the models parameters
+- plot training/validation loss 
