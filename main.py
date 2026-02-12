@@ -16,7 +16,7 @@ from utils.train_ML import Trainer
 
 DATA_DIRS = {
     "CWRU": [r"raw_data/CWRU", 4],
-    "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 16],
+    "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 12],
     "PU": [r"raw_data/PU", 4],
     "SEU": [r"raw_data/SEU/gearbox", 10],
     "XJTU": [r"raw_data/XJTU", 10]  # TODO: Check this 
@@ -60,19 +60,19 @@ MODEL_CONFIG = {
     },
 }
 
-max_epoc = 10
+max_epoc = 20
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train')
 
     # Model parameters 
-    parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SimSiam', help='the name of the model')
+    parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SimSiamResNet', help='the name of the model')
         # Data parameters 
     parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="PU", help="the name of the dataset",
                     )
     parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
-    parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='gaussian', help='Augmentation type on the target pipeline')
+    parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='randomcrop', help='Augmentation type on the target pipeline')
     # save, load and display information
     parser.add_argument('--max_epoch', type=int, default=max_epoc, help='max number of epoch')
 
@@ -81,7 +81,7 @@ def parse_args():
     parser.add_argument('--cuda_device', type=str, default='0', help='assign device')
     parser.add_argument('--checkpoint_dir', type=str, default='./checkpoint', help='the directory to save the model')
     #parser.add_argument("--pretrained", type=bool, default=True, help='whether to load the pretrained model')
-    parser.add_argument('--batch_size', type=int, default=16, help='batchsize of the training process')
+    parser.add_argument('--batch_size', type=int, default=64, help='batchsize of the training process')
     
 
     parser.add_argument("--data_dir",
@@ -142,7 +142,7 @@ if __name__ == "__main__":
     for i in range (5):
         i+=1
         trainer = Trainer(args, save_dir)
-        trainer.train(False)
+        trainer.train(True)
 
 
 

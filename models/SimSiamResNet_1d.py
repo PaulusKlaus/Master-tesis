@@ -30,7 +30,7 @@ class SimSiamResNet18_1d(nn.Module):
         )
 
     def forward(self, x1, x2):
-        f = self.backbone.forward_features
+        f = self.backbone.forward
 
         h = self.projector
         p = self.predictor

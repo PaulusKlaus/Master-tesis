@@ -359,7 +359,7 @@ class Trainer(object):
         best_state = None
         no_improve = 0
 
-        for epoch in range (20):
+        for epoch in range (100):
             classifier.train()
             tot_loss = 0.0
             tot_correct = 0
@@ -418,7 +418,7 @@ class Trainer(object):
                 f"[LP epoch {epoch:02d}] "
                 f"train_loss={train_loss:.4f} train_acc={train_acc:.4f} | "
                 f"val_loss={val_loss:.4f} val_acc={val_acc:.4f} | "
-                f"lr={lr_sch.get_last_lr()[0]:.6g}"
+                #f"lr={lr_sch.get_last_lr()[0]:.6g}"
             )
             if val_acc > best_acc:
                 best_acc = val_acc 
@@ -476,6 +476,7 @@ class Trainer(object):
         # Set up and arguments 
         args = self.args
         self.setup()
+
         if pretrained == False: 
 
             # pick selection metric based on task
@@ -541,7 +542,11 @@ class Trainer(object):
             logging.info(msg)
 # ------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
-
+        best_ckpt_path = './checkpoint/SimSiamResNet_PU_0211-164930/best_pt'
+        ckpt = torch.load(best_ckpt_path, map_location=self.device)
+        self.model.load_state_dict(ckpt["model_state_dict"])
+        logging.info(f"Loaded best checkpoint from {best_ckpt_path} " 
+                     f"({ckpt.get('best_key')}={ckpt.get('best_value')})")
 # --------------------Important -----------------------------------
 # Classification head lears from the best checkpont model not the latest 
         # ---- test best checkpoint ----
@@ -560,6 +565,7 @@ class Trainer(object):
                 logging.info(msg)
 
         # Freeze weights 
+
         for p in self.model.parameters():
             p.requires_grad = False 
 

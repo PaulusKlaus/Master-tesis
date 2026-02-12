@@ -165,7 +165,7 @@ class ResNet(nn.Module):
         # Avarage pooling and Flattening 
         x = self.avgpool(x)
         x = self.flatt(x)
-        x = self.fc(x)
+        z = self.fc(x)
 
         return x
 
