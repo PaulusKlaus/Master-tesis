@@ -73,6 +73,23 @@ class PU(object):
             d, l = self._data_load(path, name=name, label=label)
             data += d
             lab += l
+            name = state + "_" + bearing + "_2"
+            path = os.path.join(self.data_dir, bearing, name + ".mat")        
+            d, l = self._data_load(path, name=name, label=label)
+            data += d
+            lab += l
+            name = state + "_" + bearing + "_1"
+            path = os.path.join(self.data_dir, bearing, name + ".mat")        
+            d, l = self._data_load(path, name=name, label=label)
+            data += d
+            lab += l
+            name = state + "_" + bearing + "_3"
+            path = os.path.join(self.data_dir, bearing, name + ".mat")        
+            d, l = self._data_load(path, name=name, label=label)
+            data += d
+            lab += l
+
+            
 
         return [data,lab]
 

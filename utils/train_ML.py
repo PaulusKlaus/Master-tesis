@@ -542,10 +542,11 @@ class Trainer(object):
             logging.info(msg)
 # ------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
-        best_ckpt_path = './checkpoint/SimSiamResNet_PU_0211-164930/best_pt'
-        ckpt = torch.load(best_ckpt_path, map_location=self.device)
-        self.model.load_state_dict(ckpt["model_state_dict"])
-        logging.info(f"Loaded best checkpoint from {best_ckpt_path} " 
+        else: 
+            best_ckpt_path = './checkpoint/SimSiamResNet_PU_0211-164930/best_pt'
+            ckpt = torch.load(best_ckpt_path, map_location=self.device)
+            self.model.load_state_dict(ckpt["model_state_dict"])
+            logging.info(f"Loaded best checkpoint from {best_ckpt_path} " 
                      f"({ckpt.get('best_key')}={ckpt.get('best_value')})")
 # --------------------Important -----------------------------------
 # Classification head lears from the best checkpont model not the latest 
