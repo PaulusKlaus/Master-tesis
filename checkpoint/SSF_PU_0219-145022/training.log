@@ -155,3 +155,57 @@
 02-19 15:03:43 Label counts val:   Counter({1: 1817, 3: 1654, 0: 900, 2: 451})
 02-19 15:03:44 Label counts test:  Counter({1: 1818, 3: 1654, 0: 901, 2: 450})
 02-19 15:03:46 -----Epoch 0/19-----
+02-19 15:04:03 current lr: 0.01
+02-19 15:04:03 Saved best checkpoint to ./checkpoint\SSF_PU_0219-145022\best_pt (val_loss=-0.9896)
+02-19 15:04:03 Epoch 000 Train loss -0.9571 | Val loss -0.9896
+02-19 15:04:03 -----Epoch 1/19-----
+02-19 15:04:21 current lr: 0.0099385
+02-19 15:04:21 Saved best checkpoint to ./checkpoint\SSF_PU_0219-145022\best_pt (val_loss=-0.9910)
+02-19 15:04:21 Epoch 001 Train loss -0.9890 | Val loss -0.9910
+02-19 15:04:21 -----Epoch 2/19-----
+02-19 15:04:39 current lr: 0.00975553
+02-19 15:04:39 Saved best checkpoint to ./checkpoint\SSF_PU_0219-145022\best_pt (val_loss=-0.9957)
+02-19 15:04:39 Epoch 002 Train loss -0.9938 | Val loss -0.9957
+02-19 15:04:39 -----Epoch 3/19-----
+02-19 15:04:56 current lr: 0.00945558
+02-19 15:04:56 Saved best checkpoint to ./checkpoint\SSF_PU_0219-145022\best_pt (val_loss=-0.9965)
+02-19 15:04:56 Epoch 003 Train loss -0.9953 | Val loss -0.9965
+02-19 15:04:56 -----Epoch 4/19-----
+02-19 15:05:13 current lr: 0.00904604
+02-19 15:05:13 Saved best checkpoint to ./checkpoint\SSF_PU_0219-145022\best_pt (val_loss=-0.9969)
+02-19 15:05:13 Epoch 004 Train loss -0.9958 | Val loss -0.9969
+02-19 15:05:13 -----Epoch 5/19-----
+02-19 15:05:31 current lr: 0.008537
+02-19 15:05:31 Saved best checkpoint to ./checkpoint\SSF_PU_0219-145022\best_pt (val_loss=-0.9969)
+02-19 15:05:31 Epoch 005 Train loss -0.9960 | Val loss -0.9969
+02-19 15:05:31 -----Epoch 6/19-----
+02-19 15:05:49 current lr: 0.00794099
+02-19 15:05:49 Epoch 006 Train loss -0.9960 | Val loss -0.9968
+02-19 15:05:49 -----Epoch 7/19-----
+02-19 15:06:06 current lr: 0.00727268
+02-19 15:06:06 Epoch 007 Train loss -0.9959 | Val loss -0.9966
+02-19 15:06:06 -----Epoch 8/19-----
+02-19 15:06:24 current lr: 0.00654854
+02-19 15:06:24 Epoch 008 Train loss -0.9957 | Val loss -0.9964
+02-19 15:06:24 -----Epoch 9/19-----
+02-19 15:06:40 current lr: 0.00578639
+02-19 15:06:40 Epoch 009 Train loss -0.9955 | Val loss -0.9961
+02-19 15:06:40 -----Epoch 10/19-----
+02-19 15:06:58 current lr: 0.005005
+02-19 15:06:58 Epoch 010 Train loss -0.9954 | Val loss -0.9960
+02-19 15:06:58 -----Epoch 11/19-----
+02-19 15:07:14 current lr: 0.00422361
+02-19 15:07:14 Epoch 011 Train loss -0.9952 | Val loss -0.9959
+02-19 15:07:14 -----Epoch 12/19-----
+02-19 15:07:33 current lr: 0.00346146
+02-19 15:07:33 Epoch 012 Train loss -0.9951 | Val loss -0.9958
+02-19 15:07:33 -----Epoch 13/19-----
+02-19 15:07:50 current lr: 0.00273732
+02-19 15:07:50 Epoch 013 Train loss -0.9950 | Val loss -0.9957
+02-19 15:07:50 -----Epoch 14/19-----
+02-19 15:08:08 current lr: 0.00206901
+02-19 15:08:08 Epoch 014 Train loss -0.9949 | Val loss -0.9957
+02-19 15:08:08 -----Epoch 15/19-----
+02-19 15:08:25 current lr: 0.001473
+02-19 15:08:25 Epoch 015 Train loss -0.9949 | Val loss -0.9957
+02-19 15:08:25 -----Epoch 16/19-----
