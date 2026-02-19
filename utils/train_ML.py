@@ -168,10 +168,10 @@ class Trainer(object):
             latent_dim = 16 
             # Define the classifier
             self.classifier = models.cls(latent_dim = latent_dim, classes = args.out_channel )
-            self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01, momentum=args.momentum, weight_decay=args.weight_decay)
-            self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = 60, eta_min=1e-05 )
+            #self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01, momentum=args.momentum, weight_decay=args.weight_decay)
+            #self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = args.classifier_epoch, eta_min=1e-05 )
             self.cls_criterion = nn.CrossEntropyLoss()
-            #self.cls_opt = torch.optim.Adam(self.classifier.parameters(), lr=1e-3, weight_decay=args.weight_decay)
+            self.cls_opt = torch.optim.Adam(self.classifier.parameters(), lr=1e-3, weight_decay=args.weight_decay)
             self.cls_lr = None
 
 
@@ -363,7 +363,7 @@ class Trainer(object):
         best_state = None
         no_improve = 0
 
-        for epoch in range (60):
+        for epoch in range (args.classifier_epoch):
             classifier.train()
             tot_loss = 0.0
             tot_correct = 0

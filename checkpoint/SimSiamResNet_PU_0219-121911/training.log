@@ -1,0 +1,54 @@
+adam optimizr for classifier 
+
+
+02-19 12:19:11 model_name: SimSiamResNet
+02-19 12:19:11 data_name: PU
+02-19 12:19:11 aug_1: normal
+02-19 12:19:11 aug_2: randomcrop
+02-19 12:19:11 max_epoch: 20
+02-19 12:19:11 classifier_epoch: 50
+02-19 12:19:11 data_view: TwoViewDataset
+02-19 12:19:11 cuda_device: 0
+02-19 12:19:11 checkpoint_dir: ./checkpoint
+02-19 12:19:11 batch_size: 32
+02-19 12:19:11 data_dir: raw_data/PU
+02-19 12:19:11 out_channel: 4
+02-19 12:19:11 normlizetype: minus_one_one
+02-19 12:19:11 processing_type: RA
+02-19 12:19:11 opt: sgd
+02-19 12:19:11 lr: 0.01
+02-19 12:19:11 momentum: 0.9
+02-19 12:19:11 weight_decay: 1e-05
+02-19 12:19:11 lr_scheduler: cos
+02-19 12:19:11 gamma: 0.1
+02-19 12:19:11 eta_min: 1e-05
+02-19 12:19:11 task: self_supervised
+02-19 12:19:11 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+02-19 12:19:11 using 1 gpus
+02-19 12:19:11 Dataset class: <class 'data_utils.datasets.PU.PU'>
+02-19 12:19:12 Split sizes: train=22502 val=4822 test=4823
+02-19 12:19:13 Label counts train: Counter({1: 8481, 3: 7718, 0: 4201, 2: 2102})
+02-19 12:19:14 Label counts val:   Counter({1: 1817, 3: 1654, 0: 900, 2: 451})
+02-19 12:19:14 Label counts test:  Counter({1: 1818, 3: 1654, 0: 901, 2: 450})
+02-19 12:19:18 -----Epoch 0/19-----
+02-19 12:19:47 current lr: 0.01
+02-19 12:19:47 Saved best checkpoint to ./checkpoint\SimSiamResNet_PU_0219-121911\best_pt (val_loss=-0.9728)
+02-19 12:19:47 Epoch 000 Train loss -0.9185 | Val loss -0.9728
+02-19 12:19:47 -----Epoch 1/19-----
+02-19 12:20:15 current lr: 0.0099385
+02-19 12:20:15 Saved best checkpoint to ./checkpoint\SimSiamResNet_PU_0219-121911\best_pt (val_loss=-0.9879)
+02-19 12:20:15 Epoch 001 Train loss -0.9670 | Val loss -0.9879
+02-19 12:20:15 -----Epoch 2/19-----
+02-19 12:20:41 current lr: 0.00975553
+02-19 12:20:41 Epoch 002 Train loss -0.9891 | Val loss -0.9836
+02-19 12:20:41 -----Epoch 3/19-----
+02-19 12:21:10 current lr: 0.00945558
+02-19 12:21:10 Epoch 003 Train loss -0.9896 | Val loss -0.9838
+02-19 12:21:10 -----Epoch 4/19-----
+02-19 12:21:38 current lr: 0.00904604
+02-19 12:21:38 Saved best checkpoint to ./checkpoint\SimSiamResNet_PU_0219-121911\best_pt (val_loss=-0.9936)
+02-19 12:21:38 Epoch 004 Train loss -0.9938 | Val loss -0.9936
+02-19 12:21:38 -----Epoch 5/19-----
+02-19 12:22:09 current lr: 0.008537
+02-19 12:22:09 Epoch 005 Train loss -0.9961 | Val loss -0.9905
+02-19 12:22:09 -----Epoch 6/19-----

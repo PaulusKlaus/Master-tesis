@@ -75,6 +75,7 @@ def parse_args():
     parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='randomcrop', help='Augmentation type on the target pipeline')
     # save, load and display information
     parser.add_argument('--max_epoch', type=int, default=max_epoc, help='max number of epoch')
+    parser.add_argument('--classifier_epoch', type=int, default=50, help='max number of epoch')
 
     parser.add_argument('--data_view', type=str, default=None, help='Dataset view with either one or two tensors')
     
@@ -139,7 +140,7 @@ if __name__ == "__main__":
     # save the args
     for k, v in args.__dict__.items():
         logging.info("{}: {}".format(k, v))
-    for i in range (5):
+    for i in range (2):
         i+=1
         trainer = Trainer(args, save_dir)
         trainer.train(pretrained=False)
