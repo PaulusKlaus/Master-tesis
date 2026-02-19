@@ -1,0 +1,70 @@
+02-19 10:56:01 model_name: SimSiamResNet
+02-19 10:56:01 data_name: PU
+02-19 10:56:01 aug_1: normal
+02-19 10:56:01 aug_2: randomcrop
+02-19 10:56:01 max_epoch: 20
+02-19 10:56:01 data_view: TwoViewDataset
+02-19 10:56:01 cuda_device: 0
+02-19 10:56:01 checkpoint_dir: ./checkpoint
+02-19 10:56:01 batch_size: 32
+02-19 10:56:01 data_dir: raw_data/PU
+02-19 10:56:01 out_channel: 4
+02-19 10:56:01 normlizetype: minus_one_one
+02-19 10:56:01 processing_type: RA
+02-19 10:56:01 opt: sgd
+02-19 10:56:01 lr: 0.01
+02-19 10:56:01 momentum: 0.9
+02-19 10:56:01 weight_decay: 1e-05
+02-19 10:56:01 lr_scheduler: cos
+02-19 10:56:01 gamma: 0.1
+02-19 10:56:01 eta_min: 1e-05
+02-19 10:56:01 task: self_supervised
+02-19 10:56:01 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+02-19 10:56:01 using 1 gpus
+02-19 10:56:01 Dataset class: <class 'data_utils.datasets.PU.PU'>
+02-19 10:56:02 Split sizes: train=22502 val=4822 test=4823
+02-19 10:56:03 Label counts train: Counter({1: 8481, 3: 7718, 0: 4201, 2: 2102})
+02-19 10:56:04 Label counts val:   Counter({1: 1817, 3: 1654, 0: 900, 2: 451})
+02-19 10:56:04 Label counts test:  Counter({1: 1818, 3: 1654, 0: 901, 2: 450})
+02-19 10:56:08 -----Epoch 0/19-----
+02-19 10:56:36 current lr: 0.01
+02-19 10:56:36 Saved best checkpoint to ./checkpoint\SimSiamResNet_PU_0219-105601\best_pt (val_loss=-0.9461)
+02-19 10:56:36 Epoch 000 Train loss -0.9214 | Val loss -0.9461
+02-19 10:56:36 -----Epoch 1/19-----
+02-19 10:57:01 current lr: 0.0099385
+02-19 10:57:01 Saved best checkpoint to ./checkpoint\SimSiamResNet_PU_0219-105601\best_pt (val_loss=-0.9916)
+02-19 10:57:01 Epoch 001 Train loss -0.9778 | Val loss -0.9916
+02-19 10:57:01 -----Epoch 2/19-----
+02-19 10:57:28 current lr: 0.00975553
+02-19 10:57:28 Epoch 002 Train loss -0.9900 | Val loss -0.9894
+02-19 10:57:28 -----Epoch 3/19-----
+02-19 10:57:59 current lr: 0.00945558
+02-19 10:57:59 Epoch 003 Train loss -0.9910 | Val loss -0.9855
+02-19 10:57:59 -----Epoch 4/19-----
+02-19 10:58:32 current lr: 0.00904604
+02-19 10:58:32 Saved best checkpoint to ./checkpoint\SimSiamResNet_PU_0219-105601\best_pt (val_loss=-0.9917)
+02-19 10:58:32 Epoch 004 Train loss -0.9936 | Val loss -0.9917
+02-19 10:58:32 -----Epoch 5/19-----
+02-19 10:59:00 current lr: 0.008537
+02-19 10:59:00 Saved best checkpoint to ./checkpoint\SimSiamResNet_PU_0219-105601\best_pt (val_loss=-0.9941)
+02-19 10:59:00 Epoch 005 Train loss -0.9949 | Val loss -0.9941
+02-19 10:59:00 -----Epoch 6/19-----
+02-19 10:59:33 current lr: 0.00794099
+02-19 10:59:33 Saved best checkpoint to ./checkpoint\SimSiamResNet_PU_0219-105601\best_pt (val_loss=-0.9957)
+02-19 10:59:33 Epoch 006 Train loss -0.9959 | Val loss -0.9957
+02-19 10:59:33 -----Epoch 7/19-----
+02-19 11:00:02 current lr: 0.00727268
+02-19 11:00:02 Epoch 007 Train loss -0.9964 | Val loss -0.9943
+02-19 11:00:02 -----Epoch 8/19-----
+02-19 11:00:31 current lr: 0.00654854
+02-19 11:00:31 Epoch 008 Train loss -0.9952 | Val loss -0.9943
+02-19 11:00:31 -----Epoch 9/19-----
+02-19 11:01:01 current lr: 0.00578639
+02-19 11:01:01 Epoch 009 Train loss -0.9948 | Val loss -0.9938
+02-19 11:01:01 -----Epoch 10/19-----
+02-19 11:01:34 current lr: 0.005005
+02-19 11:01:34 Epoch 010 Train loss -0.9957 | Val loss -0.9951
+02-19 11:01:34 -----Epoch 11/19-----
+02-19 11:02:06 current lr: 0.00422361
+02-19 11:02:06 Epoch 011 Train loss -0.9965 | Val loss -0.9938
+02-19 11:02:06 -----Epoch 12/19-----

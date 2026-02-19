@@ -91,6 +91,7 @@ class Trainer(object):
         dataset_view = getattr(views, args.data_view) # OneViewDataset, TwoViewDataset
 
         print("Dataset: ", Dataset)
+        logging.info("Dataset class: %s", Dataset)
         self.train_ds, self.val_ds, self.test_ds = Dataset(data_dir = args.data_dir, 
                                                                                       normlizetype= args.normlizetype,
                                                                                       augmentype_1 = args.aug_1,
@@ -102,9 +103,12 @@ class Trainer(object):
         #drop_last=True,              # keep pairs aligned for contrastive loss
         self.val_loader = DataLoader(self.val_ds, batch_size=args.batch_size, shuffle=False)
         self.test_loader = DataLoader(self.test_ds, batch_size=args.batch_size, shuffle=False)
-        print("train", count_labels(self.train_loader))
-        print("val  ", count_labels(self.val_loader))
-        print("test ", count_labels(self.test_loader))
+        logging.info("Split sizes: train=%d val=%d test=%d",
+                    len(self.train_ds), len(self.val_ds), len(self.test_ds))
+
+        logging.info("Label counts train: %s", count_labels(self.train_loader))
+        logging.info("Label counts val:   %s", count_labels(self.val_loader))
+        logging.info("Label counts test:  %s", count_labels(self.test_loader))
         print("train uniq:", uniq(self.train_loader))
         print("val uniq:", uniq(self.val_loader))
         print("test uniq:", uniq(self.test_loader))
@@ -164,10 +168,10 @@ class Trainer(object):
             latent_dim = 16 
             # Define the classifier
             self.classifier = models.cls(latent_dim = latent_dim, classes = args.out_channel )
-            #self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01, momentum=args.momentum, weight_decay=args.weight_decay)
-            #self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = 20, eta_min=1e-05 )
+            self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01, momentum=args.momentum, weight_decay=args.weight_decay)
+            self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = 60, eta_min=1e-05 )
             self.cls_criterion = nn.CrossEntropyLoss()
-            self.cls_opt = torch.optim.Adam(self.classifier.parameters(), lr=1e-3, weight_decay=args.weight_decay)
+            #self.cls_opt = torch.optim.Adam(self.classifier.parameters(), lr=1e-3, weight_decay=args.weight_decay)
             self.cls_lr = None
 
 
@@ -359,7 +363,7 @@ class Trainer(object):
         best_state = None
         no_improve = 0
 
-        for epoch in range (100):
+        for epoch in range (60):
             classifier.train()
             tot_loss = 0.0
             tot_correct = 0
