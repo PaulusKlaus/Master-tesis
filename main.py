@@ -67,7 +67,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Train')
 
     # Model parameters 
-    parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SimSiamResNet', help='the name of the model')
+    parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SSF', help='the name of the model')
         # Data parameters 
     parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="PU", help="the name of the dataset",
                     )

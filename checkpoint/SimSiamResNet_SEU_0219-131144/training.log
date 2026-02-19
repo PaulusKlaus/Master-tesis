@@ -1,0 +1,281 @@
+02-19 13:11:44 model_name: SimSiamResNet
+02-19 13:11:44 data_name: SEU
+02-19 13:11:44 aug_1: normal
+02-19 13:11:44 aug_2: randomcrop
+02-19 13:11:44 max_epoch: 20
+02-19 13:11:44 classifier_epoch: 50
+02-19 13:11:44 data_view: TwoViewDataset
+02-19 13:11:44 cuda_device: 0
+02-19 13:11:44 checkpoint_dir: ./checkpoint
+02-19 13:11:44 batch_size: 32
+02-19 13:11:44 data_dir: raw_data/SEU/gearbox
+02-19 13:11:44 out_channel: 10
+02-19 13:11:44 normlizetype: minus_one_one
+02-19 13:11:44 processing_type: RA
+02-19 13:11:44 opt: sgd
+02-19 13:11:44 lr: 0.01
+02-19 13:11:44 momentum: 0.9
+02-19 13:11:44 weight_decay: 1e-05
+02-19 13:11:44 lr_scheduler: cos
+02-19 13:11:44 gamma: 0.1
+02-19 13:11:44 eta_min: 1e-05
+02-19 13:11:44 task: self_supervised
+02-19 13:11:44 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+02-19 13:11:44 using 1 gpus
+02-19 13:11:44 Dataset class: <class 'data_utils.datasets.SEU.SEU'>
+02-19 13:12:57 Split sizes: train=714 val=153 test=153
+02-19 13:12:57 Label counts train: Counter({0: 72, 5: 72, 8: 72, 1: 72, 6: 71, 2: 71, 9: 71, 3: 71, 7: 71, 4: 71})
+02-19 13:12:57 Label counts val:   Counter({2: 16, 9: 16, 3: 16, 6: 15, 4: 15, 0: 15, 8: 15, 7: 15, 5: 15, 1: 15})
+02-19 13:12:57 Label counts test:  Counter({6: 16, 4: 16, 7: 16, 8: 15, 3: 15, 5: 15, 9: 15, 0: 15, 1: 15, 2: 15})
+02-19 13:12:58 -----Epoch 0/19-----
+02-19 13:13:00 current lr: 0.01
+02-19 13:13:00 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.6528)
+02-19 13:13:00 Epoch 000 Train loss -0.2448 | Val loss -0.6528
+02-19 13:13:00 -----Epoch 1/19-----
+02-19 13:13:01 current lr: 0.0099385
+02-19 13:13:01 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.7155)
+02-19 13:13:01 Epoch 001 Train loss -0.6433 | Val loss -0.7155
+02-19 13:13:01 -----Epoch 2/19-----
+02-19 13:13:02 current lr: 0.00975553
+02-19 13:13:02 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.8615)
+02-19 13:13:02 Epoch 002 Train loss -0.8392 | Val loss -0.8615
+02-19 13:13:02 -----Epoch 3/19-----
+02-19 13:13:03 current lr: 0.00945558
+02-19 13:13:03 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9226)
+02-19 13:13:03 Epoch 003 Train loss -0.9069 | Val loss -0.9226
+02-19 13:13:03 -----Epoch 4/19-----
+02-19 13:13:04 current lr: 0.00904604
+02-19 13:13:04 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9446)
+02-19 13:13:04 Epoch 004 Train loss -0.9453 | Val loss -0.9446
+02-19 13:13:04 -----Epoch 5/19-----
+02-19 13:13:05 current lr: 0.008537
+02-19 13:13:05 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9564)
+02-19 13:13:05 Epoch 005 Train loss -0.9574 | Val loss -0.9564
+02-19 13:13:05 -----Epoch 6/19-----
+02-19 13:13:06 current lr: 0.00794099
+02-19 13:13:06 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9604)
+02-19 13:13:06 Epoch 006 Train loss -0.9630 | Val loss -0.9604
+02-19 13:13:06 -----Epoch 7/19-----
+02-19 13:13:07 current lr: 0.00727268
+02-19 13:13:07 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9612)
+02-19 13:13:07 Epoch 007 Train loss -0.9650 | Val loss -0.9612
+02-19 13:13:07 -----Epoch 8/19-----
+02-19 13:13:08 current lr: 0.00654854
+02-19 13:13:08 Epoch 008 Train loss -0.9623 | Val loss -0.9601
+02-19 13:13:08 -----Epoch 9/19-----
+02-19 13:13:09 current lr: 0.00578639
+02-19 13:13:09 Epoch 009 Train loss -0.9583 | Val loss -0.9572
+02-19 13:13:09 -----Epoch 10/19-----
+02-19 13:13:10 current lr: 0.005005
+02-19 13:13:10 Epoch 010 Train loss -0.9562 | Val loss -0.9590
+02-19 13:13:10 -----Epoch 11/19-----
+02-19 13:13:11 current lr: 0.00422361
+02-19 13:13:11 Epoch 011 Train loss -0.9588 | Val loss -0.9600
+02-19 13:13:11 -----Epoch 12/19-----
+02-19 13:13:12 current lr: 0.00346146
+02-19 13:13:12 Epoch 012 Train loss -0.9600 | Val loss -0.9597
+02-19 13:13:12 -----Epoch 13/19-----
+02-19 13:13:13 current lr: 0.00273732
+02-19 13:13:13 Epoch 013 Train loss -0.9588 | Val loss -0.9597
+02-19 13:13:13 -----Epoch 14/19-----
+02-19 13:13:14 current lr: 0.00206901
+02-19 13:13:14 Epoch 014 Train loss -0.9581 | Val loss -0.9574
+02-19 13:13:14 -----Epoch 15/19-----
+02-19 13:13:15 current lr: 0.001473
+02-19 13:13:15 Epoch 015 Train loss -0.9563 | Val loss -0.9556
+02-19 13:13:15 -----Epoch 16/19-----
+02-19 13:13:16 current lr: 0.00096396
+02-19 13:13:16 Epoch 016 Train loss -0.9556 | Val loss -0.9543
+02-19 13:13:16 -----Epoch 17/19-----
+02-19 13:13:17 current lr: 0.000554422
+02-19 13:13:17 Epoch 017 Train loss -0.9548 | Val loss -0.9534
+02-19 13:13:17 -----Epoch 18/19-----
+02-19 13:13:18 current lr: 0.000254473
+02-19 13:13:18 Epoch 018 Train loss -0.9543 | Val loss -0.9529
+02-19 13:13:18 -----Epoch 19/19-----
+02-19 13:13:19 current lr: 7.14967e-05
+02-19 13:13:19 Epoch 019 Train loss -0.9537 | Val loss -0.9530
+02-19 13:13:19 TEST (last): loss -0.9572
+02-19 13:13:20 [LP epoch 00] train_loss=2.3565 train_acc=0.0938 | val_loss=352.6770 val_acc=0.1634 | 
+02-19 13:13:20 [LP epoch 01] train_loss=2.3260 train_acc=0.1064 | val_loss=349.5923 val_acc=0.1699 | 
+02-19 13:13:21 [LP epoch 02] train_loss=2.3016 train_acc=0.1218 | val_loss=346.2745 val_acc=0.1569 | 
+02-19 13:13:21 [LP epoch 03] train_loss=2.2789 train_acc=0.1345 | val_loss=343.3868 val_acc=0.1765 | 
+02-19 13:13:22 [LP epoch 04] train_loss=2.2594 train_acc=0.1513 | val_loss=340.6234 val_acc=0.2222 | 
+02-19 13:13:22 [LP epoch 05] train_loss=2.2412 train_acc=0.1555 | val_loss=338.0182 val_acc=0.2418 | 
+02-19 13:13:23 [LP epoch 06] train_loss=2.2233 train_acc=0.1667 | val_loss=335.5022 val_acc=0.2614 | 
+02-19 13:13:23 [LP epoch 07] train_loss=2.2071 train_acc=0.1723 | val_loss=333.2941 val_acc=0.2288 | 
+02-19 13:13:24 [LP epoch 08] train_loss=2.1921 train_acc=0.1737 | val_loss=331.3535 val_acc=0.2092 | 
+02-19 13:13:24 [LP epoch 09] train_loss=2.1791 train_acc=0.1737 | val_loss=329.8522 val_acc=0.2222 | 
+02-19 13:13:25 [LP epoch 10] train_loss=2.1671 train_acc=0.1807 | val_loss=328.2934 val_acc=0.2026 | 
+02-19 13:13:25 [LP epoch 11] train_loss=2.1554 train_acc=0.1779 | val_loss=326.9623 val_acc=0.1895 | 
+02-19 13:13:26 [LP epoch 12] train_loss=2.1429 train_acc=0.1905 | val_loss=325.1045 val_acc=0.2026 | 
+02-19 13:13:26 [LP epoch 13] train_loss=2.1306 train_acc=0.2031 | val_loss=323.9750 val_acc=0.2026 | 
+02-19 13:13:27 [LP epoch 14] train_loss=2.1181 train_acc=0.2073 | val_loss=322.3422 val_acc=0.2353 | 
+02-19 13:13:27 [LP epoch 15] train_loss=2.1055 train_acc=0.2297 | val_loss=320.9843 val_acc=0.2353 | 
+02-19 13:13:27 [LP epoch 16] train_loss=2.0937 train_acc=0.2381 | val_loss=320.0839 val_acc=0.2353 | 
+02-19 13:13:28 [LP epoch 17] train_loss=2.0814 train_acc=0.2367 | val_loss=318.7897 val_acc=0.2353 | 
+02-19 13:13:28 [LP epoch 18] train_loss=2.0686 train_acc=0.2283 | val_loss=317.0292 val_acc=0.2288 | 
+02-19 13:13:29 [LP epoch 19] train_loss=2.0573 train_acc=0.2325 | val_loss=316.1978 val_acc=0.2549 | 
+02-19 13:13:29 [LP epoch 20] train_loss=2.0432 train_acc=0.2311 | val_loss=314.2742 val_acc=0.2418 | 
+02-19 13:13:30 [LP epoch 21] train_loss=2.0350 train_acc=0.2395 | val_loss=314.1838 val_acc=0.2288 | 
+02-19 13:13:30 [LP epoch 22] train_loss=2.0183 train_acc=0.2395 | val_loss=311.6452 val_acc=0.2353 | 
+02-19 13:13:31 [LP epoch 23] train_loss=2.0069 train_acc=0.2549 | val_loss=311.5874 val_acc=0.2353 | 
+02-19 13:13:31 [LP epoch 24] train_loss=1.9937 train_acc=0.2577 | val_loss=310.1825 val_acc=0.2418 | 
+02-19 13:13:32 [LP epoch 25] train_loss=1.9812 train_acc=0.2717 | val_loss=309.0209 val_acc=0.2353 | 
+02-19 13:13:32 [LP epoch 26] train_loss=1.9691 train_acc=0.2745 | val_loss=308.0197 val_acc=0.2484 | 
+02-19 13:13:33 [LP epoch 27] train_loss=1.9570 train_acc=0.2745 | val_loss=306.9929 val_acc=0.2418 | 
+02-19 13:13:33 [LP epoch 28] train_loss=1.9457 train_acc=0.2801 | val_loss=305.8323 val_acc=0.2680 | 
+02-19 13:13:34 [LP epoch 29] train_loss=1.9363 train_acc=0.2815 | val_loss=305.1206 val_acc=0.2484 | 
+02-19 13:13:34 [LP epoch 30] train_loss=1.9253 train_acc=0.2815 | val_loss=303.9499 val_acc=0.2680 | 
+02-19 13:13:35 [LP epoch 31] train_loss=1.9165 train_acc=0.2885 | val_loss=303.6597 val_acc=0.2876 | 
+02-19 13:13:35 [LP epoch 32] train_loss=1.9089 train_acc=0.2899 | val_loss=302.7595 val_acc=0.2745 | 
+02-19 13:13:36 [LP epoch 33] train_loss=1.9004 train_acc=0.3081 | val_loss=302.1528 val_acc=0.2614 | 
+02-19 13:13:36 [LP epoch 34] train_loss=1.8926 train_acc=0.3025 | val_loss=301.7056 val_acc=0.2745 | 
+02-19 13:13:37 [LP epoch 35] train_loss=1.8852 train_acc=0.3081 | val_loss=300.7079 val_acc=0.2810 | 
+02-19 13:13:37 [LP epoch 36] train_loss=1.8787 train_acc=0.3137 | val_loss=301.1452 val_acc=0.2941 | 
+02-19 13:13:38 [LP epoch 37] train_loss=1.8726 train_acc=0.2997 | val_loss=301.1403 val_acc=0.3072 | 
+02-19 13:13:38 [LP epoch 38] train_loss=1.8671 train_acc=0.3025 | val_loss=300.4269 val_acc=0.2941 | 
+02-19 13:13:39 [LP epoch 39] train_loss=1.8625 train_acc=0.3053 | val_loss=299.4304 val_acc=0.3007 | 
+02-19 13:13:39 [LP epoch 40] train_loss=1.8568 train_acc=0.3053 | val_loss=299.6311 val_acc=0.3072 | 
+02-19 13:13:40 [LP epoch 41] train_loss=1.8524 train_acc=0.3081 | val_loss=298.6415 val_acc=0.2941 | 
+02-19 13:13:40 [LP epoch 42] train_loss=1.8480 train_acc=0.3053 | val_loss=298.0767 val_acc=0.3007 | 
+02-19 13:13:41 [LP epoch 43] train_loss=1.8426 train_acc=0.3039 | val_loss=297.9391 val_acc=0.3072 | 
+02-19 13:13:41 [LP epoch 44] train_loss=1.8380 train_acc=0.3151 | val_loss=297.4071 val_acc=0.3072 | 
+02-19 13:13:42 [LP epoch 45] train_loss=1.8345 train_acc=0.3165 | val_loss=296.8243 val_acc=0.3072 | 
+02-19 13:13:42 [LP epoch 46] train_loss=1.8299 train_acc=0.3025 | val_loss=297.6394 val_acc=0.3072 | 
+02-19 13:13:43 [LP epoch 47] train_loss=1.8248 train_acc=0.3137 | val_loss=296.5344 val_acc=0.2876 | 
+02-19 13:13:43 [LP epoch 48] train_loss=1.8220 train_acc=0.3165 | val_loss=296.5303 val_acc=0.3137 | 
+02-19 13:13:44 [LP epoch 49] train_loss=1.8220 train_acc=0.3165 | val_loss=295.5528 val_acc=0.3007 | 
+02-19 13:13:44 Saved linear-probe checkpoint: ./checkpoint\SimSiamResNet_SEU_0219-131144\linear_probe_best.pt (best_val_acc=0.3137)
+02-19 13:13:44 TEST linear-probe: loss=1.9823 acc=0.2353
+02-19 13:13:44 using 1 gpus
+02-19 13:13:44 Dataset class: <class 'data_utils.datasets.SEU.SEU'>
+02-19 13:15:01 Split sizes: train=714 val=153 test=153
+02-19 13:15:01 Label counts train: Counter({0: 72, 5: 72, 8: 72, 1: 72, 6: 71, 2: 71, 9: 71, 3: 71, 7: 71, 4: 71})
+02-19 13:15:01 Label counts val:   Counter({2: 16, 9: 16, 3: 16, 6: 15, 4: 15, 0: 15, 8: 15, 7: 15, 5: 15, 1: 15})
+02-19 13:15:01 Label counts test:  Counter({6: 16, 4: 16, 7: 16, 8: 15, 3: 15, 5: 15, 9: 15, 0: 15, 1: 15, 2: 15})
+02-19 13:15:01 -----Epoch 0/19-----
+02-19 13:15:02 current lr: 0.01
+02-19 13:15:02 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.2605)
+02-19 13:15:02 Epoch 000 Train loss -0.1800 | Val loss -0.2605
+02-19 13:15:02 -----Epoch 1/19-----
+02-19 13:15:03 current lr: 0.0099385
+02-19 13:15:03 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.6302)
+02-19 13:15:03 Epoch 001 Train loss -0.5913 | Val loss -0.6302
+02-19 13:15:03 -----Epoch 2/19-----
+02-19 13:15:04 current lr: 0.00975553
+02-19 13:15:04 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.8291)
+02-19 13:15:04 Epoch 002 Train loss -0.7927 | Val loss -0.8291
+02-19 13:15:04 -----Epoch 3/19-----
+02-19 13:15:05 current lr: 0.00945558
+02-19 13:15:05 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9001)
+02-19 13:15:05 Epoch 003 Train loss -0.8856 | Val loss -0.9001
+02-19 13:15:05 -----Epoch 4/19-----
+02-19 13:15:06 current lr: 0.00904604
+02-19 13:15:06 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9130)
+02-19 13:15:06 Epoch 004 Train loss -0.9199 | Val loss -0.9130
+02-19 13:15:06 -----Epoch 5/19-----
+02-19 13:15:07 current lr: 0.008537
+02-19 13:15:07 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9440)
+02-19 13:15:07 Epoch 005 Train loss -0.9407 | Val loss -0.9440
+02-19 13:15:07 -----Epoch 6/19-----
+02-19 13:15:08 current lr: 0.00794099
+02-19 13:15:08 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9536)
+02-19 13:15:08 Epoch 006 Train loss -0.9544 | Val loss -0.9536
+02-19 13:15:08 -----Epoch 7/19-----
+02-19 13:15:09 current lr: 0.00727268
+02-19 13:15:09 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9565)
+02-19 13:15:09 Epoch 007 Train loss -0.9546 | Val loss -0.9565
+02-19 13:15:09 -----Epoch 8/19-----
+02-19 13:15:10 current lr: 0.00654854
+02-19 13:15:10 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9579)
+02-19 13:15:10 Epoch 008 Train loss -0.9529 | Val loss -0.9579
+02-19 13:15:10 -----Epoch 9/19-----
+02-19 13:15:11 current lr: 0.00578639
+02-19 13:15:11 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9611)
+02-19 13:15:11 Epoch 009 Train loss -0.9591 | Val loss -0.9611
+02-19 13:15:11 -----Epoch 10/19-----
+02-19 13:15:12 current lr: 0.005005
+02-19 13:15:13 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9627)
+02-19 13:15:13 Epoch 010 Train loss -0.9640 | Val loss -0.9627
+02-19 13:15:13 -----Epoch 11/19-----
+02-19 13:15:14 current lr: 0.00422361
+02-19 13:15:14 Saved best checkpoint to ./checkpoint\SimSiamResNet_SEU_0219-131144\best_pt (val_loss=-0.9645)
+02-19 13:15:14 Epoch 011 Train loss -0.9661 | Val loss -0.9645
+02-19 13:15:14 -----Epoch 12/19-----
+02-19 13:15:15 current lr: 0.00346146
+02-19 13:15:15 Epoch 012 Train loss -0.9673 | Val loss -0.9638
+02-19 13:15:15 -----Epoch 13/19-----
+02-19 13:15:16 current lr: 0.00273732
+02-19 13:15:16 Epoch 013 Train loss -0.9662 | Val loss -0.9632
+02-19 13:15:16 -----Epoch 14/19-----
+02-19 13:15:17 current lr: 0.00206901
+02-19 13:15:17 Epoch 014 Train loss -0.9658 | Val loss -0.9627
+02-19 13:15:17 -----Epoch 15/19-----
+02-19 13:15:18 current lr: 0.001473
+02-19 13:15:18 Epoch 015 Train loss -0.9653 | Val loss -0.9620
+02-19 13:15:18 -----Epoch 16/19-----
+02-19 13:15:19 current lr: 0.00096396
+02-19 13:15:19 Epoch 016 Train loss -0.9653 | Val loss -0.9615
+02-19 13:15:19 -----Epoch 17/19-----
+02-19 13:15:20 current lr: 0.000554422
+02-19 13:15:20 Epoch 017 Train loss -0.9652 | Val loss -0.9611
+02-19 13:15:20 -----Epoch 18/19-----
+02-19 13:15:21 current lr: 0.000254473
+02-19 13:15:21 Epoch 018 Train loss -0.9643 | Val loss -0.9608
+02-19 13:15:21 -----Epoch 19/19-----
+02-19 13:15:21 current lr: 7.14967e-05
+02-19 13:15:21 Epoch 019 Train loss -0.9644 | Val loss -0.9607
+02-19 13:15:21 TEST (last): loss -0.9555
+02-19 13:15:22 [LP epoch 00] train_loss=2.3694 train_acc=0.0994 | val_loss=362.0459 val_acc=0.0719 | 
+02-19 13:15:22 [LP epoch 01] train_loss=2.3382 train_acc=0.1106 | val_loss=358.1386 val_acc=0.1111 | 
+02-19 13:15:23 [LP epoch 02] train_loss=2.3171 train_acc=0.1261 | val_loss=355.2905 val_acc=0.1307 | 
+02-19 13:15:23 [LP epoch 03] train_loss=2.2997 train_acc=0.1345 | val_loss=352.6832 val_acc=0.1373 | 
+02-19 13:15:24 [LP epoch 04] train_loss=2.2841 train_acc=0.1359 | val_loss=350.2143 val_acc=0.1569 | 
+02-19 13:15:24 [LP epoch 05] train_loss=2.2695 train_acc=0.1457 | val_loss=348.0009 val_acc=0.1634 | 
+02-19 13:15:25 [LP epoch 06] train_loss=2.2561 train_acc=0.1527 | val_loss=345.9309 val_acc=0.1699 | 
+02-19 13:15:25 [LP epoch 07] train_loss=2.2432 train_acc=0.1541 | val_loss=343.8335 val_acc=0.2026 | 
+02-19 13:15:26 [LP epoch 08] train_loss=2.2303 train_acc=0.1751 | val_loss=341.9255 val_acc=0.1961 | 
+02-19 13:15:26 [LP epoch 09] train_loss=2.2193 train_acc=0.1737 | val_loss=340.6924 val_acc=0.1895 | 
+02-19 13:15:27 [LP epoch 10] train_loss=2.2104 train_acc=0.1807 | val_loss=339.7928 val_acc=0.1895 | 
+02-19 13:15:27 [LP epoch 11] train_loss=2.2023 train_acc=0.1807 | val_loss=339.2449 val_acc=0.1961 | 
+02-19 13:15:28 [LP epoch 12] train_loss=2.1938 train_acc=0.1807 | val_loss=339.2342 val_acc=0.2026 | 
+02-19 13:15:28 [LP epoch 13] train_loss=2.1852 train_acc=0.1905 | val_loss=338.8126 val_acc=0.2157 | 
+02-19 13:15:29 [LP epoch 14] train_loss=2.1772 train_acc=0.1961 | val_loss=338.1151 val_acc=0.2353 | 
+02-19 13:15:29 [LP epoch 15] train_loss=2.1701 train_acc=0.2073 | val_loss=337.8011 val_acc=0.2222 | 
+02-19 13:15:30 [LP epoch 16] train_loss=2.1615 train_acc=0.2115 | val_loss=337.2175 val_acc=0.2092 | 
+02-19 13:15:30 [LP epoch 17] train_loss=2.1536 train_acc=0.2199 | val_loss=336.0162 val_acc=0.2092 | 
+02-19 13:15:31 [LP epoch 18] train_loss=2.1454 train_acc=0.2255 | val_loss=335.5722 val_acc=0.2092 | 
+02-19 13:15:31 [LP epoch 19] train_loss=2.1379 train_acc=0.2199 | val_loss=336.2386 val_acc=0.2092 | 
+02-19 13:15:32 [LP epoch 20] train_loss=2.1321 train_acc=0.2255 | val_loss=333.5513 val_acc=0.2288 | 
+02-19 13:15:32 [LP epoch 21] train_loss=2.1229 train_acc=0.2283 | val_loss=333.6432 val_acc=0.2222 | 
+02-19 13:15:33 [LP epoch 22] train_loss=2.1157 train_acc=0.2381 | val_loss=332.8621 val_acc=0.2353 | 
+02-19 13:15:33 [LP epoch 23] train_loss=2.1078 train_acc=0.2367 | val_loss=331.2693 val_acc=0.2353 | 
+02-19 13:15:34 [LP epoch 24] train_loss=2.0990 train_acc=0.2409 | val_loss=329.7583 val_acc=0.2222 | 
+02-19 13:15:34 [LP epoch 25] train_loss=2.0908 train_acc=0.2409 | val_loss=329.0659 val_acc=0.2222 | 
+02-19 13:15:35 [LP epoch 26] train_loss=2.0841 train_acc=0.2381 | val_loss=328.0038 val_acc=0.2222 | 
+02-19 13:15:35 [LP epoch 27] train_loss=2.0757 train_acc=0.2451 | val_loss=327.9417 val_acc=0.2157 | 
+02-19 13:15:36 [LP epoch 28] train_loss=2.0700 train_acc=0.2493 | val_loss=326.7710 val_acc=0.2222 | 
+02-19 13:15:36 [LP epoch 29] train_loss=2.0633 train_acc=0.2535 | val_loss=326.2622 val_acc=0.2157 | 
+02-19 13:15:37 [LP epoch 30] train_loss=2.0570 train_acc=0.2493 | val_loss=325.7980 val_acc=0.2157 | 
+02-19 13:15:37 [LP epoch 31] train_loss=2.0519 train_acc=0.2507 | val_loss=325.8506 val_acc=0.2157 | 
+02-19 13:15:38 [LP epoch 32] train_loss=2.0471 train_acc=0.2549 | val_loss=324.6261 val_acc=0.2222 | 
+02-19 13:15:38 [LP epoch 33] train_loss=2.0407 train_acc=0.2507 | val_loss=324.9022 val_acc=0.2092 | 
+02-19 13:15:39 [LP epoch 34] train_loss=2.0363 train_acc=0.2535 | val_loss=324.5006 val_acc=0.2026 | 
+02-19 13:15:39 [LP epoch 35] train_loss=2.0309 train_acc=0.2549 | val_loss=324.0901 val_acc=0.2092 | 
+02-19 13:15:40 [LP epoch 36] train_loss=2.0258 train_acc=0.2549 | val_loss=323.9962 val_acc=0.2157 | 
+02-19 13:15:40 [LP epoch 37] train_loss=2.0212 train_acc=0.2577 | val_loss=323.4524 val_acc=0.2222 | 
+02-19 13:15:41 [LP epoch 38] train_loss=2.0167 train_acc=0.2591 | val_loss=323.1189 val_acc=0.2222 | 
+02-19 13:15:41 [LP epoch 39] train_loss=2.0121 train_acc=0.2619 | val_loss=323.1224 val_acc=0.2222 | 
+02-19 13:15:41 [LP epoch 40] train_loss=2.0080 train_acc=0.2633 | val_loss=322.8020 val_acc=0.2288 | 
+02-19 13:15:42 [LP epoch 41] train_loss=2.0032 train_acc=0.2675 | val_loss=322.8823 val_acc=0.2222 | 
+02-19 13:15:42 [LP epoch 42] train_loss=1.9994 train_acc=0.2633 | val_loss=322.1199 val_acc=0.2222 | 
+02-19 13:15:43 [LP epoch 43] train_loss=1.9947 train_acc=0.2731 | val_loss=322.4399 val_acc=0.2157 | 
+02-19 13:15:43 [LP epoch 44] train_loss=1.9907 train_acc=0.2689 | val_loss=322.1169 val_acc=0.2353 | 
+02-19 13:15:44 [LP epoch 45] train_loss=1.9882 train_acc=0.2703 | val_loss=321.4430 val_acc=0.2288 | 
+02-19 13:15:44 [LP epoch 46] train_loss=1.9832 train_acc=0.2675 | val_loss=321.7394 val_acc=0.2222 | 
+02-19 13:15:45 [LP epoch 47] train_loss=1.9801 train_acc=0.2717 | val_loss=320.8236 val_acc=0.2353 | 
+02-19 13:15:45 [LP epoch 48] train_loss=1.9755 train_acc=0.2661 | val_loss=320.8478 val_acc=0.2222 | 
+02-19 13:15:46 [LP epoch 49] train_loss=1.9712 train_acc=0.2703 | val_loss=320.8093 val_acc=0.2157 | 
+02-19 13:15:46 Saved linear-probe checkpoint: ./checkpoint\SimSiamResNet_SEU_0219-131144\linear_probe_best.pt (best_val_acc=0.2353)
+02-19 13:15:46 TEST linear-probe: loss=2.1055 acc=0.2288
