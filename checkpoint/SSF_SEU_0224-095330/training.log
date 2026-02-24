@@ -1,0 +1,26 @@
+02-24 09:53:30 model_name: SSF
+02-24 09:53:30 data_name: SEU
+02-24 09:53:30 aug_1: normal
+02-24 09:53:30 aug_2: randomcrop
+02-24 09:53:30 max_epoch: 20
+02-24 09:53:30 classifier_epoch: 50
+02-24 09:53:30 data_view: TwoViewDataset
+02-24 09:53:30 cuda_device: 0
+02-24 09:53:30 checkpoint_dir: ./checkpoint
+02-24 09:53:30 batch_size: 32
+02-24 09:53:30 data_dir: raw_data/SEU/gearbox
+02-24 09:53:30 out_channel: 10
+02-24 09:53:30 normlizetype: minus_one_one
+02-24 09:53:30 processing_type: RA
+02-24 09:53:30 opt: sgd
+02-24 09:53:30 lr: 0.01
+02-24 09:53:30 momentum: 0.9
+02-24 09:53:30 weight_decay: 1e-05
+02-24 09:53:30 lr_scheduler: cos
+02-24 09:53:30 gamma: 0.1
+02-24 09:53:30 eta_min: 1e-05
+02-24 09:53:30 latent_space: 256
+02-24 09:53:30 task: self_supervised
+02-24 09:53:30 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+02-24 09:53:30 using 1 gpus
+02-24 09:53:30 Dataset class: <class 'data_utils.datasets.SEU.SEU'>

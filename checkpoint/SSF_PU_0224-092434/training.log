@@ -146,3 +146,4 @@
 02-24 09:35:38 [LP epoch 35] train_loss=0.7098 train_acc=0.6955 | val_loss=3314.4809 val_acc=0.7084 | 
 02-24 09:35:47 [LP epoch 36] train_loss=0.7088 train_acc=0.6977 | val_loss=3305.6542 val_acc=0.7074 | 
 02-24 09:35:56 [LP epoch 37] train_loss=0.7048 train_acc=0.6965 | val_loss=3273.2263 val_acc=0.7128 | 
+02-24 09:36:06 [LP epoch 38] train_loss=0.7051 train_acc=0.6976 | val_loss=3240.4131 val_acc=0.7144 | 

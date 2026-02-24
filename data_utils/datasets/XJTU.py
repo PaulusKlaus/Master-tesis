@@ -107,7 +107,7 @@ class XJTU(object):
             end += signal_size
         return data, lab
 
-    def data_prepare(self, split="RA", view=OneViewDataset):
+    def data_prepare(self, split="RA", view=TwoViewDataset):
         """
         Returns: train_dataset, val_dataset, test_dataset
         split:
@@ -128,16 +128,23 @@ class XJTU(object):
                 random_state=self.random_state,
                 stratify=data_pd["label"],
             )
-            val_pd, test_pd = train_test_split(
+            val_temp, test_pd = train_test_split(
                 temp_pd,
                 test_size=0.5,
                 random_state=self.random_state,
                 stratify=temp_pd["label"],
             )
+            val_pd, classifier_pd = train_test_split(
+                val_temp,
+                test_size=0.5,
+                random_state=self.random_state,
+                stratify=val_temp["label"],
+            )
         elif split == "O_A":
             # ordered split (your custom)
             train_pd, temp_pd = train_test_split_order(data_pd, test_size=0.30)
-            val_pd, test_pd   = train_test_split_order(temp_pd, test_size=0.5)
+            val_temp, test_pd   = train_test_split_order(temp_pd, test_size=0.5)
+            val_pd, classifier_pd   = train_test_split_order(val_temp, test_size=0.5)
         else:
             raise ValueError(f"Unknown split='{split}'. Use 'RA', 'R_NA', or 'O_A'.")
 
@@ -156,5 +163,6 @@ class XJTU(object):
         train_dataset = view(train_pd, transform_1=train_t1, transform_2=train_t2)
         val_dataset   = view(val_pd,   transform_1=eval_t1,  transform_2=eval_t2)
         test_dataset  = view(test_pd,  transform_1=eval_t1,  transform_2=eval_t2)
+        classifier_dataset = view(classifier_pd,  transform_1=eval_t1,  transform_2=eval_t2)
 
-        return train_dataset, val_dataset, test_dataset
+        return train_dataset, val_dataset, test_dataset, classifier_dataset

@@ -91,7 +91,7 @@ class Trainer(object):
         dataset_view = getattr(views, args.data_view) # OneViewDataset, TwoViewDataset
 
         logging.info("Dataset class: %s", Dataset)
-        self.train_ds, self.val_ds, self.test_ds, self.classifier_dataset = Dataset(data_dir = args.data_dir, 
+        self.train_ds, self.val_ds, self.test_ds, self.classifier_ds = Dataset(data_dir = args.data_dir, 
                                                                                       normlizetype= args.normlizetype,
                                                                                       augmentype_1 = args.aug_1,
                                                                                       augmentype_2 = args.aug_2,
@@ -103,12 +103,13 @@ class Trainer(object):
         #drop_last=True,              # keep pairs aligned for contrastive loss
         self.val_loader = DataLoader(self.val_ds, batch_size=args.batch_size, shuffle=False)
         self.test_loader = DataLoader(self.test_ds, batch_size=args.batch_size, shuffle=False)
-        logging.info("Split sizes: train=%d val=%d test=%d",
-                    len(self.train_ds), len(self.val_ds), len(self.test_ds))
+        self.classifier_loader = DataLoader(self.classifier_ds, batch_size=args.batch_size, shuffle=False)
+        logging.info("Split sizes: train=%d val=%d test=%d, classier=%d",
+                    len(self.train_ds), len(self.val_ds), len(self.test_ds), len(self.classifier_ds))
         logging.info("Label counts train: %s", count_labels(self.train_loader))
         logging.info("Label counts val:   %s", count_labels(self.val_loader))
         logging.info("Label counts test:  %s", count_labels(self.test_loader))
-
+        logging.info("Label counts classifier:  %s", count_labels(self.classifier_loader))
 
     def _optimizer_lr_sch(self):
         args = self.args
@@ -368,7 +369,7 @@ class Trainer(object):
             tot_correct = 0
             tot_samp = 0
             # TODO: I think i should train only on a part of the trainin g loader of a part of the validation loader ???
-            loop = tqdm.tqdm(self.train_loader, desc = f"Classifier train {epoch}", leave=False)
+            loop = tqdm.tqdm(self.classifier_loader, desc = f"Classifier train {epoch}", leave=False)
             for x1, x2, y in loop:
                 x1, x2, y = x1.to(device, non_blocking  = True), x2.to(device, non_blocking  = True), y.to(device, non_blocking= True)
 

@@ -118,7 +118,7 @@ class CWRU(object):
 
         return data, lab
 
-    def data_prepare(self, split="RA", view=OneViewDataset):
+    def data_prepare(self, split="RA", view=TwoViewDataset):
         """
         Returns: train_dataset, val_dataset, test_dataset
         split:
@@ -147,15 +147,15 @@ class CWRU(object):
             )
             val_pd, classifier_pd = train_test_split(
                 val_temp,
-                test_size=1/3,
+                test_size=0.5,
                 random_state=self.random_state,
-                stratify=temp_pd["label"],
+                stratify=val_temp["label"],
             )
         elif split == "O_A":
             # ordered split (your custom)
             train_pd, temp_pd = train_test_split_order(data_pd, test_size=0.30)
             val_temp, test_pd   = train_test_split_order(temp_pd, test_size=0.5)
-            val_pd, classifier_pd   = train_test_split_order(val_temp, test_size=1/3)
+            val_pd, classifier_pd   = train_test_split_order(val_temp, test_size=0.5)
         else:
             raise ValueError(f"Unknown split='{split}'. Use 'RA', 'R_NA', or 'O_A'.")
 
