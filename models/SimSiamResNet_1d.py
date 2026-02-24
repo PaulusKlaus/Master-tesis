@@ -10,23 +10,25 @@ class SimSiamResNet18_1d(nn.Module):
         # backbone: resnet18 but we will use forward_features()
         self.backbone = resnet18(in_channel=in_channel, out_channel=out_channel)  # out_channel here is unused if we bypass fc
 
-        feat_dim = 512  # for resnet18 basic block
+        #feat_dim = 512  # for resnet18 basic block
+        hidden_projector = out_channel // 4
 
         # projector (like SimSiam)
         self.projector = nn.Sequential(
-            nn.Linear(feat_dim, 256),
-            nn.BatchNorm1d(256),
+            nn.Linear(out_channel, hidden_projector),
+            nn.BatchNorm1d(hidden_projector),
             nn.ReLU(inplace=True),
-            nn.Linear(256, out_channel),
+            nn.Linear(hidden_projector, out_channel),
             nn.BatchNorm1d(out_channel),
         )
 
+        hidden_predictor = int(out_channel * 2)
         # predictor
         self.predictor = nn.Sequential(
-            nn.Linear(out_channel, 8),
-            nn.BatchNorm1d(8),
+            nn.Linear(out_channel, hidden_predictor),
+            nn.BatchNorm1d(hidden_predictor),
             nn.ReLU(inplace=True),
-            nn.Linear(8, out_channel),
+            nn.Linear(hidden_predictor, out_channel),
         )
 
     def forward(self, x1, x2):

@@ -1,0 +1,180 @@
+02-24 13:10:25 model_name: SSF
+02-24 13:10:25 data_name: PU
+02-24 13:10:25 aug_1: normal
+02-24 13:10:25 aug_2: randomcrop
+02-24 13:10:25 max_epoch: 20
+02-24 13:10:25 classifier_epoch: 50
+02-24 13:10:25 data_view: TwoViewDataset
+02-24 13:10:25 cuda_device: 0
+02-24 13:10:25 checkpoint_dir: ./checkpoint
+02-24 13:10:25 batch_size: 32
+02-24 13:10:25 data_dir: raw_data/PU
+02-24 13:10:25 out_channel: 4
+02-24 13:10:25 normlizetype: minus_one_one
+02-24 13:10:25 processing_type: RA
+02-24 13:10:25 opt: sgd
+02-24 13:10:25 lr: 0.01
+02-24 13:10:25 momentum: 0.9
+02-24 13:10:25 weight_decay: 1e-05
+02-24 13:10:25 lr_scheduler: cos
+02-24 13:10:25 gamma: 0.1
+02-24 13:10:25 eta_min: 1e-05
+02-24 13:10:25 latent_space: 64
+02-24 13:10:25 task: self_supervised
+02-24 13:10:25 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+02-24 13:10:25 using 1 gpus
+02-24 13:10:25 Dataset class: <class 'data_utils.datasets.PU.PU'>
+02-24 13:10:26 Split sizes: train=21802 val=2336 test=4672, classier=2336
+02-24 13:10:27 Label counts train: Counter({3: 8481, 1: 7718, 0: 3501, 2: 2102})
+02-24 13:10:27 Label counts val:   Counter({3: 909, 1: 827, 0: 375, 2: 225})
+02-24 13:10:28 Label counts test:  Counter({3: 1817, 1: 1654, 0: 750, 2: 451})
+02-24 13:10:28 Label counts classifier:  Counter({3: 909, 1: 827, 0: 375, 2: 225})
+02-24 13:10:29 -----Epoch 0/19-----
+02-24 13:10:46 current lr: 0.01
+02-24 13:10:46 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9952)
+02-24 13:10:46 Epoch 000 Train loss -0.9761 | Val loss -0.9952
+02-24 13:10:46 -----Epoch 1/19-----
+02-24 13:11:02 current lr: 0.0099385
+02-24 13:11:02 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9965)
+02-24 13:11:02 Epoch 001 Train loss -0.9952 | Val loss -0.9965
+02-24 13:11:02 -----Epoch 2/19-----
+02-24 13:11:19 current lr: 0.00975553
+02-24 13:11:19 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9972)
+02-24 13:11:19 Epoch 002 Train loss -0.9963 | Val loss -0.9972
+02-24 13:11:19 -----Epoch 3/19-----
+02-24 13:11:35 current lr: 0.00945558
+02-24 13:11:35 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9976)
+02-24 13:11:35 Epoch 003 Train loss -0.9969 | Val loss -0.9976
+02-24 13:11:35 -----Epoch 4/19-----
+02-24 13:11:51 current lr: 0.00904604
+02-24 13:11:51 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9978)
+02-24 13:11:51 Epoch 004 Train loss -0.9972 | Val loss -0.9978
+02-24 13:11:51 -----Epoch 5/19-----
+02-24 13:12:07 current lr: 0.008537
+02-24 13:12:07 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9980)
+02-24 13:12:07 Epoch 005 Train loss -0.9974 | Val loss -0.9980
+02-24 13:12:07 -----Epoch 6/19-----
+02-24 13:12:21 current lr: 0.00794099
+02-24 13:12:21 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9981)
+02-24 13:12:21 Epoch 006 Train loss -0.9976 | Val loss -0.9981
+02-24 13:12:21 -----Epoch 7/19-----
+02-24 13:12:38 current lr: 0.00727268
+02-24 13:12:38 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9983)
+02-24 13:12:38 Epoch 007 Train loss -0.9977 | Val loss -0.9983
+02-24 13:12:38 -----Epoch 8/19-----
+02-24 13:12:54 current lr: 0.00654854
+02-24 13:12:54 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9984)
+02-24 13:12:54 Epoch 008 Train loss -0.9978 | Val loss -0.9984
+02-24 13:12:54 -----Epoch 9/19-----
+02-24 13:13:10 current lr: 0.00578639
+02-24 13:13:10 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9984)
+02-24 13:13:10 Epoch 009 Train loss -0.9979 | Val loss -0.9984
+02-24 13:13:10 -----Epoch 10/19-----
+02-24 13:13:26 current lr: 0.005005
+02-24 13:13:26 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9985)
+02-24 13:13:26 Epoch 010 Train loss -0.9980 | Val loss -0.9985
+02-24 13:13:26 -----Epoch 11/19-----
+02-24 13:13:43 current lr: 0.00422361
+02-24 13:13:43 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9985)
+02-24 13:13:43 Epoch 011 Train loss -0.9980 | Val loss -0.9985
+02-24 13:13:43 -----Epoch 12/19-----
+02-24 13:13:59 current lr: 0.00346146
+02-24 13:13:59 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9985)
+02-24 13:13:59 Epoch 012 Train loss -0.9980 | Val loss -0.9985
+02-24 13:13:59 -----Epoch 13/19-----
+02-24 13:14:15 current lr: 0.00273732
+02-24 13:14:15 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9985)
+02-24 13:14:15 Epoch 013 Train loss -0.9980 | Val loss -0.9985
+02-24 13:14:15 -----Epoch 14/19-----
+02-24 13:14:31 current lr: 0.00206901
+02-24 13:14:31 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9985)
+02-24 13:14:31 Epoch 014 Train loss -0.9981 | Val loss -0.9985
+02-24 13:14:31 -----Epoch 15/19-----
+02-24 13:14:48 current lr: 0.001473
+02-24 13:14:48 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9985)
+02-24 13:14:48 Epoch 015 Train loss -0.9981 | Val loss -0.9985
+02-24 13:14:48 -----Epoch 16/19-----
+02-24 13:15:02 current lr: 0.00096396
+02-24 13:15:02 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9985)
+02-24 13:15:02 Epoch 016 Train loss -0.9981 | Val loss -0.9985
+02-24 13:15:02 -----Epoch 17/19-----
+02-24 13:15:17 current lr: 0.000554422
+02-24 13:15:17 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9985)
+02-24 13:15:17 Epoch 017 Train loss -0.9981 | Val loss -0.9985
+02-24 13:15:17 -----Epoch 18/19-----
+02-24 13:15:32 current lr: 0.000254473
+02-24 13:15:32 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9986)
+02-24 13:15:32 Epoch 018 Train loss -0.9981 | Val loss -0.9986
+02-24 13:15:32 -----Epoch 19/19-----
+02-24 13:15:48 current lr: 7.14967e-05
+02-24 13:15:48 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9986)
+02-24 13:15:48 Epoch 019 Train loss -0.9981 | Val loss -0.9986
+02-24 13:15:49 TEST (last): loss -0.9986
+02-24 13:15:50 [LP epoch 00] train_loss=1.2771 train_acc=0.3887 | val_loss=1.2771 val_acc=0.4289 | 
+02-24 13:15:51 [LP epoch 01] train_loss=1.1619 train_acc=0.4521 | val_loss=1.1619 val_acc=0.4431 | 
+02-24 13:15:52 [LP epoch 02] train_loss=1.1122 train_acc=0.4842 | val_loss=1.1122 val_acc=0.4628 | 
+02-24 13:15:53 [LP epoch 03] train_loss=1.0827 train_acc=0.4974 | val_loss=1.0827 val_acc=0.4726 | 
+02-24 13:15:55 [LP epoch 04] train_loss=1.0612 train_acc=0.5047 | val_loss=1.0612 val_acc=0.4782 | 
+02-24 13:15:56 [LP epoch 05] train_loss=1.0418 train_acc=0.5171 | val_loss=1.0418 val_acc=0.4944 | 
+02-24 13:15:57 [LP epoch 06] train_loss=1.0335 train_acc=0.5210 | val_loss=1.0335 val_acc=0.5223 | 
+02-24 13:15:58 [LP epoch 07] train_loss=1.0211 train_acc=0.5368 | val_loss=1.0211 val_acc=0.5051 | 
+02-24 13:15:59 [LP epoch 08] train_loss=1.0215 train_acc=0.5321 | val_loss=1.0215 val_acc=0.5338 | 
+02-24 13:16:00 [LP epoch 09] train_loss=1.0037 train_acc=0.5385 | val_loss=1.0037 val_acc=0.5154 | 
+02-24 13:16:01 [LP epoch 10] train_loss=0.9971 train_acc=0.5420 | val_loss=0.9971 val_acc=0.5291 | 
+02-24 13:16:03 [LP epoch 11] train_loss=0.9925 train_acc=0.5347 | val_loss=0.9925 val_acc=0.5437 | 
+02-24 13:16:04 [LP epoch 12] train_loss=0.9855 train_acc=0.5552 | val_loss=0.9855 val_acc=0.5253 | 
+02-24 13:16:05 [LP epoch 13] train_loss=0.9772 train_acc=0.5522 | val_loss=0.9772 val_acc=0.5437 | 
+02-24 13:16:06 [LP epoch 14] train_loss=0.9738 train_acc=0.5505 | val_loss=0.9738 val_acc=0.5291 | 
+02-24 13:16:07 [LP epoch 15] train_loss=0.9752 train_acc=0.5522 | val_loss=0.9752 val_acc=0.5424 | 
+02-24 13:16:08 [LP epoch 16] train_loss=0.9707 train_acc=0.5488 | val_loss=0.9707 val_acc=0.5518 | 
+02-24 13:16:10 [LP epoch 17] train_loss=0.9617 train_acc=0.5586 | val_loss=0.9617 val_acc=0.5527 | 
+02-24 13:16:11 [LP epoch 18] train_loss=0.9645 train_acc=0.5574 | val_loss=0.9645 val_acc=0.5471 | 
+02-24 13:16:12 [LP epoch 19] train_loss=0.9557 train_acc=0.5621 | val_loss=0.9557 val_acc=0.5445 | 
+02-24 13:16:13 [LP epoch 20] train_loss=0.9570 train_acc=0.5488 | val_loss=0.9570 val_acc=0.5420 | 
+02-24 13:16:14 [LP epoch 21] train_loss=0.9576 train_acc=0.5557 | val_loss=0.9576 val_acc=0.5565 | 
+02-24 13:16:15 [LP epoch 22] train_loss=0.9465 train_acc=0.5621 | val_loss=0.9465 val_acc=0.5377 | 
+02-24 13:16:16 [LP epoch 23] train_loss=0.9464 train_acc=0.5604 | val_loss=0.9464 val_acc=0.5441 | 
+02-24 13:16:17 [LP epoch 24] train_loss=0.9398 train_acc=0.5706 | val_loss=0.9398 val_acc=0.5458 | 
+02-24 13:16:18 [LP epoch 25] train_loss=0.9403 train_acc=0.5668 | val_loss=0.9403 val_acc=0.5561 | 
+02-24 13:16:19 [LP epoch 26] train_loss=0.9316 train_acc=0.5689 | val_loss=0.9316 val_acc=0.5557 | 
+02-24 13:16:21 [LP epoch 27] train_loss=0.9358 train_acc=0.5634 | val_loss=0.9358 val_acc=0.5428 | 
+02-24 13:16:22 [LP epoch 28] train_loss=0.9303 train_acc=0.5732 | val_loss=0.9303 val_acc=0.5441 | 
+02-24 13:16:23 [LP epoch 29] train_loss=0.9356 train_acc=0.5655 | val_loss=0.9356 val_acc=0.5462 | 
+02-24 13:16:24 [LP epoch 30] train_loss=0.9281 train_acc=0.5698 | val_loss=0.9281 val_acc=0.5497 | 
+02-24 13:16:25 [LP epoch 31] train_loss=0.9264 train_acc=0.5728 | val_loss=0.9264 val_acc=0.5557 | 
+02-24 13:16:26 [LP epoch 32] train_loss=0.9302 train_acc=0.5642 | val_loss=0.9302 val_acc=0.5334 | 
+02-24 13:16:27 [LP epoch 33] train_loss=0.9219 train_acc=0.5741 | val_loss=0.9219 val_acc=0.5557 | 
+02-24 13:16:29 [LP epoch 34] train_loss=0.9177 train_acc=0.5796 | val_loss=0.9177 val_acc=0.5608 | 
+02-24 13:16:30 [LP epoch 35] train_loss=0.9191 train_acc=0.5775 | val_loss=0.9191 val_acc=0.5634 | 
+02-24 13:16:31 [LP epoch 36] train_loss=0.9149 train_acc=0.5818 | val_loss=0.9149 val_acc=0.5651 | 
+02-24 13:16:32 [LP epoch 37] train_loss=0.9092 train_acc=0.5843 | val_loss=0.9092 val_acc=0.5676 | 
+02-24 13:16:33 [LP epoch 38] train_loss=0.9100 train_acc=0.5852 | val_loss=0.9100 val_acc=0.5668 | 
+02-24 13:16:34 [LP epoch 39] train_loss=0.9062 train_acc=0.5848 | val_loss=0.9062 val_acc=0.5681 | 
+02-24 13:16:35 [LP epoch 40] train_loss=0.9013 train_acc=0.5925 | val_loss=0.9013 val_acc=0.5745 | 
+02-24 13:16:37 [LP epoch 41] train_loss=0.8970 train_acc=0.5972 | val_loss=0.8970 val_acc=0.5685 | 
+02-24 13:16:38 [LP epoch 42] train_loss=0.8934 train_acc=0.5967 | val_loss=0.8934 val_acc=0.5753 | 
+02-24 13:16:39 [LP epoch 43] train_loss=0.8974 train_acc=0.5985 | val_loss=0.8974 val_acc=0.5732 | 
+02-24 13:16:40 [LP epoch 44] train_loss=0.8916 train_acc=0.5989 | val_loss=0.8916 val_acc=0.5732 | 
+02-24 13:16:41 [LP epoch 45] train_loss=0.8897 train_acc=0.6002 | val_loss=0.8897 val_acc=0.5646 | 
+02-24 13:16:43 [LP epoch 46] train_loss=0.8896 train_acc=0.6015 | val_loss=0.8896 val_acc=0.5651 | 
+02-24 13:16:44 [LP epoch 47] train_loss=0.8864 train_acc=0.5993 | val_loss=0.8864 val_acc=0.5659 | 
+02-24 13:16:45 [LP epoch 48] train_loss=0.8859 train_acc=0.6032 | val_loss=0.8859 val_acc=0.5711 | 
+02-24 13:16:46 [LP epoch 49] train_loss=0.8841 train_acc=0.5997 | val_loss=0.8841 val_acc=0.5702 | 
+02-24 13:16:46 Saved linear-probe checkpoint: ./checkpoint\SSF_PU_0224-131025\linear_probe_best.pt (best_val_acc=0.5753)
+02-24 13:16:47 TEST linear-probe: loss=0.9560 acc=0.5854
+02-24 13:16:47 using 1 gpus
+02-24 13:16:47 Dataset class: <class 'data_utils.datasets.PU.PU'>
+02-24 13:16:48 Split sizes: train=21802 val=2336 test=4672, classier=2336
+02-24 13:16:49 Label counts train: Counter({3: 8481, 1: 7718, 0: 3501, 2: 2102})
+02-24 13:16:49 Label counts val:   Counter({3: 909, 1: 827, 0: 375, 2: 225})
+02-24 13:16:50 Label counts test:  Counter({3: 1817, 1: 1654, 0: 750, 2: 451})
+02-24 13:16:50 Label counts classifier:  Counter({3: 909, 1: 827, 0: 375, 2: 225})
+02-24 13:16:50 -----Epoch 0/19-----
+02-24 13:17:06 current lr: 0.01
+02-24 13:17:06 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9949)
+02-24 13:17:06 Epoch 000 Train loss -0.9768 | Val loss -0.9949
+02-24 13:17:06 -----Epoch 1/19-----
+02-24 13:17:23 current lr: 0.0099385
+02-24 13:17:23 Saved best checkpoint to ./checkpoint\SSF_PU_0224-131025\best_pt (val_loss=-0.9960)
+02-24 13:17:23 Epoch 001 Train loss -0.9949 | Val loss -0.9960
+02-24 13:17:23 -----Epoch 2/19-----

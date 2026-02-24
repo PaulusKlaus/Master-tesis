@@ -17,7 +17,7 @@ from utils.train_ML import Trainer
 DATA_DIRS = {
     "CWRU": [r"raw_data/CWRU", 4],
     "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 12],
-    "PU": [r"raw_data/PU", 3],
+    "PU": [r"raw_data/PU", 4],
     "SEU": [r"raw_data/SEU/gearbox", 10],
     "XJTU": [r"raw_data/XJTU/XJTU-SY_Bearing_Datasets/XJTU-SY_Bearing_Datasets", 15]  # TODO: Check this 
 }
@@ -111,7 +111,7 @@ def parse_args():
     parser.add_argument('--eta_min', type=float, default=0.00001, help='learning rate scheduler parameter for cos ')
 
     
-    parser.add_argument('--latent_space', type=int, default=256, help='the size of the latent space' )
+    parser.add_argument('--latent_space', type=int, default=64, help='the size of the latent space' )
 
     args = parser.parse_args()
     return args
@@ -141,11 +141,11 @@ if __name__ == "__main__":
     # save the args
     for k, v in args.__dict__.items():
         logging.info("{}: {}".format(k, v))
-    for i in range (1):
+    for i in range (3):
         i+=1
         trainer = Trainer(args, save_dir)
-        #trainer.train(pretrained=False)
-        trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-122003/best_pt')
+        trainer.train(pretrained=False)
+        #trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-122003/best_pt')
 
 
 

@@ -104,8 +104,8 @@ class ResNet(nn.Module):
 
         self.avgpool = nn.AdaptiveAvgPool1d(1)
         self.flatt = nn.Flatten()
-        self.fc = nn.Linear(512 * block.expansion, out_channel)
-
+        #self.fc = nn.Linear(512 * block.expansion, out_channel)
+        self.fc = nn.Linear(512, out_channel)
         for m in self.modules():
             if isinstance(m, nn.Conv1d):
                 nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
@@ -165,7 +165,7 @@ class ResNet(nn.Module):
         # Avarage pooling and Flattening 
         x = self.avgpool(x)
         x = self.flatt(x)
-        z = self.fc(x)
+        x = self.fc(x)
 
         return x
 
