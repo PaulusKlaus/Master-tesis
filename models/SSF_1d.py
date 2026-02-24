@@ -86,8 +86,8 @@ class SSF(nn.Module):
         )
 
         self.encoder = nn.Sequential(*blocks,
-                                    nn.AdaptiveAvgPool1d(1),
-                                    nn.Flatten()  )
+                                    nn.AdaptiveAvgPool1d(1),# [B, C, L]  →  [B, C, 1]
+                                    nn.Flatten() )  # [B, C, L]  →  [B, C*L]
         
         self.predictor = nn.Sequential(
             nn.Linear(out_channel,8),
@@ -101,7 +101,6 @@ class SSF(nn.Module):
 
         # Encoder step
         z_1, z_2 = f(x_1), f(x_2)
-
         # Predictor step 
         p_1, p_2 = h(z_1), h(z_2)
 

@@ -166,7 +166,7 @@ class Trainer(object):
         else: 
             latent_dim = args.latent_space 
             # Define the classifier
-            self.classifier = models.cls(latent_dim = latent_dim, classes = args.out_channel)
+            self.classifier = models.cls(latent_dim, args.out_channel)
             self.cls_criterion = nn.CrossEntropyLoss()
             self.cls_opt = torch.optim.Adam(self.classifier.parameters(), lr=1e-3, weight_decay=args.weight_decay)
             self.cls_lr = None

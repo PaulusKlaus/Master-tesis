@@ -26,12 +26,13 @@ class CNN_1d(nn.Module):
         prev_in = in_channel 
 
         for i, c in enumerate(conv_channels):
-            layers.append(nn.Conv1d(prev_in,c,kernel_size=3, stride=2, padding=1))
+            layers.append(nn.Conv1d(prev_in, c ,kernel_size=3, stride=2, padding=1))
             layers.append(nn.BatchNorm1d(c))
             layers.append(nn.ReLU(inplace=True))
 
             if i != len(conv_channels)-1:
-                layers.append(nn.MaxPool1d(kernel_size=2, stride=2))
+                layers.append(nn.Identity())
+                #layers.append(nn.MaxPool1d(kernel_size=2, stride=2))
             else:
                 print("Last layer in the convolutional block without maxpooling")
 
@@ -55,7 +56,9 @@ class CNN_1d(nn.Module):
 
 
     def forward(self, x):
-        
+
+        if x.dim() == 2:
+            x = x.unsqueeze(-1)
         x = self.encoder(x)
         x = self.predictor(x)
         x = self.fc(x)
