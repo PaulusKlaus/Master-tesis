@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
+from itertools import repeat
 
 from datasets_aug.sequence_dataset import *  
 from datasets_aug.sequence_aug import *
@@ -17,9 +18,26 @@ label2 = [i for i in range(4, 8)]
 label3 = [i for i in range(8, 12)]
 
 
+HBdata = ["n600_3_2.csv", "n800_3_2.csv","n1000_3_2.csv"]
+or_faults  = ["ob600_2.csv","ob800_2.csv", "ob1000_2.csv"]
+b_fault = [ "tb600_2.csv", "tb800_2.csv", "tb1000_2.csv"]
+ir_faults  = ["ib600_2.csv","ib800_2.csv","ib1000_2.csv",]
+
+samples = (
+    list(zip(HBdata,     repeat("healthy"))) +
+    list(zip(ir_faults,  repeat("inner_race"))) +
+    list(zip(or_faults,  repeat("outer_race"))) +
+    list(zip(b_fault,  repeat("ball"))) 
+)
+
+# stable mapping
+class_to_idx = {"healthy": 0, "inner_race": 1, "outer_race": 2, "ball" : 3}
+
+ALL_DATA  = [sid for sid, _ in samples]
+ALL_LABEL = [class_to_idx[c] for _, c in samples]
+
+
 class JNU(object):
-    num_classes = 12
-    inputchannel = 1
 
     def __init__(self, data_dir, rand, normlizetype, augmentype_1 = "normal", augmentype_2 = "fft"):
         self.data_dir = data_dir
@@ -34,23 +52,14 @@ class JNU(object):
         data = []
         lab =[]
 
-        for i in tqdm(range(len(WC1))):
-            path1 = os.path.join(root, WC1[i])
-            data1, lab1 = self._data_load(path1, label=label1[i])
+        for i in tqdm(range(len(ALL_DATA))):
+            bearing = ALL_DATA[i]
+            label = ALL_LABEL[i]
+
+            path1 = os.path.join(root, bearing)
+            data1, lab1 = self._data_load(path1, label=label)
             data += data1
             lab +=lab1
-
-        for j in tqdm(range(len(WC2))):
-            path2 = os.path.join(root, WC2[j])
-            data2, lab2 = self._data_load(path2, label=label2[j])
-            data += data2
-            lab += lab2
-
-        for k in tqdm(range(len(WC3))):
-            path3 = os.path.join(root, WC3[k])
-            data3, lab3 = self._data_load(path3, label=label3[k])
-            data += data3
-            lab += lab3
 
         return [data, lab]
     
