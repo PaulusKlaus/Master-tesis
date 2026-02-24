@@ -69,7 +69,7 @@ def parse_args():
     # Model parameters 
     parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SSF', help='the name of the model')
         # Data parameters 
-    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="JNU", help="the name of the dataset",
+    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="PU", help="the name of the dataset",
                     )
     parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
     parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='randomcrop', help='Augmentation type on the target pipeline')
@@ -113,6 +113,8 @@ def parse_args():
     
     parser.add_argument('--latent_space', type=int, default=256, help='the size of the latent space' )
 
+    parser.add_argument('--num_blocks_simsiam', type = int, default=3, help = 'Number of convolutional blocks in SSF model')
+
     args = parser.parse_args()
     return args
 
@@ -140,18 +142,21 @@ if __name__ == "__main__":
 
 
     latent_list = [16, 32, 64, 128, 256]
+    conv_blocks = [5, 7, 9]
     for latent in latent_list:
-        for r in range (3):
-            r+=1
-            args.latent_space= latent
+        for blocks in conv_blocks:
+            for r in range (3):
+                r+=1
+                args.latent_space= latent
+                args.num_blocks_ssf = blocks
 
-            # save the args
-            for k, v in args.__dict__.items():
-                logging.info("{}: {}".format(k, v))
+                # save the args
+                for k, v in args.__dict__.items():
+                    logging.info("{}: {}".format(k, v))
 
-            trainer = Trainer(args, save_dir)
-            trainer.train(pretrained=False)
-        #trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-122003/best_pt')
+                trainer = Trainer(args, save_dir)
+                trainer.train(pretrained=False)
+            #trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-122003/best_pt')
 
 
 

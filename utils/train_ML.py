@@ -175,7 +175,7 @@ class Trainer(object):
             
 
 
-        self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim)
+        self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim, num_blocks = args.num_blocks_ssf )
 
         if self.device_count > 1:
                             self.model = torch.nn.DataParallel(self.model)
