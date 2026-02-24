@@ -66,9 +66,9 @@ class SEU(object):
 
         data, lab = [], []
         
-        for i in tqdm(range(len(Bdata))):
-            path1 = os.path.join(bearing_dir,Bdata[i])
-            data1, lab1 = self._data_load(path1, dataname=Bdata[i], label=label_bearing[i])
+        for i in tqdm(range(len(ALL_DATA))):
+            path1 = os.path.join(bearing_dir, ALL_DATA[i])
+            data1, lab1 = self._data_load(path1, dataname=ALL_DATA[i], label=ALL_LABEL[i])
             data += data1
             lab += lab1
 

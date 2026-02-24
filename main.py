@@ -17,8 +17,8 @@ from utils.train_ML import Trainer
 DATA_DIRS = {
     "CWRU": [r"raw_data/CWRU", 4],
     "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 12],
-    "PU": [r"raw_data/PU", 4],
-    "SEU": [r"raw_data/SEU/gearbox", 10],
+    "PU": [r"raw_data/PU", 4], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
+    "SEU": [r"raw_data/SEU/gearbox", 5], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3, "ball" : 4}
     "XJTU": [r"raw_data/XJTU/XJTU-SY_Bearing_Datasets/XJTU-SY_Bearing_Datasets", 15]  # TODO: Check this 
 }
 
@@ -69,7 +69,7 @@ def parse_args():
     # Model parameters 
     parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SSF', help='the name of the model')
         # Data parameters 
-    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="PU", help="the name of the dataset",
+    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="SEU", help="the name of the dataset",
                     )
     parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
     parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='randomcrop', help='Augmentation type on the target pipeline')
