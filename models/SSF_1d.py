@@ -89,11 +89,13 @@ class SSF(nn.Module):
                                     nn.AdaptiveAvgPool1d(1),# [B, C, L]  →  [B, C, 1]
                                     nn.Flatten() )  # [B, C, L]  →  [B, C*L]
         
+        hidden_predictor = int(out_channel * 2)
+
         self.predictor = nn.Sequential(
-            nn.Linear(out_channel,8),
-            nn.BatchNorm1d(8),
+            nn.Linear(out_channel, hidden_predictor),
+            nn.BatchNorm1d(hidden_predictor),
             nn.ReLU(inplace=True),
-            nn.Linear(8,out_channel))
+            nn.Linear(hidden_predictor, out_channel))
 
     def forward( self, x_1, x_2): 
 

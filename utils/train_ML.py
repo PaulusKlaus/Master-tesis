@@ -473,7 +473,7 @@ class Trainer(object):
         return {"best_val_acc": best_acc, "test_acc": test_acc, "ckpt_path": out_path}
 
 
-    def train(self, pretrained =True, continue_from_best_val_loss_checkopoint = False):
+    def train(self, pretrained = True, continue_from_best_val_loss_checkopoint = False, pretrained_dir = None):
         """
         High level training organization
         """
@@ -547,7 +547,7 @@ class Trainer(object):
 # ------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
         else: 
-            best_ckpt_path = './checkpoint/SimSiamResNet_PU_0211-164930/best_pt'
+            best_ckpt_path = pretrained_dir # './checkpoint/SimSiamResNet_PU_0211-164930/best_pt'
             ckpt = torch.load(best_ckpt_path, map_location=self.device)
             self.model.load_state_dict(ckpt["model_state_dict"])
             logging.info(f"Loaded best checkpoint from {best_ckpt_path} " 

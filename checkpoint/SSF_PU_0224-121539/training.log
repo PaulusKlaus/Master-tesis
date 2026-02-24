@@ -1,0 +1,44 @@
+02-24 12:15:39 model_name: SSF
+02-24 12:15:39 data_name: PU
+02-24 12:15:39 aug_1: normal
+02-24 12:15:39 aug_2: randomcrop
+02-24 12:15:39 max_epoch: 20
+02-24 12:15:39 classifier_epoch: 50
+02-24 12:15:39 data_view: TwoViewDataset
+02-24 12:15:39 cuda_device: 0
+02-24 12:15:39 checkpoint_dir: ./checkpoint
+02-24 12:15:39 batch_size: 32
+02-24 12:15:39 data_dir: raw_data/PU
+02-24 12:15:39 out_channel: 3
+02-24 12:15:39 normlizetype: minus_one_one
+02-24 12:15:39 processing_type: RA
+02-24 12:15:39 opt: sgd
+02-24 12:15:39 lr: 0.01
+02-24 12:15:39 momentum: 0.9
+02-24 12:15:39 weight_decay: 1e-05
+02-24 12:15:39 lr_scheduler: cos
+02-24 12:15:39 gamma: 0.1
+02-24 12:15:39 eta_min: 1e-05
+02-24 12:15:39 latent_space: 256
+02-24 12:15:39 task: self_supervised
+02-24 12:15:39 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+02-24 12:15:39 using 1 gpus
+02-24 12:15:39 Dataset class: <class 'data_utils.datasets.PU.PU'>
+02-24 12:15:39 Split sizes: train=10504 val=1125 test=2252, classier=1126
+02-24 12:15:40 Label counts train: Counter({2: 3504, 1: 3500, 0: 3500})
+02-24 12:15:40 Label counts val:   Counter({0: 375, 2: 375, 1: 375})
+02-24 12:15:40 Label counts test:  Counter({2: 751, 0: 751, 1: 750})
+02-24 12:15:40 Label counts classifier:  Counter({2: 376, 0: 375, 1: 375})
+02-24 12:15:41 -----Epoch 0/19-----
+02-24 12:15:50 current lr: 0.01
+02-24 12:15:50 Saved best checkpoint to ./checkpoint\SSF_PU_0224-121539\best_pt (val_loss=-0.9919)
+02-24 12:15:50 Epoch 000 Train loss -0.9574 | Val loss -0.9919
+02-24 12:15:50 -----Epoch 1/19-----
+02-24 12:15:59 current lr: 0.0099385
+02-24 12:15:59 Saved best checkpoint to ./checkpoint\SSF_PU_0224-121539\best_pt (val_loss=-0.9944)
+02-24 12:15:59 Epoch 001 Train loss -0.9929 | Val loss -0.9944
+02-24 12:15:59 -----Epoch 2/19-----
+02-24 12:16:07 current lr: 0.00975553
+02-24 12:16:07 Saved best checkpoint to ./checkpoint\SSF_PU_0224-121539\best_pt (val_loss=-0.9954)
+02-24 12:16:07 Epoch 002 Train loss -0.9943 | Val loss -0.9954
+02-24 12:16:07 -----Epoch 3/19-----

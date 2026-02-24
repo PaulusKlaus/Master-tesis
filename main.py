@@ -17,7 +17,7 @@ from utils.train_ML import Trainer
 DATA_DIRS = {
     "CWRU": [r"raw_data/CWRU", 4],
     "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 12],
-    "PU": [r"raw_data/PU", 4],
+    "PU": [r"raw_data/PU", 3],
     "SEU": [r"raw_data/SEU/gearbox", 10],
     "XJTU": [r"raw_data/XJTU/XJTU-SY_Bearing_Datasets/XJTU-SY_Bearing_Datasets", 15]  # TODO: Check this 
 }
@@ -145,6 +145,7 @@ if __name__ == "__main__":
         i+=1
         trainer = Trainer(args, save_dir)
         trainer.train(pretrained=False)
+        #trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-115856/best_pt')
 
 
 

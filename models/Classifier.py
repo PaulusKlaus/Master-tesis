@@ -26,7 +26,11 @@ class Classifier(nn.Module):
             nn.Linear(hidden, out_features=classes )
         )
 
+
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        
         x = self.layer_1(x)
         z = self.layer_2(x)
+        
         return z
