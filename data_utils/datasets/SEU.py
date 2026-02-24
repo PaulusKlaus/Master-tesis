@@ -4,12 +4,14 @@ from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 from itertools import islice
 from pathlib import Path
+from itertools import repeat
+
 
 from datasets_aug.sequence_dataset import *  
 from datasets_aug.sequence_aug import *
 from .data_utils import *
 
-
+# ----------Old -------
 
 # Data names of 5 bearing fault types under two working conditions
 Bdata = ["ball_20_0.csv","comb_20_0.csv","health_20_0.csv","inner_20_0.csv","outer_20_0.csv","ball_30_2.csv","comb_30_2.csv","health_30_2.csv","inner_30_2.csv","outer_30_2.csv"]
@@ -18,6 +20,28 @@ label_bearing = [i for i in range(0,10)]
 Gdata = ["Chipped_20_0.csv","Health_20_0.csv","Miss_20_0.csv","Root_20_0.csv","Surface_20_0.csv","Chipped_30_2.csv","Health_30_2.csv","Miss_30_2.csv","Root_30_2.csv","Surface_30_2.csv"]
 labe1_gear = [i for i in range(10,20)]
 
+#-------------- NEW----------
+
+
+HBdata = ['health_20_0.csv', "health_30_2.csv",]
+or_faults  = ["outer_20_0.csv", "outer_30_2.csv"]
+b_fault = ['ball_20_0.csv',"ball_30_2.csv",]
+com_faults = ['comb_20_0.csv', "comb_30_2.csv",]
+ir_faults  = ["inner_20_0.csv","inner_30_2.csv",]
+
+samples = (
+    list(zip(HBdata,     repeat("healthy"))) +
+    list(zip(ir_faults,  repeat("inner_race"))) +
+    list(zip(com_faults, repeat("combined"))) +
+    list(zip(or_faults,  repeat("outer_race"))) +
+    list(zip(b_fault,  repeat("ball"))) 
+)
+
+# stable mapping
+class_to_idx = {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3, "ball" : 4}
+
+ALL_DATA  = [sid for sid, _ in samples]
+ALL_LABEL = [class_to_idx[c] for _, c in samples]
 
 
 class SEU(object):

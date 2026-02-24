@@ -111,7 +111,7 @@ def parse_args():
     parser.add_argument('--eta_min', type=float, default=0.00001, help='learning rate scheduler parameter for cos ')
 
     
-    parser.add_argument('--latent_space', type=int, default=64, help='the size of the latent space' )
+    parser.add_argument('--latent_space', type=int, default=256, help='the size of the latent space' )
 
     args = parser.parse_args()
     return args
@@ -138,13 +138,19 @@ if __name__ == "__main__":
     # set the logger
     setlogger(os.path.join(save_dir, 'training.log'))
 
-    # save the args
-    for k, v in args.__dict__.items():
-        logging.info("{}: {}".format(k, v))
-    for i in range (3):
-        i+=1
-        trainer = Trainer(args, save_dir)
-        trainer.train(pretrained=False)
+
+    latent_list = [16, 32, 64, 128, 256]
+    for latent in latent_list:
+        for r in range (3):
+            r+=1
+            args.latent_space= latent
+
+            # save the args
+            for k, v in args.__dict__.items():
+                logging.info("{}: {}".format(k, v))
+
+            trainer = Trainer(args, save_dir)
+            trainer.train(pretrained=False)
         #trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-122003/best_pt')
 
 
