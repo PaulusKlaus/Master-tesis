@@ -90,13 +90,13 @@ class Trainer(object):
         Dataset = getattr(datasets, args.data_name) # PU, CWRU ...
         dataset_view = getattr(views, args.data_view) # OneViewDataset, TwoViewDataset
 
-        print("Dataset: ", Dataset)
         logging.info("Dataset class: %s", Dataset)
-        self.train_ds, self.val_ds, self.test_ds = Dataset(data_dir = args.data_dir, 
+        self.train_ds, self.val_ds, self.test_ds, self.classifier_dataset = Dataset(data_dir = args.data_dir, 
                                                                                       normlizetype= args.normlizetype,
                                                                                       augmentype_1 = args.aug_1,
                                                                                       augmentype_2 = args.aug_2,
-                                                                                      rand = 42).data_prepare(split = args.processing_type,
+                                                                                      rand = 42  #random split of the data 
+                                                                                      ).data_prepare(split = args.processing_type,
                                                                                                               view = dataset_view)
         # ---- DataLoader -----
         self.train_loader = DataLoader(self.train_ds, batch_size=args.batch_size, shuffle=False)
@@ -105,13 +105,10 @@ class Trainer(object):
         self.test_loader = DataLoader(self.test_ds, batch_size=args.batch_size, shuffle=False)
         logging.info("Split sizes: train=%d val=%d test=%d",
                     len(self.train_ds), len(self.val_ds), len(self.test_ds))
-
         logging.info("Label counts train: %s", count_labels(self.train_loader))
         logging.info("Label counts val:   %s", count_labels(self.val_loader))
         logging.info("Label counts test:  %s", count_labels(self.test_loader))
-        print("train uniq:", uniq(self.train_loader))
-        print("val uniq:", uniq(self.val_loader))
-        print("test uniq:", uniq(self.test_loader))
+
 
     def _optimizer_lr_sch(self):
         args = self.args
@@ -137,6 +134,7 @@ class Trainer(object):
             self.lr_scheduler = None
         else:
             raise Exception("lr schedule not implement")
+        
 
     def setup(self):
         """
@@ -165,14 +163,15 @@ class Trainer(object):
         if args.model_name in {"CNN_1d", "resnet18_1d", "MLP"}:
             latent_dim = args.out_channel
         else: 
-            latent_dim = 16 
+            latent_dim = args.latent_space 
             # Define the classifier
-            self.classifier = models.cls(latent_dim = latent_dim, classes = args.out_channel )
-            #self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01, momentum=args.momentum, weight_decay=args.weight_decay)
-            #self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = args.classifier_epoch, eta_min=1e-05 )
+            self.classifier = models.cls(latent_dim = latent_dim, classes = args.out_channel)
             self.cls_criterion = nn.CrossEntropyLoss()
             self.cls_opt = torch.optim.Adam(self.classifier.parameters(), lr=1e-3, weight_decay=args.weight_decay)
             self.cls_lr = None
+            #self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01, momentum=args.momentum, weight_decay=args.weight_decay)
+            #self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = args.classifier_epoch, eta_min=1e-05 )
+            
 
 
         self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim)

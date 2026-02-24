@@ -96,6 +96,7 @@ class JNU(object):
                 random_state=self.random_state,
                 stratify=temp_pd["label"],
             )
+            
         elif split == "O_A":
             # ordered split (your custom)
             train_pd, temp_pd = train_test_split_order(data_pd, test_size=0.30)
