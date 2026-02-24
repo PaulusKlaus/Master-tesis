@@ -365,9 +365,10 @@ class Trainer(object):
 
         for epoch in range (args.classifier_epoch):
             classifier.train()
-            tot_loss = 0.0
-            tot_correct = 0
+            epoch_loss = 0.0
+            epoch_correct = 0
             tot_samp = 0
+
             # TODO: I think i should train only on a part of the trainin g loader of a part of the validation loader ???
             loop = tqdm.tqdm(self.classifier_loader, desc = f"Classifier train {epoch}", leave=False)
             for x1, x2, y in loop:
@@ -376,23 +377,32 @@ class Trainer(object):
                 optimizer.zero_grad()
 
                 with torch.no_grad():
+                    # Extract features from the Simsiam encoder head
                     z1, z2, p1, p2 = encoder(x1, x2)
 
                 outputs = classifier(z1)
 
                 loss = criterion(outputs, y)
                 preds = outputs.argmax(dim=1)
+
                 loss.backward()
                 optimizer.step()
 
                 bs = y.size(0)
-                tot_loss += loss.item()*bs
+
+                epoch_loss += loss.item() * bs
                 tot_samp += bs
-                tot_correct += (preds == y ).sum().item()
-                loop.set_postfix(loss=f"{tot_loss/tot_samp:.4f}", acc=f"{tot_correct/tot_samp:.4f}")
+                avg_loss = epoch_loss / tot_samp
+
+                epoch_correct += (preds == y ).sum().item()
+                avg_correct = epoch_correct / tot_samp
+                
+                loop.set_postfix(loss=f"{avg_loss:.4f}", acc=f"{avg_correct:.4f}")
             
-            train_loss = tot_loss / max(1, tot_samp)
-            train_acc  = tot_correct / max(1, tot_samp)
+            train_loss = epoch_loss / max(1, tot_samp)
+            train_acc  = epoch_correct / max(1, tot_samp)
+
+
             # --- validation -----
             classifier.eval()
             val_correct = 0 
@@ -407,15 +417,17 @@ class Trainer(object):
                     z1, z2, p1, p2 = encoder(x1, x2)
                     outputs = classifier(z1)
                     loss = criterion(outputs, y)
+                    preds = outputs.argmax(dim = 1)
 
                     bs = y.size(0)
                     val_loss += loss.item() * bs
                     val_samp += bs
-                    val_correct += (outputs.argmax(1) == y).sum().item()
+                    val_correct += (preds == y).sum().item()
+
 
                     vloop.set_postfix(val_loss=f"{val_loss/val_samp:.4f}",
                                     val_acc=f"{val_correct/val_samp:.4f}")
-
+            val_loss = epoch_loss / max(1, val_samp)
             val_acc = val_correct / max(1, val_samp)
 
             logging.info(
@@ -496,12 +508,9 @@ class Trainer(object):
             best_ckpt_path = os.path.join(self.save_dir, "best_pt")
 
             for epoch in range(self.start_epoch, args.max_epoch):
-
                 logging.info('-'*5 + 'Epoch {}/{}'.format(epoch, args.max_epoch - 1) + '-'*5)
-                
                 train_metric = self._train_epoch(epoch)
                 val_metric = self._val_test_epoch()
-
                 # Update the learning rate
                 if self.lr_scheduler is not None:
                     # self.lr_scheduler.step(epoch)
@@ -525,7 +534,6 @@ class Trainer(object):
                         best_ckpt_path,
                     )
                     logging.info(f"Saved best checkpoint to {best_ckpt_path} ({select_key}={best_value:.4f})")
-
 
                 # ----- logging (conditional acc) -----
                 msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f}"

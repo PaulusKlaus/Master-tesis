@@ -141,11 +141,11 @@ if __name__ == "__main__":
     # save the args
     for k, v in args.__dict__.items():
         logging.info("{}: {}".format(k, v))
-    for i in range (2):
+    for i in range (1):
         i+=1
         trainer = Trainer(args, save_dir)
-        trainer.train(pretrained=False)
-        #trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-115856/best_pt')
+        #trainer.train(pretrained=False)
+        trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-122003/best_pt')
 
 
 
