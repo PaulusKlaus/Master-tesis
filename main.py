@@ -113,7 +113,7 @@ def parse_args():
     
     parser.add_argument('--latent_space', type=int, default=256, help='the size of the latent space' )
 
-    parser.add_argument('--num_blocks_simsiam', type = int, default=3, help = 'Number of convolutional blocks in SSF model')
+    parser.add_argument('--num_blocks_ssf', type = int, default=3, help = 'Number of convolutional blocks in SSF model')
 
     args = parser.parse_args()
     return args

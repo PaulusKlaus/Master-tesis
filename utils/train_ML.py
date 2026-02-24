@@ -427,7 +427,7 @@ class Trainer(object):
 
                     vloop.set_postfix(val_loss=f"{val_loss/val_samp:.4f}",
                                     val_acc=f"{val_correct/val_samp:.4f}")
-            val_loss = epoch_loss / max(1, val_samp)
+            val_loss = val_loss / max(1, val_samp)
             val_acc = val_correct / max(1, val_samp)
 
             logging.info(
@@ -494,7 +494,9 @@ class Trainer(object):
         self.setup()
 
         if pretrained == False: 
-
+            patience = 5
+            min_delta = 0.0
+            no_improve = 0
             # pick selection metric based on task
             if args.task == "supervised":
                 best_value = -math.inf
@@ -519,8 +521,19 @@ class Trainer(object):
 
                 # ----- save best checkpoint -----
                 current_value = val_metric[select_key]
-                if better(current_value, best_value):
+
+                improved = False
+                if args.task == "supervised":
+                    # want higher val_acc
+                    improved = current_value > (best_value + min_delta)
+                else:
+                    # want lower val_loss
+                    improved = current_value < (best_value - min_delta)
+
+                if improved:
                     best_value = current_value
+                    no_improve = 0
+
                     torch.save(
                         {
                             "epoch": epoch,
@@ -534,6 +547,14 @@ class Trainer(object):
                         best_ckpt_path,
                     )
                     logging.info(f"Saved best checkpoint to {best_ckpt_path} ({select_key}={best_value:.4f})")
+                else:
+                    no_improve += 1
+                    logging.info(f"No improvement in {select_key} for {no_improve}/{patience} epochs.")
+                
+                # --- early stop ---
+                if no_improve >= patience:
+                    logging.info(f"Early stopping at epoch {epoch} (best {select_key}={best_value:.4f}).")
+                    break
 
                 # ----- logging (conditional acc) -----
                 msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f}"
