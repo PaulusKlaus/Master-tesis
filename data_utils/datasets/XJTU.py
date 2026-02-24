@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
-
+from itertools import repeat
 
 from datasets_aug.sequence_dataset import *  #dataset 
 from datasets_aug.sequence_aug import *
@@ -14,7 +14,23 @@ label2 = [i for i in range(5,10)]
 label3 = [i for i in range(10,15)]
 #--------------------------------------------------------------------------------------------------------------------
 
+HBdata = ["n600_3_2.csv", "n800_3_2.csv","n1000_3_2.csv"]
+or_faults  = ["ob600_2.csv","ob800_2.csv", "ob1000_2.csv"]
+b_fault = [ "tb600_2.csv", "tb800_2.csv", "tb1000_2.csv"]
+ir_faults  = ["ib600_2.csv","ib800_2.csv","ib1000_2.csv",]
 
+samples = (
+    list(zip(HBdata,     repeat("healthy"))) +
+    list(zip(ir_faults,  repeat("inner_race"))) +
+    list(zip(or_faults,  repeat("outer_race"))) +
+    list(zip(b_fault,  repeat("ball"))) 
+)
+
+# stable mapping
+class_to_idx = {"healthy": 0, "inner_race": 1, "outer_race": 2, "ball" : 3}
+
+ALL_DATA  = [sid for sid, _ in samples]
+ALL_LABEL = [class_to_idx[c] for _, c in samples]
 
 class XJTU(object):
 
