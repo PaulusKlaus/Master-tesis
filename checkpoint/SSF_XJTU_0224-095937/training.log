@@ -1,0 +1,26 @@
+02-24 09:59:37 model_name: SSF
+02-24 09:59:37 data_name: XJTU
+02-24 09:59:37 aug_1: normal
+02-24 09:59:37 aug_2: randomcrop
+02-24 09:59:37 max_epoch: 20
+02-24 09:59:37 classifier_epoch: 50
+02-24 09:59:37 data_view: TwoViewDataset
+02-24 09:59:37 cuda_device: 0
+02-24 09:59:37 checkpoint_dir: ./checkpoint
+02-24 09:59:37 batch_size: 32
+02-24 09:59:37 data_dir: raw_data/XJTU/XJTU-SY_Bearing_Datasets
+02-24 09:59:37 out_channel: 10
+02-24 09:59:37 normlizetype: minus_one_one
+02-24 09:59:37 processing_type: RA
+02-24 09:59:37 opt: sgd
+02-24 09:59:37 lr: 0.01
+02-24 09:59:37 momentum: 0.9
+02-24 09:59:37 weight_decay: 1e-05
+02-24 09:59:37 lr_scheduler: cos
+02-24 09:59:37 gamma: 0.1
+02-24 09:59:37 eta_min: 1e-05
+02-24 09:59:37 latent_space: 256
+02-24 09:59:37 task: self_supervised
+02-24 09:59:37 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+02-24 09:59:37 using 1 gpus
+02-24 09:59:37 Dataset class: <class 'data_utils.datasets.XJTU.XJTU'>

@@ -1,0 +1,109 @@
+02-24 10:04:40 model_name: SSF
+02-24 10:04:40 data_name: XJTU
+02-24 10:04:40 aug_1: normal
+02-24 10:04:40 aug_2: randomcrop
+02-24 10:04:40 max_epoch: 20
+02-24 10:04:40 classifier_epoch: 50
+02-24 10:04:40 data_view: TwoViewDataset
+02-24 10:04:40 cuda_device: 0
+02-24 10:04:40 checkpoint_dir: ./checkpoint
+02-24 10:04:40 batch_size: 32
+02-24 10:04:40 data_dir: raw_data/XJTU/XJTU-SY_Bearing_Datasets/XJTU-SY_Bearing_Datasets
+02-24 10:04:40 out_channel: 10
+02-24 10:04:40 normlizetype: minus_one_one
+02-24 10:04:40 processing_type: RA
+02-24 10:04:40 opt: sgd
+02-24 10:04:40 lr: 0.01
+02-24 10:04:40 momentum: 0.9
+02-24 10:04:40 weight_decay: 1e-05
+02-24 10:04:40 lr_scheduler: cos
+02-24 10:04:40 gamma: 0.1
+02-24 10:04:40 eta_min: 1e-05
+02-24 10:04:40 latent_space: 256
+02-24 10:04:40 task: self_supervised
+02-24 10:04:40 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+02-24 10:04:40 using 1 gpus
+02-24 10:04:40 Dataset class: <class 'data_utils.datasets.XJTU.XJTU'>
+02-24 10:04:41 Split sizes: train=1344 val=144 test=288, classier=144
+02-24 10:04:41 Label counts train: Counter({5: 90, 14: 90, 13: 90, 9: 90, 11: 90, 0: 90, 1: 90, 2: 90, 8: 90, 3: 89, 6: 89, 7: 89, 10: 89, 4: 89, 12: 89})
+02-24 10:04:41 Label counts val:   Counter({4: 10, 0: 10, 7: 10, 13: 10, 12: 10, 3: 10, 10: 10, 11: 10, 2: 10, 5: 9, 14: 9, 9: 9, 8: 9, 1: 9, 6: 9})
+02-24 10:04:41 Label counts test:  Counter({7: 20, 10: 20, 6: 20, 11: 19, 5: 19, 9: 19, 14: 19, 8: 19, 0: 19, 12: 19, 2: 19, 13: 19, 4: 19, 3: 19, 1: 19})
+02-24 10:04:41 Label counts classifier:  Counter({9: 10, 8: 10, 1: 10, 6: 10, 5: 10, 3: 10, 4: 10, 12: 10, 14: 10, 2: 9, 0: 9, 11: 9, 10: 9, 7: 9, 13: 9})
+02-24 10:04:42 -----Epoch 0/19-----
+02-24 10:04:44 current lr: 0.01
+02-24 10:04:44 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.1409)
+02-24 10:04:44 Epoch 000 Train loss -0.0934 | Val loss -0.1409
+02-24 10:04:44 -----Epoch 1/19-----
+02-24 10:04:45 current lr: 0.0099385
+02-24 10:04:45 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.3769)
+02-24 10:04:45 Epoch 001 Train loss -0.2898 | Val loss -0.3769
+02-24 10:04:45 -----Epoch 2/19-----
+02-24 10:04:46 current lr: 0.00975553
+02-24 10:04:46 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.5293)
+02-24 10:04:46 Epoch 002 Train loss -0.4682 | Val loss -0.5293
+02-24 10:04:46 -----Epoch 3/19-----
+02-24 10:04:47 current lr: 0.00945558
+02-24 10:04:47 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.6248)
+02-24 10:04:47 Epoch 003 Train loss -0.6029 | Val loss -0.6248
+02-24 10:04:47 -----Epoch 4/19-----
+02-24 10:04:48 current lr: 0.00904604
+02-24 10:04:48 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.7124)
+02-24 10:04:48 Epoch 004 Train loss -0.6956 | Val loss -0.7124
+02-24 10:04:48 -----Epoch 5/19-----
+02-24 10:04:49 current lr: 0.008537
+02-24 10:04:49 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.7553)
+02-24 10:04:49 Epoch 005 Train loss -0.7551 | Val loss -0.7553
+02-24 10:04:49 -----Epoch 6/19-----
+02-24 10:04:50 current lr: 0.00794099
+02-24 10:04:50 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.7921)
+02-24 10:04:50 Epoch 006 Train loss -0.7946 | Val loss -0.7921
+02-24 10:04:50 -----Epoch 7/19-----
+02-24 10:04:51 current lr: 0.00727268
+02-24 10:04:51 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.8198)
+02-24 10:04:51 Epoch 007 Train loss -0.8215 | Val loss -0.8198
+02-24 10:04:51 -----Epoch 8/19-----
+02-24 10:04:52 current lr: 0.00654854
+02-24 10:04:52 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.8397)
+02-24 10:04:52 Epoch 008 Train loss -0.8409 | Val loss -0.8397
+02-24 10:04:52 -----Epoch 9/19-----
+02-24 10:04:53 current lr: 0.00578639
+02-24 10:04:53 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.8485)
+02-24 10:04:53 Epoch 009 Train loss -0.8541 | Val loss -0.8485
+02-24 10:04:53 -----Epoch 10/19-----
+02-24 10:04:54 current lr: 0.005005
+02-24 10:04:54 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.8544)
+02-24 10:04:54 Epoch 010 Train loss -0.8616 | Val loss -0.8544
+02-24 10:04:54 -----Epoch 11/19-----
+02-24 10:04:55 current lr: 0.00422361
+02-24 10:04:55 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.8659)
+02-24 10:04:55 Epoch 011 Train loss -0.8676 | Val loss -0.8659
+02-24 10:04:55 -----Epoch 12/19-----
+02-24 10:04:56 current lr: 0.00346146
+02-24 10:04:56 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.8698)
+02-24 10:04:56 Epoch 012 Train loss -0.8724 | Val loss -0.8698
+02-24 10:04:56 -----Epoch 13/19-----
+02-24 10:04:57 current lr: 0.00273732
+02-24 10:04:57 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.8729)
+02-24 10:04:57 Epoch 013 Train loss -0.8757 | Val loss -0.8729
+02-24 10:04:57 -----Epoch 14/19-----
+02-24 10:04:58 current lr: 0.00206901
+02-24 10:04:58 Epoch 014 Train loss -0.8776 | Val loss -0.8668
+02-24 10:04:58 -----Epoch 15/19-----
+02-24 10:04:59 current lr: 0.001473
+02-24 10:04:59 Epoch 015 Train loss -0.8790 | Val loss -0.8719
+02-24 10:04:59 -----Epoch 16/19-----
+02-24 10:05:00 current lr: 0.00096396
+02-24 10:05:00 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.8762)
+02-24 10:05:00 Epoch 016 Train loss -0.8809 | Val loss -0.8762
+02-24 10:05:00 -----Epoch 17/19-----
+02-24 10:05:01 current lr: 0.000554422
+02-24 10:05:01 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.8785)
+02-24 10:05:01 Epoch 017 Train loss -0.8817 | Val loss -0.8785
+02-24 10:05:01 -----Epoch 18/19-----
+02-24 10:05:02 current lr: 0.000254473
+02-24 10:05:02 Saved best checkpoint to ./checkpoint\SSF_XJTU_0224-100440\best_pt (val_loss=-0.8785)
+02-24 10:05:02 Epoch 018 Train loss -0.8821 | Val loss -0.8785
+02-24 10:05:02 -----Epoch 19/19-----
+02-24 10:05:03 current lr: 7.14967e-05
+02-24 10:05:03 Epoch 019 Train loss -0.8825 | Val loss -0.8781
+02-24 10:05:03 TEST (last): loss -0.8768

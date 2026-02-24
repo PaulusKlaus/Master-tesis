@@ -12,28 +12,6 @@ from .data_utils import *
 label1 = [i for i in range(0,5)]
 label2 = [i for i in range(5,10)]
 label3 = [i for i in range(10,15)]
-
-
-
-
-def data_transforms(dataset_type="train", normlize_type="-1-1"):
-    transforms = {
-        'train': Compose([
-            Reshape(),
-            Normalize(normlize_type),
-            Retype()
-
-        ]),
-        'val': Compose([
-            Reshape(),
-            Normalize(normlize_type),
-            Retype()
-        ])
-    }
-    return transforms[dataset_type]
-
-
-
 #--------------------------------------------------------------------------------------------------------------------
 
 

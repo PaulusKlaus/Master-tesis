@@ -19,7 +19,7 @@ DATA_DIRS = {
     "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 12],
     "PU": [r"raw_data/PU", 4],
     "SEU": [r"raw_data/SEU/gearbox", 10],
-    "XJTU": [r"raw_data/XJTU", 10]  # TODO: Check this 
+    "XJTU": [r"raw_data/XJTU/XJTU-SY_Bearing_Datasets/XJTU-SY_Bearing_Datasets", 15]  # TODO: Check this 
 }
 
 MODEL_CONFIG = {
@@ -69,7 +69,7 @@ def parse_args():
     # Model parameters 
     parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SSF', help='the name of the model')
         # Data parameters 
-    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="SEU", help="the name of the dataset",
+    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="XJTU", help="the name of the dataset",
                     )
     parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
     parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='randomcrop', help='Augmentation type on the target pipeline')
