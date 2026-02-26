@@ -554,7 +554,7 @@ class Trainer(object):
                 # --- early stop ---
                 if no_improve >= patience:
                     logging.info(f"Early stopping at epoch {epoch} (best {select_key}={best_value:.4f}).")
-                    break
+                    #break
 
                 # ----- logging (conditional acc) -----
                 msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f}"
