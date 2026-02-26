@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-path = "checkpoint\SSF_PU_0226-083310\training.log"   # <-- adjust path if needed
+path = "checkpoint/SSF_PU_0226-083310/training.log"   # <-- adjust path if needed
 
 # ---------- Regex patterns ----------
 latent_re = re.compile(r'latent.*?(\d+)', re.IGNORECASE)
