@@ -141,7 +141,7 @@ if __name__ == "__main__":
     setlogger(os.path.join(save_dir, 'training.log'))
 
 
-    latent_list = [ 32, 64, 128, 192, 256]
+    latent_list = [ 64, 128, 192, 256]
     conv_blocks = [3, 5, 7, 9]
     for blocks in conv_blocks:
         for latent in latent_list:
