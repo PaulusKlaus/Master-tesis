@@ -142,7 +142,7 @@ if __name__ == "__main__":
 
 
     latent_list = [ 64, 128, 192, 256]
-    conv_blocks = [3, 5, 7, 9]
+    conv_blocks = [ 4, 5, 6, 7]
     for blocks in conv_blocks:
         for latent in latent_list:
             for r in range (3):
