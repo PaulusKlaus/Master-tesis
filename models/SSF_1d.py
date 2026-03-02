@@ -55,7 +55,7 @@ class SSF(nn.Module):
         in_channel: int = 1,
         out_channel: int = 16,
         num_blocks: int = 5,
-        hidden_channels: int = 128,
+        hidden_channels: int = 96,
     ):
         super().__init__()
 

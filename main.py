@@ -17,7 +17,7 @@ from utils.train_ML import Trainer
 DATA_DIRS = {
     "CWRU": [r"raw_data/CWRU", 4],
     "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 4], # {"healthy": 0, "inner_race": 1, "outer_race": 2, "ball" : 3}
-    "PU": [r"raw_data/PU", 3], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
+    "PU": [r"raw_data/PU", 4], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
     "SEU": [r"raw_data/SEU/gearbox", 5], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3, "ball" : 4}
     "XJTU": [r"raw_data/XJTU/XJTU-SY_Bearing_Datasets/XJTU-SY_Bearing_Datasets", 15]  # TODO: Check this 
 }
@@ -72,7 +72,7 @@ def parse_args():
     parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="PU", help="the name of the dataset",
                     )
     parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
-    parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='gaussian', help='Augmentation type on the target pipeline')
+    parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='randomcrop', help='Augmentation type on the target pipeline')
     # save, load and display information
     parser.add_argument('--max_epoch', type=int, default=max_epoc, help='max number of epoch')
     parser.add_argument('--classifier_epoch', type=int, default=50, help='max number of epoch')
