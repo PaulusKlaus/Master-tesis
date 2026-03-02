@@ -17,7 +17,7 @@ from utils.train_ML import Trainer
 DATA_DIRS = {
     "CWRU": [r"raw_data/CWRU", 4],
     "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 4], # {"healthy": 0, "inner_race": 1, "outer_race": 2, "ball" : 3}
-    "PU": [r"raw_data/PU", 4], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
+    "PU": [r"raw_data/PU", 3], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
     "SEU": [r"raw_data/SEU/gearbox", 5], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3, "ball" : 4}
     "XJTU": [r"raw_data/XJTU/XJTU-SY_Bearing_Datasets/XJTU-SY_Bearing_Datasets", 15]  # TODO: Check this 
 }

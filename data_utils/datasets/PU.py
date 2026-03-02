@@ -28,7 +28,7 @@ from .data_utils import *
 # Data split suggested by the PU paper 
 HBdata = ['K001',"K002",'K003','K004','K005']
 or_faults  = ['KA04','KA15','KA16','KA22','KA30']
-com_faults = ['KB23','KB24','KB27']
+#com_faults = ['KB23','KB24','KB27']
 ir_faults  = ['KI04','KI14','KI16','KI18','KI21']
 
 
@@ -36,12 +36,12 @@ ir_faults  = ['KI04','KI14','KI16','KI18','KI21']
 samples = (
     list(zip(HBdata,     repeat("healthy"))) +
     list(zip(ir_faults,  repeat("inner_race"))) +
-    list(zip(com_faults, repeat("combined"))) +
+    #list(zip(com_faults, repeat("combined"))) +
     list(zip(or_faults,  repeat("outer_race")))
 )
 
 # stable mapping
-class_to_idx = {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
+class_to_idx = {"healthy": 0, "inner_race": 1, "outer_race": 2} #  "outer_race": 3
 #class_to_idx = {"healthy": 0, "inner_race": 1,  "outer_race": 2}
 
 
