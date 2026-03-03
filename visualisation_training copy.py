@@ -7,22 +7,17 @@ import matplotlib.pyplot as plt
 paths = [
     #"checkpoint/SSF_PU_0224-134536/training.log",  #Not working
     "checkpoint/SSF_PU_0224-154807/training.log", # Correlation between latent space and depth of the model on all of the data hidden size 258          normal , random crop
-    "checkpoint/SSF_PU_0226-083310/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE hidden size 258
-    "checkpoint/SSF_PU_0226-131358/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 128 
+    #"checkpoint/SSF_PU_0226-083310/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE hidden size 258
+    "checkpoint/SSF_PU_0226-131358/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 128       --------------STANDARD--------------------
    # "checkpoint/SSF_PU_0226-132229/training.log",  # Correlation between latent space and depth of the model ONLY REAL DAMAGE (without combined damage) Hidden size 128 
-    #"checkpoint/SSF_PU_0302-085542/training.log",  # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 128          NORMAL Gausian
+    "checkpoint/SSF_PU_0302-085542/training.log",  # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 128          NORMAL Gausian
     "checkpoint/SSF_PU_0302-141641/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 96 
     "checkpoint/SSF_PU_0302-174623/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 64
-     
-
-
+    "checkpoint/SSF_PU_0302-214830/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 32
 ]
 
 
 def parse_training_log(path):
-    import re
-    import numpy as np
-    import pandas as pd
 
     latent_re = re.compile(r'latent.*?(\d+)', re.IGNORECASE)
     blocks_re = re.compile(r'num_blocks_ssf.*?(\d+)', re.IGNORECASE)
@@ -78,6 +73,27 @@ def parse_training_log(path):
     return df
 
 
+# =========================================================
+# Calculation of the best 
+
+# =========================================================
+
+results = []
+
+for path in paths:
+    df = parse_training_log(path)
+
+    results.append({
+        "model": path.split("/")[-2],
+        "mean_acc": df["best_val_acc"].mean(),
+        "std_acc": df["best_val_acc"].std(),
+        "mean_loss": df["best_val_loss"].mean(),
+        "std_loss": df["best_val_loss"].std(),
+    })
+
+summary_df = pd.DataFrame(results)
+print(summary_df)
+
 
 # =========================================================
 # 📈 Scatter Plots
@@ -95,7 +111,9 @@ plt.xlabel("latent_dim")
 plt.ylabel("best_val_acc")
 plt.title("Latent Dimension vs Best Validation Accuracy")
 plt.legend()
-plt.show()
+
+plt.savefig("figures/training_vis/1_latent_vs_val_acc.pdf", bbox_inches="tight")
+#plt.show()
 
 
 
@@ -119,8 +137,7 @@ plt.xlabel("latent_dim")
 plt.ylabel("best_val_loss")
 plt.title("Latent Dimension vs Best Validation Loss")
 plt.legend()
-plt.show()
-
+plt.savefig("figures/training_vis/2_latent_vs_val_loss.pdf", bbox_inches="tight")
 
 # 3️⃣ num_blocks_ssf vs best val acc
 
@@ -139,7 +156,7 @@ plt.xlabel("num_blocks_ssf")
 plt.ylabel("best_val_acc")
 plt.title("num_blocks_ssf vs Best Validation Accuracy")
 plt.legend()
-plt.show()
+plt.savefig("figures/training_vis/3_blocks_vs_val_acc.pdf", bbox_inches="tight")
 
 # 4️⃣ num_blocks_ssf vs best val loss
 
@@ -158,4 +175,4 @@ plt.xlabel("num_blocks_ssf")
 plt.ylabel("best_val_loss")
 plt.title("num_blocks_ssf vs Best Validation Loss")
 plt.legend()
-plt.show()
+plt.savefig("figures/training_vis/4_blocks_vs_val_loss.pdf", bbox_inches="tight")
