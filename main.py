@@ -77,7 +77,7 @@ def parse_args():
     parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='randomcrop', help='Augmentation type on the target pipeline')
     # save, load and display information
     parser.add_argument('--max_epoch', type=int, default=max_epoc, help='max number of epoch')
-    parser.add_argument('--classifier_epoch', type=int, default=70, help='max number of epoch')
+    parser.add_argument('--classifier_epoch', type=int, default=50, help='max number of epoch')
 
     parser.add_argument('--data_view', type=str, default=None, help='Dataset view with either one or two tensors')
     
@@ -115,7 +115,7 @@ def parse_args():
     
     parser.add_argument('--latent_space', type=int, default=96, help='the size of the latent space' )
 
-    parser.add_argument('--num_blocks_ssf', type = int, default=5, help = 'Number of convolutional blocks in SSF model')
+    parser.add_argument('--num_blocks_ssf', type = int, default=None, help = 'Number of convolutional blocks in SSF model')
 
     args = parser.parse_args()
     return args

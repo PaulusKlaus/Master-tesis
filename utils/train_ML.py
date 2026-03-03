@@ -99,11 +99,11 @@ class Trainer(object):
                                                                                       ).data_prepare(split = args.processing_type,
                                                                                                               view = dataset_view)
         # ---- DataLoader -----
-        self.train_loader = DataLoader(self.train_ds, batch_size=args.batch_size, shuffle=False)
+        self.train_loader = DataLoader(self.train_ds, batch_size=args.batch_size, shuffle=False, drop_last=True)
         #drop_last=True,              # keep pairs aligned for contrastive loss
-        self.val_loader = DataLoader(self.val_ds, batch_size=args.batch_size, shuffle=False)
+        self.val_loader = DataLoader(self.val_ds, batch_size=args.batch_size, shuffle=False, drop_last=True)
         self.test_loader = DataLoader(self.test_ds, batch_size=args.batch_size, shuffle=False)
-        self.classifier_loader = DataLoader(self.classifier_ds, batch_size=args.batch_size, shuffle=False)
+        self.classifier_loader = DataLoader(self.classifier_ds, batch_size=args.batch_size, shuffle=False, drop_last=True)
         logging.info("Split sizes: train=%d val=%d test=%d, classier=%d",
                     len(self.train_ds), len(self.val_ds), len(self.test_ds), len(self.classifier_ds))
         logging.info("Label counts train: %s", count_labels(self.train_loader))
@@ -174,8 +174,10 @@ class Trainer(object):
             #self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = args.classifier_epoch, eta_min=1e-05 )
             
 
-
-        self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim, num_blocks = args.num_blocks_ssf )
+        if args.num_blocks_ssf != None:
+            self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim, num_blocks = args.num_blocks_ssf )
+        else:
+            self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim)
 
         if self.device_count > 1:
                             self.model = torch.nn.DataParallel(self.model)
@@ -605,7 +607,9 @@ class Trainer(object):
 
         encoder = self.model.eval()
 
-        self._train_classifier(frozen_encoder = encoder)
+        if args.task == "supervised":
+            self._train_classifier(frozen_encoder = encoder)
+        
          
 
         

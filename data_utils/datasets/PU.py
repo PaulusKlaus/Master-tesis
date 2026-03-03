@@ -76,15 +76,15 @@ class PU(object):
             bearing = ALL_DATA[k]
             label = ALL_LABEL[k]
 
-        for i in range(1, 10):
-            name = f"{state}_{bearing}_{i}"
-            d, l = self._data_load(
-                os.path.join(self.data_dir, bearing, f"{name}.mat"),
-                name=name,
-                label=label
-            )
-            data += d
-            lab += l
+            for i in range(1, 10):
+                name = f"{state}_{bearing}_{i}"
+                d, l = self._data_load(
+                    os.path.join(self.data_dir, bearing, f"{name}.mat"),
+                    name=name,
+                    label=label
+                )
+                data += d
+                lab += l
 
             
 
@@ -140,7 +140,7 @@ class PU(object):
             )
             val_pd, classifier_pd = train_test_split(
                 val_temp,
-                test_size=0.5,
+                test_size=0.1,
                 random_state=self.random_state,
                 stratify=val_temp["label"],
             )

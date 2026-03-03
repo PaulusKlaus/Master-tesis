@@ -20,7 +20,7 @@ class CNN_1d(nn.Module):
         # ----   The Encoder of the CNN   -----
         if conv_channels == None:
             # Default convolutional structure
-            conv_channels = [16, 32, 64, 128]
+            conv_channels = [96, 24]
 
         layers = []
         prev_in = in_channel 
