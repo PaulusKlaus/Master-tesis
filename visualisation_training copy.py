@@ -6,10 +6,16 @@ import matplotlib.pyplot as plt
 #path = "checkpoint/SSF_PU_0226-130304/training.log"   # <-- adjust path if needed
 paths = [
     #"checkpoint/SSF_PU_0224-134536/training.log",  #Not working
-    #"checkpoint/SSF_PU_0224-154807/training.log", # Correlation between latent space and depth of the model on all of the data hidden size 258
+    #"checkpoint/SSF_PU_0224-154807/training.log", # Correlation between latent space and depth of the model on all of the data hidden size 258          normal , random crop
     #"checkpoint/SSF_PU_0226-083310/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE hidden size 258
     "checkpoint/SSF_PU_0226-131358/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 128 
-    "checkpoint/SSF_PU_0226-132229/training.log",  # Correlation between latent space and depth of the model ONLY REAL DAMAGE (without combined damage) Hidden size 128 
+   # "checkpoint/SSF_PU_0226-132229/training.log",  # Correlation between latent space and depth of the model ONLY REAL DAMAGE (without combined damage) Hidden size 128 
+    #"checkpoint/SSF_PU_0302-085542/training.log",  # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 128          NORMAL Gausian
+    "checkpoint/SSF_PU_0302-141641/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 96 
+    "checkpoint/SSF_PU_0302-174623/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 64
+     
+
+
 ]
 
 
