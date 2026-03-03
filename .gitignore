@@ -1,16 +1,20 @@
 *.pyc
 *.pth
+*.pt
 *.png
 *.pyc
 *.mat
 *.csv
 *.png
 *.pdf
-*.log
+.log
+best_pt
 
+/raw_data_1
 
 __pycache__/
 /__pycache__
 
 Checkpoints/
-checkpoint/
+/raw_data
+raw_data/

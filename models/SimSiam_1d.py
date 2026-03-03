@@ -15,7 +15,7 @@ class SimSiam(nn.Module):
         super().__init__()
 
         if conv_channels is None:
-            conv_channels = [64, 256, 256]
+            conv_channels = [16, 32, 64, 128, 256, 512]
 
         self.in_channel = in_channel
         self.output_channel = out_channel
@@ -37,21 +37,23 @@ class SimSiam(nn.Module):
 
 
         # ---- Projector (MLP) ----
-        layers.append(nn.Linear(prev_c, 256))
-        layers.append(nn.BatchNorm1d(256))
+        hidden_projector  = prev_c // 2
+        layers.append(nn.Linear(prev_c, hidden_projector))
+        layers.append(nn.BatchNorm1d(hidden_projector))
         layers.append(nn.ReLU(inplace=True))
-        layers.append(nn.Linear(256, out_channel))
+        layers.append(nn.Linear(hidden_projector, out_channel))
         layers.append(nn.BatchNorm1d(out_channel))
 
         self.encoder = nn.Sequential(*layers)
 
+        hidden_predictor = int(out_channel * 2)
 
         # ---- Predictor (MLP) ----
         self.predictor = nn.Sequential(
-            nn.Linear(out_channel, 8),
-            nn.BatchNorm1d(8),
+            nn.Linear(out_channel, hidden_predictor),
+            nn.BatchNorm1d(hidden_predictor),
             nn.ReLU(inplace=True),
-            nn.Linear(8, out_channel),
+            nn.Linear(hidden_predictor, out_channel),
         )
 
     def forward(self, x_1, x_2):

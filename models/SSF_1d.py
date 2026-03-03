@@ -54,8 +54,8 @@ class SSF(nn.Module):
         self,
         in_channel: int = 1,
         out_channel: int = 16,
-        num_blocks: int = 3,
-        hidden_channels: int = 256,
+        num_blocks: int = 5,
+        hidden_channels: int = 64,
     ):
         super().__init__()
 
@@ -86,14 +86,16 @@ class SSF(nn.Module):
         )
 
         self.encoder = nn.Sequential(*blocks,
-                                    nn.AdaptiveAvgPool1d(1),
-                                    nn.Flatten()  )
+                                    nn.AdaptiveAvgPool1d(1),# [B, C, L]  →  [B, C, 1]
+                                    nn.Flatten() )  # [B, C, L]  →  [B, C*L]
         
+        hidden_predictor = int(out_channel * 2)
+
         self.predictor = nn.Sequential(
-            nn.Linear(out_channel,8),
-            nn.BatchNorm1d(8),
+            nn.Linear(out_channel, hidden_predictor),
+            nn.BatchNorm1d(hidden_predictor),
             nn.ReLU(inplace=True),
-            nn.Linear(8,out_channel))
+            nn.Linear(hidden_predictor, out_channel))
 
     def forward( self, x_1, x_2): 
 
@@ -101,7 +103,6 @@ class SSF(nn.Module):
 
         # Encoder step
         z_1, z_2 = f(x_1), f(x_2)
-
         # Predictor step 
         p_1, p_2 = h(z_1), h(z_2)
 

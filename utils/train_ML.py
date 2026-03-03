@@ -90,24 +90,26 @@ class Trainer(object):
         Dataset = getattr(datasets, args.data_name) # PU, CWRU ...
         dataset_view = getattr(views, args.data_view) # OneViewDataset, TwoViewDataset
 
-        print("Dataset: ", Dataset)
-        self.train_ds, self.val_ds, self.test_ds = Dataset(data_dir = args.data_dir, 
+        logging.info("Dataset class: %s", Dataset)
+        self.train_ds, self.val_ds, self.test_ds, self.classifier_ds = Dataset(data_dir = args.data_dir, 
                                                                                       normlizetype= args.normlizetype,
                                                                                       augmentype_1 = args.aug_1,
                                                                                       augmentype_2 = args.aug_2,
-                                                                                      rand = 42).data_prepare(split = args.processing_type,
+                                                                                      rand = 42  #random split of the data 
+                                                                                      ).data_prepare(split = args.processing_type,
                                                                                                               view = dataset_view)
         # ---- DataLoader -----
         self.train_loader = DataLoader(self.train_ds, batch_size=args.batch_size, shuffle=False)
         #drop_last=True,              # keep pairs aligned for contrastive loss
         self.val_loader = DataLoader(self.val_ds, batch_size=args.batch_size, shuffle=False)
         self.test_loader = DataLoader(self.test_ds, batch_size=args.batch_size, shuffle=False)
-        print("train", count_labels(self.train_loader))
-        print("val  ", count_labels(self.val_loader))
-        print("test ", count_labels(self.test_loader))
-        print("train uniq:", uniq(self.train_loader))
-        print("val uniq:", uniq(self.val_loader))
-        print("test uniq:", uniq(self.test_loader))
+        self.classifier_loader = DataLoader(self.classifier_ds, batch_size=args.batch_size, shuffle=False)
+        logging.info("Split sizes: train=%d val=%d test=%d, classier=%d",
+                    len(self.train_ds), len(self.val_ds), len(self.test_ds), len(self.classifier_ds))
+        logging.info("Label counts train: %s", count_labels(self.train_loader))
+        logging.info("Label counts val:   %s", count_labels(self.val_loader))
+        logging.info("Label counts test:  %s", count_labels(self.test_loader))
+        logging.info("Label counts classifier:  %s", count_labels(self.classifier_loader))
 
     def _optimizer_lr_sch(self):
         args = self.args
@@ -133,6 +135,7 @@ class Trainer(object):
             self.lr_scheduler = None
         else:
             raise Exception("lr schedule not implement")
+        
 
     def setup(self):
         """
@@ -161,17 +164,18 @@ class Trainer(object):
         if args.model_name in {"CNN_1d", "resnet18_1d", "MLP"}:
             latent_dim = args.out_channel
         else: 
-            latent_dim = 16 
+            latent_dim = args.latent_space 
             # Define the classifier
-            self.classifier = models.cls(latent_dim = latent_dim, classes = args.out_channel )
-            #self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01, momentum=args.momentum, weight_decay=args.weight_decay)
-            #self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = 20, eta_min=1e-05 )
+            self.classifier = models.cls(latent_dim, args.out_channel)
             self.cls_criterion = nn.CrossEntropyLoss()
             self.cls_opt = torch.optim.Adam(self.classifier.parameters(), lr=1e-3, weight_decay=args.weight_decay)
             self.cls_lr = None
+            #self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01, momentum=args.momentum, weight_decay=args.weight_decay)
+            #self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = args.classifier_epoch, eta_min=1e-05 )
+            
 
 
-        self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim)
+        self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim, num_blocks = args.num_blocks_ssf )
 
         if self.device_count > 1:
                             self.model = torch.nn.DataParallel(self.model)
@@ -359,36 +363,46 @@ class Trainer(object):
         best_state = None
         no_improve = 0
 
-        for epoch in range (100):
+        for epoch in range (args.classifier_epoch):
             classifier.train()
-            tot_loss = 0.0
-            tot_correct = 0
+            epoch_loss = 0.0
+            epoch_correct = 0
             tot_samp = 0
+
             # TODO: I think i should train only on a part of the trainin g loader of a part of the validation loader ???
-            loop = tqdm.tqdm(self.train_loader, desc = f"Classifier train {epoch}", leave=False)
+            loop = tqdm.tqdm(self.classifier_loader, desc = f"Classifier train {epoch}", leave=False)
             for x1, x2, y in loop:
                 x1, x2, y = x1.to(device, non_blocking  = True), x2.to(device, non_blocking  = True), y.to(device, non_blocking= True)
 
                 optimizer.zero_grad()
 
                 with torch.no_grad():
+                    # Extract features from the Simsiam encoder head
                     z1, z2, p1, p2 = encoder(x1, x2)
 
                 outputs = classifier(z1)
 
                 loss = criterion(outputs, y)
                 preds = outputs.argmax(dim=1)
+
                 loss.backward()
                 optimizer.step()
 
                 bs = y.size(0)
-                tot_loss += loss.item()*bs
+
+                epoch_loss += loss.item() * bs
                 tot_samp += bs
-                tot_correct += (preds == y ).sum().item()
-                loop.set_postfix(loss=f"{tot_loss/tot_samp:.4f}", acc=f"{tot_correct/tot_samp:.4f}")
+                avg_loss = epoch_loss / tot_samp
+
+                epoch_correct += (preds == y ).sum().item()
+                avg_correct = epoch_correct / tot_samp
+                
+                loop.set_postfix(loss=f"{avg_loss:.4f}", acc=f"{avg_correct:.4f}")
             
-            train_loss = tot_loss / max(1, tot_samp)
-            train_acc  = tot_correct / max(1, tot_samp)
+            train_loss = epoch_loss / max(1, tot_samp)
+            train_acc  = epoch_correct / max(1, tot_samp)
+
+
             # --- validation -----
             classifier.eval()
             val_correct = 0 
@@ -403,15 +417,17 @@ class Trainer(object):
                     z1, z2, p1, p2 = encoder(x1, x2)
                     outputs = classifier(z1)
                     loss = criterion(outputs, y)
+                    preds = outputs.argmax(dim = 1)
 
                     bs = y.size(0)
                     val_loss += loss.item() * bs
                     val_samp += bs
-                    val_correct += (outputs.argmax(1) == y).sum().item()
+                    val_correct += (preds == y).sum().item()
+
 
                     vloop.set_postfix(val_loss=f"{val_loss/val_samp:.4f}",
                                     val_acc=f"{val_correct/val_samp:.4f}")
-
+            val_loss = val_loss / max(1, val_samp)
             val_acc = val_correct / max(1, val_samp)
 
             logging.info(
@@ -469,7 +485,7 @@ class Trainer(object):
         return {"best_val_acc": best_acc, "test_acc": test_acc, "ckpt_path": out_path}
 
 
-    def train(self, pretrained =True, continue_from_best_val_loss_checkopoint = False):
+    def train(self, pretrained = True, continue_from_best_val_loss_checkopoint = False, pretrained_dir = None):
         """
         High level training organization
         """
@@ -478,7 +494,9 @@ class Trainer(object):
         self.setup()
 
         if pretrained == False: 
-
+            patience = 5
+            min_delta = 0.0
+            no_improve = 0
             # pick selection metric based on task
             if args.task == "supervised":
                 best_value = -math.inf
@@ -492,12 +510,9 @@ class Trainer(object):
             best_ckpt_path = os.path.join(self.save_dir, "best_pt")
 
             for epoch in range(self.start_epoch, args.max_epoch):
-
                 logging.info('-'*5 + 'Epoch {}/{}'.format(epoch, args.max_epoch - 1) + '-'*5)
-                
                 train_metric = self._train_epoch(epoch)
                 val_metric = self._val_test_epoch()
-
                 # Update the learning rate
                 if self.lr_scheduler is not None:
                     # self.lr_scheduler.step(epoch)
@@ -506,8 +521,19 @@ class Trainer(object):
 
                 # ----- save best checkpoint -----
                 current_value = val_metric[select_key]
-                if better(current_value, best_value):
+
+                improved = False
+                if args.task == "supervised":
+                    # want higher val_acc
+                    improved = current_value > (best_value + min_delta)
+                else:
+                    # want lower val_loss
+                    improved = current_value < (best_value - min_delta)
+
+                if improved:
                     best_value = current_value
+                    no_improve = 0
+
                     torch.save(
                         {
                             "epoch": epoch,
@@ -521,7 +547,14 @@ class Trainer(object):
                         best_ckpt_path,
                     )
                     logging.info(f"Saved best checkpoint to {best_ckpt_path} ({select_key}={best_value:.4f})")
-
+                else:
+                    no_improve += 1
+                    logging.info(f"No improvement in {select_key} for {no_improve}/{patience} epochs.")
+                
+                # --- early stop ---
+                if no_improve >= patience:
+                    logging.info(f"Early stopping at epoch {epoch} (best {select_key}={best_value:.4f}).")
+                    #break
 
                 # ----- logging (conditional acc) -----
                 msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f}"
@@ -542,10 +575,11 @@ class Trainer(object):
             logging.info(msg)
 # ------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
-        best_ckpt_path = './checkpoint/SimSiamResNet_PU_0211-164930/best_pt'
-        ckpt = torch.load(best_ckpt_path, map_location=self.device)
-        self.model.load_state_dict(ckpt["model_state_dict"])
-        logging.info(f"Loaded best checkpoint from {best_ckpt_path} " 
+        else: 
+            best_ckpt_path = pretrained_dir # './checkpoint/SimSiamResNet_PU_0211-164930/best_pt'
+            ckpt = torch.load(best_ckpt_path, map_location=self.device)
+            self.model.load_state_dict(ckpt["model_state_dict"])
+            logging.info(f"Loaded best checkpoint from {best_ckpt_path} " 
                      f"({ckpt.get('best_key')}={ckpt.get('best_value')})")
 # --------------------Important -----------------------------------
 # Classification head lears from the best checkpont model not the latest 

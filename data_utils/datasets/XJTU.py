@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
-
+from itertools import repeat
 
 from datasets_aug.sequence_dataset import *  #dataset 
 from datasets_aug.sequence_aug import *
@@ -12,31 +12,25 @@ from .data_utils import *
 label1 = [i for i in range(0,5)]
 label2 = [i for i in range(5,10)]
 label3 = [i for i in range(10,15)]
-
-
-
-
-def data_transforms(dataset_type="train", normlize_type="-1-1"):
-    transforms = {
-        'train': Compose([
-            Reshape(),
-            Normalize(normlize_type),
-            Retype()
-
-        ]),
-        'val': Compose([
-            Reshape(),
-            Normalize(normlize_type),
-            Retype()
-        ])
-    }
-    return transforms[dataset_type]
-
-
-
 #--------------------------------------------------------------------------------------------------------------------
 
+HBdata = ["n600_3_2.csv", "n800_3_2.csv","n1000_3_2.csv"]
+or_faults  = ["ob600_2.csv","ob800_2.csv", "ob1000_2.csv"]
+b_fault = [ "tb600_2.csv", "tb800_2.csv", "tb1000_2.csv"]
+ir_faults  = ["ib600_2.csv","ib800_2.csv","ib1000_2.csv",]
 
+samples = (
+    list(zip(HBdata,     repeat("healthy"))) +
+    list(zip(ir_faults,  repeat("inner_race"))) +
+    list(zip(or_faults,  repeat("outer_race"))) +
+    list(zip(b_fault,  repeat("ball"))) 
+)
+
+# stable mapping
+class_to_idx = {"healthy": 0, "inner_race": 1, "outer_race": 2, "ball" : 3}
+
+ALL_DATA  = [sid for sid, _ in samples]
+ALL_LABEL = [class_to_idx[c] for _, c in samples]
 
 class XJTU(object):
 
@@ -107,7 +101,7 @@ class XJTU(object):
             end += signal_size
         return data, lab
 
-    def data_prepare(self, split="RA", view=OneViewDataset):
+    def data_prepare(self, split="RA", view=TwoViewDataset):
         """
         Returns: train_dataset, val_dataset, test_dataset
         split:
@@ -128,16 +122,23 @@ class XJTU(object):
                 random_state=self.random_state,
                 stratify=data_pd["label"],
             )
-            val_pd, test_pd = train_test_split(
+            val_temp, test_pd = train_test_split(
                 temp_pd,
                 test_size=0.5,
                 random_state=self.random_state,
                 stratify=temp_pd["label"],
             )
+            val_pd, classifier_pd = train_test_split(
+                val_temp,
+                test_size=0.5,
+                random_state=self.random_state,
+                stratify=val_temp["label"],
+            )
         elif split == "O_A":
             # ordered split (your custom)
             train_pd, temp_pd = train_test_split_order(data_pd, test_size=0.30)
-            val_pd, test_pd   = train_test_split_order(temp_pd, test_size=0.5)
+            val_temp, test_pd   = train_test_split_order(temp_pd, test_size=0.5)
+            val_pd, classifier_pd   = train_test_split_order(val_temp, test_size=0.5)
         else:
             raise ValueError(f"Unknown split='{split}'. Use 'RA', 'R_NA', or 'O_A'.")
 
@@ -156,5 +157,6 @@ class XJTU(object):
         train_dataset = view(train_pd, transform_1=train_t1, transform_2=train_t2)
         val_dataset   = view(val_pd,   transform_1=eval_t1,  transform_2=eval_t2)
         test_dataset  = view(test_pd,  transform_1=eval_t1,  transform_2=eval_t2)
+        classifier_dataset = view(classifier_pd,  transform_1=eval_t1,  transform_2=eval_t2)
 
-        return train_dataset, val_dataset, test_dataset
+        return train_dataset, val_dataset, test_dataset, classifier_dataset

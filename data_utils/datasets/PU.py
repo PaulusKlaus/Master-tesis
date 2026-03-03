@@ -10,11 +10,8 @@ from datasets_aug.sequence_aug import *
 from .data_utils import *
 
 # 1 Undamaged (healthy) bearings(6X)
-HBdata = ['K001',"K002",'K003','K004','K005','K006']
 #label1=[0,1,2,3,4,5]  #The undamaged (healthy) bearings data is labeled 0-5
 #label1 = [0,0,0,0,0,0]
-
-
 # 2 Artificially damaged bearings(12X)
 #ADBdata = ['KA01','KA03', 'KA05','KA06','KA07','KA08','KA09','KI01','KI03','KI05','KI07','KI08']
 #label2=[6,7,8,9,10,11,12,13,14,15,16,17]    # The artificially damaged bearings data is labeled 6-17
@@ -23,10 +20,18 @@ HBdata = ['K001',"K002",'K003','K004','K005','K006']
 #RDBdata = ['KA04','KA15','KA16','KA22','KA30','KB23','KB24','KB27','KI04','KI14','KI16','KI17','KI18','KI21']
 #label3=[i for i in range(18,18+len(RDBdata))]
 
+#HBdata = ['K001',"K002",'K003','K004','K005','K006']
+#or_faults  = ['KA01','KA03','KA05','KA06','KA07','KA08','KA09','KA04','KA15','KA16','KA22','KA30']
+#com_faults = ['KB23','KB24','KB27']
+#ir_faults  = ['KI01','KI03','KI05','KI07','KI08','KI04','KI14','KI16','KI17','KI18','KI21']
 
-ir_faults  = ['KA01','KA03','KA05','KA06','KA07','KA08','KA09','KA04','KA15','KA16','KA22','KA30']
+# Data split suggested by the PU paper 
+HBdata = ['K001',"K002",'K003','K004','K005']
+or_faults  = ['KA04','KA15','KA16','KA22','KA30']
 com_faults = ['KB23','KB24','KB27']
-or_faults  = ['KI01','KI03','KI05','KI07','KI08','KI04','KI14','KI16','KI17','KI18','KI21']
+ir_faults  = ['KI04','KI14','KI16','KI18','KI21']
+
+
 
 samples = (
     list(zip(HBdata,     repeat("healthy"))) +
@@ -36,7 +41,11 @@ samples = (
 )
 
 # stable mapping
+#class_to_idx = {"healthy": 0, "inner_race": 1, "outer_race": 2} #  "outer_race": 3
+#class_to_idx = {"healthy": 0, "inner_race": 1,  "outer_race": 2}
 class_to_idx = {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
+
+
 
 ALL_DATA  = [sid for sid, _ in samples]
 ALL_LABEL = [class_to_idx[c] for _, c in samples]
@@ -73,6 +82,23 @@ class PU(object):
             d, l = self._data_load(path, name=name, label=label)
             data += d
             lab += l
+            name = state + "_" + bearing + "_2"
+            path = os.path.join(self.data_dir, bearing, name + ".mat")        
+            d, l = self._data_load(path, name=name, label=label)
+            data += d
+            lab += l
+            name = state + "_" + bearing + "_3"
+            path = os.path.join(self.data_dir, bearing, name + ".mat")        
+            d, l = self._data_load(path, name=name, label=label)
+            data += d
+            lab += l
+            name = state + "_" + bearing + "_4"
+            path = os.path.join(self.data_dir, bearing, name + ".mat")        
+            d, l = self._data_load(path, name=name, label=label)
+            data += d
+            lab += l
+
+            
 
         return [data,lab]
 
@@ -97,7 +123,7 @@ class PU(object):
 
         return data, lab
 
-    def data_prepare(self, split="RA", view=OneViewDataset):
+    def data_prepare(self, split="RA", view=TwoViewDataset):
         """
         Returns: train_dataset, val_dataset, test_dataset
         split:
@@ -118,16 +144,23 @@ class PU(object):
                 random_state=self.random_state,
                 stratify=data_pd["label"],
             )
-            val_pd, test_pd = train_test_split(
+            val_temp, test_pd = train_test_split(
                 temp_pd,
                 test_size=0.5,
                 random_state=self.random_state,
                 stratify=temp_pd["label"],
             )
+            val_pd, classifier_pd = train_test_split(
+                val_temp,
+                test_size=0.5,
+                random_state=self.random_state,
+                stratify=val_temp["label"],
+            )
         elif split == "O_A":
             # ordered split (your custom)
             train_pd, temp_pd = train_test_split_order(data_pd, test_size=0.30)
-            val_pd, test_pd   = train_test_split_order(temp_pd, test_size=0.5)
+            val_temp, test_pd   = train_test_split_order(temp_pd, test_size=0.5)
+            val_pd, classifier_pd   = train_test_split_order(val_temp, test_size=0.5)
         else:
             raise ValueError(f"Unknown split='{split}'. Use 'RA', 'R_NA', or 'O_A'.")
 
@@ -146,5 +179,7 @@ class PU(object):
         train_dataset = view(train_pd, transform_1=train_t1, transform_2=train_t2)
         val_dataset   = view(val_pd,   transform_1=eval_t1,  transform_2=eval_t2)
         test_dataset  = view(test_pd,  transform_1=eval_t1,  transform_2=eval_t2)
+        classifier_dataset = view(classifier_pd,  transform_1=eval_t1,  transform_2=eval_t2)
 
-        return train_dataset, val_dataset, test_dataset
+        return train_dataset, val_dataset, test_dataset, classifier_dataset
+
