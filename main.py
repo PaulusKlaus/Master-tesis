@@ -141,22 +141,25 @@ if __name__ == "__main__":
     setlogger(os.path.join(save_dir, 'training.log'))
 
 
-    latent_list = [ 64, 128, 192, 256]
-    conv_blocks = [ 4, 5, 6, 7]
+    latent_list = [ 192, 256]
+    conv_blocks = [3, 4, 5]
+    augmentations=['gaussian', 'normal', 'scale', 'randomstrech', 'fft']
     for blocks in conv_blocks:
         for latent in latent_list:
-            for r in range (3):
-                r+=1
-                args.latent_space= latent
-                args.num_blocks_ssf = blocks
+            for aug in augmentations:
+                for r in range (3):
+                    r+=1
+                    args.latent_space= latent
+                    args.num_blocks_ssf = blocks
+                    args.aug_2=aug
 
-                # save the args
-                for k, v in args.__dict__.items():
-                    logging.info("{}: {}".format(k, v))
+                    # save the args
+                    for k, v in args.__dict__.items():
+                        logging.info("{}: {}".format(k, v))
 
-                trainer = Trainer(args, save_dir)
-                trainer.train(pretrained=False)
-            #trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-122003/best_pt')
+                    trainer = Trainer(args, save_dir)
+                    trainer.train(pretrained=False)
+                #trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-122003/best_pt')
 
 
 
