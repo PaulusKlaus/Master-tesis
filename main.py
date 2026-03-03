@@ -154,9 +154,9 @@ if __name__ == "__main__":
         ("randomstrech", "scale"),      # 0.7452
         ("gaussian", "normal"),           # 0.7437
     ]
-    pairs = [aug_pairs]
+    
 
-    for pair in pairs:
+    for pair in aug_pairs:
         for r in range (5):  # seeds 
             args.aug_1, args.aug_2 = pair
 
