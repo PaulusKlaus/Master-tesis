@@ -143,12 +143,21 @@ if __name__ == "__main__":
     setlogger(os.path.join(save_dir, 'training.log'))
 
 
-    augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft']
-    pairs = list(combinations_with_replacement(augmentations, 2))
+    #augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft']
+    #pairs = list(combinations_with_replacement(augmentations, 2))
 
+    aug_pairs = [
+        ("randomcrop", "scale"),        # 0.7622
+        ("normal", "randomcrop"),       # 0.7511
+        ("gaussian", "randomstrech"),   # 0.7474
+        ("normal", "normal"),           # 0.7452
+        ("randomstrech", "scale"),      # 0.7452
+        ("gaussian", "normal"),           # 0.7437
+    ]
+    pairs = [aug_pairs]
 
     for pair in pairs:
-        for r in range (1):  # seeds 
+        for r in range (5):  # seeds 
             args.aug_1, args.aug_2 = pair
 
             # save the args
