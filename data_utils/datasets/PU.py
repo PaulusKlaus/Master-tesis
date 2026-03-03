@@ -76,25 +76,13 @@ class PU(object):
             bearing = ALL_DATA[k]
             label = ALL_LABEL[k]
 
-            #NOTE: This only uses 1 of 20 samples, which ends with _1.mat 
-            name = state + "_" + bearing + "_1"
-            path = os.path.join(self.data_dir, bearing, name + ".mat")        
-            d, l = self._data_load(path, name=name, label=label)
-            data += d
-            lab += l
-            name = state + "_" + bearing + "_2"
-            path = os.path.join(self.data_dir, bearing, name + ".mat")        
-            d, l = self._data_load(path, name=name, label=label)
-            data += d
-            lab += l
-            name = state + "_" + bearing + "_3"
-            path = os.path.join(self.data_dir, bearing, name + ".mat")        
-            d, l = self._data_load(path, name=name, label=label)
-            data += d
-            lab += l
-            name = state + "_" + bearing + "_4"
-            path = os.path.join(self.data_dir, bearing, name + ".mat")        
-            d, l = self._data_load(path, name=name, label=label)
+        for i in range(1, 10):
+            name = f"{state}_{bearing}_{i}"
+            d, l = self._data_load(
+                os.path.join(self.data_dir, bearing, f"{name}.mat"),
+                name=name,
+                label=label
+            )
             data += d
             lab += l
 
