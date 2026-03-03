@@ -4,6 +4,8 @@ import os
 from datetime import datetime
 import logging
 from torch import nn
+from itertools import combinations_with_replacement
+
 
 from utils.loss_SSL import SimSiamLoss
 from utils.logger import setlogger
@@ -111,9 +113,9 @@ def parse_args():
     parser.add_argument('--eta_min', type=float, default=0.00001, help='learning rate scheduler parameter for cos ')
 
     
-    parser.add_argument('--latent_space', type=int, default=256, help='the size of the latent space' )
+    parser.add_argument('--latent_space', type=int, default=96, help='the size of the latent space' )
 
-    parser.add_argument('--num_blocks_ssf', type = int, default=3, help = 'Number of convolutional blocks in SSF model')
+    parser.add_argument('--num_blocks_ssf', type = int, default=5, help = 'Number of convolutional blocks in SSF model')
 
     args = parser.parse_args()
     return args
@@ -141,24 +143,20 @@ if __name__ == "__main__":
     setlogger(os.path.join(save_dir, 'training.log'))
 
 
-    latent_list = [ 192, 256]
-    conv_blocks = [3, 4, 5]
-    augmentations=['gaussian', 'normal', 'scale', 'randomstrech', 'fft']
-    for blocks in conv_blocks:
-        for latent in latent_list:
-            for aug in augmentations:
-                for r in range (3):
-                    r+=1
-                    args.latent_space= latent
-                    args.num_blocks_ssf = blocks
-                    args.aug_2=aug
+    augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft']
+    pairs = list(combinations_with_replacement(augmentations, 2))
 
-                    # save the args
-                    for k, v in args.__dict__.items():
-                        logging.info("{}: {}".format(k, v))
 
-                    trainer = Trainer(args, save_dir)
-                    trainer.train(pretrained=False)
+    for pair in pairs:
+        for r in range (1):  # seeds 
+            args.aug_1, args.aug_2 = pair
+
+            # save the args
+            for k, v in args.__dict__.items():
+                logging.info("{}: {}".format(k, v))
+
+            trainer = Trainer(args, save_dir)
+            trainer.train(pretrained=False)
                 #trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-122003/best_pt')
 
 
