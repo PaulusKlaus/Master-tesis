@@ -103,7 +103,7 @@ class Trainer(object):
         #drop_last=True,              # keep pairs aligned for contrastive loss
         self.val_loader = DataLoader(self.val_ds, batch_size=args.batch_size, shuffle=False)
         self.test_loader = DataLoader(self.test_ds, batch_size=args.batch_size, shuffle=False)
-        self.classifier_loader = DataLoader(self.classifier_ds, batch_size=args.batch_size, shuffle=False)
+        self.classifier_loader = DataLoader(self.classifier_ds, batch_size=32, shuffle=False)
         logging.info("Split sizes: train=%d val=%d test=%d, classier=%d",
                     len(self.train_ds), len(self.val_ds), len(self.test_ds), len(self.classifier_ds))
         logging.info("Label counts train: %s", count_labels(self.train_loader))
