@@ -76,7 +76,7 @@ class PU(object):
             bearing = ALL_DATA[k]
             label = ALL_LABEL[k]
 
-            for i in range(1, 10):
+            for i in range(1, 5):
                 name = f"{state}_{bearing}_{i}"
                 d, l = self._data_load(
                     os.path.join(self.data_dir, bearing, f"{name}.mat"),

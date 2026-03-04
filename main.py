@@ -150,7 +150,7 @@ if __name__ == "__main__":
         ("randomcrop", "scale"),        # 0.7622
         ("normal", "randomcrop"),       # 0.7511
         ("gaussian", "randomstrech"),   # 0.7474
-        ("normal", "normal"),           # 0.7452
+        ("normal", "fft"),           # 0.7452
         ("randomstrech", "scale"),      # 0.7452
         ("gaussian", "normal"),           # 0.7437
     ]

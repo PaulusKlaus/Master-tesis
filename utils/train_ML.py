@@ -205,7 +205,11 @@ class Trainer(object):
         epoch_acc = 0
         t_samples = 0
 
-        train_loader = self.train_loader
+        if args.task == "supervised":
+            train_loader = self.classifier_loader
+        else:
+            train_loader=self.train_loader
+            
         device = self.device
         loop = tqdm.tqdm(train_loader, desc=f"Train Epoch {epoch}", leave=False)
         for batch_idx, batch in enumerate(loop):
@@ -607,7 +611,7 @@ class Trainer(object):
 
         encoder = self.model.eval()
 
-        if args.task == "supervised":
+        if args.task == "self_supervised":
             self._train_classifier(frozen_encoder = encoder)
         
          

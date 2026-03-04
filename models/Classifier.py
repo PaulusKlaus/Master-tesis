@@ -14,7 +14,7 @@ class Classifier(nn.Module):
     def __init__(self, latent_dim: int = 16, classes: int = 32):
         super().__init__()
         # ensure integer hidden size
-        hidden = int(latent_dim // 4)
+        hidden = int(latent_dim // 2)
 
 
         self.layer_1 = nn.Sequential(
@@ -25,8 +25,6 @@ class Classifier(nn.Module):
         self.layer_2 = nn.Sequential(
             nn.Linear(hidden, out_features=classes )
         )
-
-
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         

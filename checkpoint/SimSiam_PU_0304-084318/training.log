@@ -1,0 +1,27 @@
+03-04 08:43:18 model_name: SimSiam
+03-04 08:43:18 data_name: PU
+03-04 08:43:18 aug_1: randomcrop
+03-04 08:43:18 aug_2: scale
+03-04 08:43:18 max_epoch: 20
+03-04 08:43:18 classifier_epoch: 50
+03-04 08:43:18 data_view: TwoViewDataset
+03-04 08:43:18 cuda_device: 0
+03-04 08:43:18 checkpoint_dir: ./checkpoint
+03-04 08:43:18 batch_size: 32
+03-04 08:43:18 data_dir: raw_data/PU
+03-04 08:43:18 out_channel: 4
+03-04 08:43:18 normlizetype: minus_one_one
+03-04 08:43:18 processing_type: RA
+03-04 08:43:18 opt: sgd
+03-04 08:43:18 lr: 0.01
+03-04 08:43:18 momentum: 0.9
+03-04 08:43:18 weight_decay: 1e-05
+03-04 08:43:18 lr_scheduler: cos
+03-04 08:43:18 gamma: 0.1
+03-04 08:43:18 eta_min: 1e-05
+03-04 08:43:18 latent_space: 96
+03-04 08:43:18 num_blocks_ssf: None
+03-04 08:43:18 task: self_supervised
+03-04 08:43:18 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+03-04 08:43:18 using 1 gpus
+03-04 08:43:18 Dataset class: <class 'data_utils.datasets.PU.PU'>
