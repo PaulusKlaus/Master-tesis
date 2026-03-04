@@ -62,7 +62,7 @@ MODEL_CONFIG = {
     },
 }
 
-max_epoc = 100
+max_epoc = 50
 
 
 def parse_args():
@@ -157,7 +157,7 @@ if __name__ == "__main__":
     
     latent_space = [64,96,128,192,256]
     hidden_channel =[256,128,64]
-    number_blocks=[9,7,5,3]
+    number_blocks=[7,5,3]
 
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
 
@@ -169,7 +169,7 @@ if __name__ == "__main__":
             for features in latent_space:
                 for blocks in number_blocks:
 
-                    for seed in range (2):  # seeds 
+                    for seed in range (1):  # seeds 
                         args.aug_1, args.aug_2 = pair
                         args.latent_space = features
                         args.hidden_channel = hidden_size

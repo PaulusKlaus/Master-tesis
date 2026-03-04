@@ -45,18 +45,7 @@ class SimSiamLoss(nn.Module):
         Returns:
             torch.Tensor: Computed loss.
         """
-        if self.ver == 'original':
-            # Detach z to stop gradient flow
-            z = z.detach()
- 
-            # Normalize vectors
-            p = nn.functional.normalize(p, dim=1)
-            z = nn.functional.normalize(z, dim=1)
- 
-            # Original formulation: negative dot product
-            return -(p * z).sum(dim=1).mean()
- 
-        elif self.ver == 'simplified':
+        if self.ver == 'simplified':
             # Detach z to stop gradient flow
             z = z.detach()
  

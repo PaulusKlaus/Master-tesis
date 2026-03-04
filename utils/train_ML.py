@@ -168,7 +168,7 @@ class Trainer(object):
             # Define the classifier
             self.classifier = models.cls(latent_dim, args.out_channel)
             self.cls_criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
-            self.cls_opt = torch.optim.Adam(self.classifier.parameters(), lr=1e-3, weight_decay=1e-2)
+            self.cls_opt = torch.optim.Adam(self.classifier.parameters(), lr=1e-3, weight_decay=1e-3)
             self.cls_lr = None
             #self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01, momentum=args.momentum, weight_decay=args.weight_decay)
             #self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = args.classifier_epoch, eta_min=1e-05 )
@@ -204,7 +204,7 @@ class Trainer(object):
         epoch_loss = 0.0
         epoch_acc = 0
         t_samples = 0
-
+        epoch_zstd = 0.0
         if args.task == "supervised":
             train_loader = self.classifier_loader
         else:
@@ -233,6 +233,7 @@ class Trainer(object):
                 x2 = x2.to(device, non_blocking=True)
 
                 z1, z2, p1, p2 = self.model(x1, x2)
+
                 loss = self.criterion(z1, z2, p1, p2)
 
                 preds = None
@@ -261,6 +262,13 @@ class Trainer(object):
 
             avg_loss = epoch_loss / t_samples
 
+            # Collaps monitor -> should not go to 0 
+            with torch.no_grad():
+                z_std = z1.std(dim=0).mean().item()
+                epoch_zstd += z_std * bs
+
+            avg_zstd = epoch_zstd / t_samples
+
             # accuracy only for supervised
             if args.task == "supervised":
                 epoch_acc += (preds == labels).sum().item()
@@ -270,7 +278,7 @@ class Trainer(object):
                 loop.set_postfix(loss=f"{avg_loss:.4f}")
         
             # return metrics
-        metrics = {"loss": avg_loss}
+        metrics = {"loss": avg_loss, "zstd": avg_zstd}
         if args.task == "supervised":
             metrics["acc"] = avg_acc
 
@@ -563,7 +571,7 @@ class Trainer(object):
                     break
 
                 # ----- logging (conditional acc) -----
-                msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f}"
+                msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f} zstd={train_metric.get('zstd', 0):.4f}"
                 if "acc" in train_metric:
                     msg += f" acc {train_metric['acc']:.4f}"
 
@@ -605,11 +613,11 @@ class Trainer(object):
                 logging.info(msg)
 
         # Freeze weights 
-
+        encoder = self.model.eval()
         for p in self.model.parameters():
             p.requires_grad = False 
 
-        encoder = self.model.eval()
+        
 
         if args.task == "self_supervised":
             self._train_classifier(frozen_encoder = encoder)
