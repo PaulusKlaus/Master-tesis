@@ -71,7 +71,7 @@ def parse_args():
     # Model parameters 
     parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SSF', help='the name of the model')
         # Data parameters 
-    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="CWRU", help="the name of the dataset",
+    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="PU", help="the name of the dataset",
                     )
     parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
     parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='randomcrop', help='Augmentation type on the target pipeline')
@@ -156,8 +156,8 @@ if __name__ == "__main__":
     ]
     
     latent_space = [64,96,128,192,256]
-    hidden_channel =[256,196,128,96]
-    number_blocks=[10,9,7,5,3]
+    hidden_channel =[256,128,64]
+    number_blocks=[9,7,5,3]
 
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
 
