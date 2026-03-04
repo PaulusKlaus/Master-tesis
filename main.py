@@ -176,18 +176,18 @@ if __name__ == "__main__":
                         args.aug_1, args.aug_2 = pair
                         args.latent_space = features
                         args.hidden_channel = hidden_size
-                        args.num_blocks_ssf=blocks
+                        args.num_blocks_ssf=3
 
                         # save the args
                         for k, v in args.__dict__.items():
                             logging.info("{}: {}".format(k, v))
 
                         trainer = Trainer(args, save_dir)
-                        encoder = trainer.train(pretrained=True, pretrained_dir="checkpoint/SSF_CWRU_0304-150303/best_pt")
+                        encoder = trainer.train(pretrained=False, pretrained_dir="./checkpoint/SSF_PU_0304-152831/best_pt")
                         train_loader = trainer.train_loader
                         val_loader = trainer.test_loader
 
-                        #trainer.train_classifier(encoder)
+                        trainer.train_classifier(encoder)
     device = next(encoder.parameters()).device  # gets cuda or cpu automatically
 
     all_features = []
@@ -196,13 +196,16 @@ if __name__ == "__main__":
     with torch.no_grad():
         for x1,x2, y in val_loader:
             z1, z2, p1, p2 = encoder(x1.to(device),x2.to(device))      # get latent features
+            x = x1.view(x1.size(0), -1)   # (B, C*L)
+
             all_features.append(z1)
             all_labels.append(y)
+
 
     features = torch.cat(all_features).cpu().numpy()
     labels = torch.cat(all_labels).cpu().numpy()
     # Run t-SNE
-    tsne = TSNE(n_components=2, perplexity=30, random_state=42)
+    tsne = TSNE(n_components=2, perplexity=50, random_state=42)
     features_2d = tsne.fit_transform(features)
 
     # Plot
@@ -213,9 +216,6 @@ if __name__ == "__main__":
     plt.title("t-SNE Feature Visualization")
     plt.colorbar(label="Class")
     plt.show()
-
-    
-
 
 
 
