@@ -21,8 +21,9 @@ paths_augmentetion = [
   #  "checkpoint/SSF_PU_0303-093038/training.log",
     #"checkpoint/SSF_PU_0303-112311/training.log",
     #"checkpoint/SSF_PU_0303-140932/training.log"
-    "checkpoint/SSF_PU_0304-105004/training.log",
-   # "checkpoint/SSF_CWRU_0304-111807/training.log"
+   # "checkpoint/SSF_PU_0304-105004/training.log",
+    "checkpoint/SSF_CWRU_0304-133140_working/training.log"
+   # "checkpoint/SSF_PU_0304-124405/training.log"  # trying to overcome overfitting
 ]
 
 def parse_training_log(path):
@@ -156,18 +157,21 @@ def scatter_plots(paths):
 
     # 3️⃣ num_blocks_ssf vs best val acc
     plt.figure()
+
+
     for path in paths:
         df = parse_training_log(path)
-        plt.scatter(
-            df["num_blocks_ssf"],
-            df["best_val_acc"],
-            alpha=0.7,
-            label=path.split("/")[-2]
-        )
+        sc = plt.scatter(
+        df["num_blocks_ssf"],
+        df["best_val_acc"],
+        c=df["latent_dim"],   # color by block number
+        cmap="viridis",           # choose colormap
+        alpha=0.8
+    )
     plt.xlabel("num_blocks_ssf")
     plt.ylabel("best_val_acc")
     plt.title("num_blocks_ssf vs Best Validation Accuracy")
-    plt.legend()
+    plt.colorbar(sc, label="latent_dim")
     plt.savefig("figures/training_vis/3_blocks_vs_val_acc.pdf", bbox_inches="tight")
 
     # 4️⃣ num_blocks_ssf vs best val loss
@@ -188,13 +192,20 @@ def scatter_plots(paths):
 
     # 5 hidden_channel_size vs best val acc
     plt.figure()
+
     for path in paths:
         df = parse_training_log(path)
-        plt.scatter(df["hidden_channel"], df["best_val_acc"], label=path)
+        sc = plt.scatter(
+        df["hidden_channel"],
+        df["best_val_acc"],
+        c=df["num_blocks_ssf"],   # color by block number
+        cmap="viridis",           # choose colormap
+        alpha=0.8
+    )
     plt.xlabel("hidden_channel")
     plt.ylabel("best_val_acc")
     plt.title("hidden_channel vs Best Validation Accuracy")
-    plt.legend()
+    plt.colorbar(sc, label="num_blocks_ssf")
     plt.savefig("figures/training_vis/5_hidden_vs_val_acc.pdf", bbox_inches="tight")
 
     # 6 hidden_channel_size vs best val loss

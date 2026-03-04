@@ -4,6 +4,9 @@ import os
 from datetime import datetime
 import logging
 from torch import nn
+import torch
+import matplotlib.pyplot as plt
+from sklearn.manifold import TSNE
 from itertools import combinations_with_replacement
 
 
@@ -71,7 +74,7 @@ def parse_args():
     # Model parameters 
     parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SSF', help='the name of the model')
         # Data parameters 
-    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="JNU", help="the name of the dataset",
+    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="CWRU", help="the name of the dataset",
                     )
     parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
     parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='randomcrop', help='Augmentation type on the target pipeline')
@@ -148,16 +151,16 @@ if __name__ == "__main__":
 
     aug_pairs = [
         ("randomcrop", "scale"),        # 0.7622
-        ("normal", "randomcrop"),       # 0.7511
+        #("normal", "randomcrop"),       # 0.7511
         #("gaussian", "randomstrech"),   # 0.7474
         #("normal", "normal"),           # 0.7452
        # ("randomstrech", "scale"),      # 0.7452
         #("gaussian", "normal"),           # 0.7437
     ]
     
-    latent_space = [64,128,192,256]
-    hidden_channel =[256,128,64]
-    number_blocks=[7,5,3]
+    latent_space = [192]
+    hidden_channel =[128]
+    number_blocks=[5]
 
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
 
@@ -180,8 +183,38 @@ if __name__ == "__main__":
                             logging.info("{}: {}".format(k, v))
 
                         trainer = Trainer(args, save_dir)
-                        trainer.train(pretrained=False)
-                            #trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-122003/best_pt')
+                        encoder = trainer.train(pretrained=False)
+                        train_loader = trainer.train_loader
+                        val_loader = trainer.val_loader
+
+                        trainer.train_classifier(encoder)
+
+    all_features = []
+    all_labels = []
+
+    with torch.no_grad():
+        for x1,x2, y in val_loader:
+            z1, z2, p1, p2 = encoder(x1,x2)      # get latent features
+            all_features.append(z1)
+            all_labels.append(y)
+
+    features = torch.cat(all_features).cpu().numpy()
+    labels = torch.cat(all_labels).cpu().numpy()
+    # Run t-SNE
+    tsne = TSNE(n_components=2, perplexity=30, random_state=42)
+    features_2d = tsne.fit_transform(features)
+
+    # Plot
+    plt.figure()
+    plt.scatter(features_2d[:, 0], features_2d[:, 1], c=labels)
+    plt.xlabel("t-SNE 1")
+    plt.ylabel("t-SNE 2")
+    plt.title("t-SNE Feature Visualization")
+    plt.colorbar(label="Class")
+    plt.show()
+
+    
+
 
 
 

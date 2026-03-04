@@ -136,7 +136,6 @@ class Trainer(object):
         else:
             raise Exception("lr schedule not implement")
         
-
     def setup(self):
         """
         Initialise model, dataset, loss, and optimizer from the argparse arguments
@@ -191,7 +190,6 @@ class Trainer(object):
         self.model.to(self.device)
 
         # This need to be different for different models !!!!!
-        
         self.criterion = args.critetion()
 
     def _train_epoch(self, epoch):
@@ -361,7 +359,7 @@ class Trainer(object):
             metrics[f"{prefix}_acc"] = avg_acc
         return metrics
 
-    def _train_classifier (self, frozen_encoder):
+    def _train_classifier(self, frozen_encoder):
         args = self.args
         device = self.device
         encoder = frozen_encoder.eval()
@@ -613,14 +611,16 @@ class Trainer(object):
                 logging.info(msg)
 
         # Freeze weights 
-        encoder = self.model.eval()
         for p in self.model.parameters():
             p.requires_grad = False 
+        encoder = self.model.eval()
 
-        
+        return encoder 
 
-        if args.task == "self_supervised":
-            self._train_classifier(frozen_encoder = encoder)
+
+
+    def train_classifier(self, frosen_encoder):
+        self._train_classifier(frozen_encoder = frosen_encoder)
         
          
 
