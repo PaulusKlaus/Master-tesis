@@ -164,10 +164,10 @@ if __name__ == "__main__":
     pairs = list(combinations_with_replacement(augmentations, 2))
     print(len(pairs))  # 21
 
-    for pair in aug_pairs:
-        for blocks in number_blocks:
-            for hidden_size in hidden_channel:
-                for features in latent_space:
+    for pair in aug_pairs:  
+        for hidden_size in hidden_channel:
+            for features in latent_space:
+                for blocks in number_blocks:
 
                     for seed in range (2):  # seeds 
                         args.aug_1, args.aug_2 = pair
