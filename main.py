@@ -107,7 +107,7 @@ def parse_args():
     parser.add_argument('--opt', type=str, choices=['sgd', 'adam'], default='sgd', help='the optimizer')
     parser.add_argument('--lr', type=float, default=0.05, help='the initial learning rate')
     parser.add_argument('--momentum', type=float, default=0.9, help='the momentum for sgd')
-    parser.add_argument('--weight_decay', type=float, default=1e-2, help='the weight decay')
+    parser.add_argument('--weight_decay', type=float, default=1e-4, help='the weight decay')
     parser.add_argument('--lr_scheduler', type=str, choices=['cos', 'exp', 'stepLR', 'fix'], default='cos', help='the learning rate schedule')
     parser.add_argument('--gamma', type=float, default=0.95, help='learning rate scheduler parameter for step and exp')
     parser.add_argument('--eta_min', type=float, default=0.00001, help='learning rate scheduler parameter for cos ')
