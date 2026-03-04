@@ -20,7 +20,7 @@ class ConvBlock1D(nn.Module):
         super().__init__()
         self.conv = nn.Conv1d(in_ch, out_ch, kernel_size=kernel_size,
                               stride=stride, padding=padding, bias=True)
-        self.bn = nn.BatchNorm1d(out_ch, eps=1e-5)
+        self.bn = nn.BatchNorm1d(out_ch)
         self.relu = nn.ReLU(inplace=True)
         if pool == "max":
             self.pool = nn.MaxPool1d(kernel_size=pool_kernel, stride=pool_stride)

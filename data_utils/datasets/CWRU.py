@@ -152,19 +152,19 @@ class CWRU(object):
             # stratified random split
             train_pd, temp_pd = train_test_split(
                 data_pd,
-                test_size=0.50,
+                test_size=0.69,
                 random_state=self.random_state,
                 stratify=data_pd["label"],
             )
             val_temp, test_pd = train_test_split(
                 temp_pd,
-                test_size=0.4,
+                test_size=0.50,
                 random_state=self.random_state,
                 stratify=temp_pd["label"],
             )
             val_pd, classifier_pd = train_test_split(
                 val_temp,
-                test_size=0.3,
+                test_size=0.15,
                 random_state=self.random_state,
                 stratify=val_temp["label"],
             )
