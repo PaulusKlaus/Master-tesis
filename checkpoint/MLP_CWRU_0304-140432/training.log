@@ -1,0 +1,34 @@
+03-04 14:04:32 model_name: MLP
+03-04 14:04:32 data_name: CWRU
+03-04 14:04:32 aug_1: randomcrop
+03-04 14:04:32 aug_2: scale
+03-04 14:04:32 max_epoch: 50
+03-04 14:04:32 classifier_epoch: 50
+03-04 14:04:32 data_view: OneViewDataset
+03-04 14:04:32 cuda_device: 0
+03-04 14:04:32 checkpoint_dir: ./checkpoint
+03-04 14:04:32 batch_size: 64
+03-04 14:04:32 data_dir: raw_data/CWRU
+03-04 14:04:32 out_channel: 4
+03-04 14:04:32 normlizetype: minus_one_one
+03-04 14:04:32 processing_type: RA
+03-04 14:04:32 opt: sgd
+03-04 14:04:32 lr: 0.05
+03-04 14:04:32 momentum: 0.9
+03-04 14:04:32 weight_decay: 0.0001
+03-04 14:04:32 lr_scheduler: cos
+03-04 14:04:32 gamma: 0.95
+03-04 14:04:32 eta_min: 1e-05
+03-04 14:04:32 latent_space: 64
+03-04 14:04:32 num_blocks_ssf: None
+03-04 14:04:32 hidden_channel: 256
+03-04 14:04:32 task: supervised
+03-04 14:04:32 critetion: <class 'torch.nn.modules.loss.CrossEntropyLoss'>
+03-04 14:04:32 using 1 gpus
+03-04 14:04:32 Dataset class: <class 'data_utils.datasets.CWRU.CWRU'>
+03-04 14:04:32 Split sizes: train=400 val=400 test=400, classier=40
+03-04 14:04:32 Label counts train: Counter({0: 100, 1: 100, 3: 100, 2: 100})
+03-04 14:04:32 Label counts val:   Counter({0: 100, 1: 100, 2: 100, 3: 100})
+03-04 14:04:32 Label counts test:  Counter({3: 100, 0: 100, 1: 100, 2: 100})
+03-04 14:04:32 Label counts classifier:  Counter({0: 10, 3: 10, 2: 10, 1: 10})
+03-04 14:04:34 -----Epoch 0/49-----

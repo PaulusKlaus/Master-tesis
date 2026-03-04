@@ -69,7 +69,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Train')
 
     # Model parameters 
-    parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='MLP', help='the name of the model')
+    parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SSF', help='the name of the model')
         # Data parameters 
     parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="CWRU", help="the name of the dataset",
                     )
@@ -155,7 +155,7 @@ if __name__ == "__main__":
         #("gaussian", "normal"),           # 0.7437
     ]
     
-    latent_space = [64,96,128,192,256]
+    latent_space = [64,128,192,256]
     hidden_channel =[256,128,64]
     number_blocks=[7,5,3]
 
@@ -173,7 +173,7 @@ if __name__ == "__main__":
                         args.aug_1, args.aug_2 = pair
                         args.latent_space = features
                         args.hidden_channel = hidden_size
-                        args.num_blocks_ssf=blocks
+                        args.num_blocks_ssf=None
 
                         # save the args
                         for k, v in args.__dict__.items():

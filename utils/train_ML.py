@@ -263,11 +263,11 @@ class Trainer(object):
             avg_loss = epoch_loss / t_samples
 
             # Collaps monitor -> should not go to 0 
-            with torch.no_grad():
-                z_std = z1.std(dim=0).mean().item()
-                epoch_zstd += z_std * bs
+#            with torch.no_grad():
+ #               z_std = z1.std(dim=0).mean().item()
+  #              epoch_zstd += z_std * bs
 
-            avg_zstd = epoch_zstd / t_samples
+            #avg_zstd = epoch_zstd / t_samples
 
             # accuracy only for supervised
             if args.task == "supervised":
@@ -278,7 +278,7 @@ class Trainer(object):
                 loop.set_postfix(loss=f"{avg_loss:.4f}")
         
             # return metrics
-        metrics = {"loss": avg_loss, "zstd": avg_zstd}
+        metrics = {"loss": avg_loss}
         if args.task == "supervised":
             metrics["acc"] = avg_acc
 
@@ -571,7 +571,7 @@ class Trainer(object):
                     break
 
                 # ----- logging (conditional acc) -----
-                msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f} zstd={train_metric.get('zstd', 0):.4f}"
+                msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f}"
                 if "acc" in train_metric:
                     msg += f" acc {train_metric['acc']:.4f}"
 
