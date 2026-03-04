@@ -22,6 +22,7 @@ paths_augmentetion = [
     #"checkpoint/SSF_PU_0303-112311/training.log",
     #"checkpoint/SSF_PU_0303-140932/training.log"
     "checkpoint/SSF_PU_0304-105004/training.log",
+    "checkpoint/SSF_CWRU_0304-111807/training.log"
 ]
 
 def parse_training_log(path):
