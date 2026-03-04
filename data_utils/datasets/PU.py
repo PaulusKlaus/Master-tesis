@@ -64,7 +64,7 @@ def cap_per_class(df: pd.DataFrame, n_per_class: int, seed: int = 42) -> pd.Data
 
     # sample within each label group deterministically
     return (df.groupby("label", group_keys=False)
-              .apply(lambda g: g.sample(n=min(len(g), n_per_class), random_state=seed))
+              .sample(n=n_per_class, random_state=seed, replace=False)
               .reset_index(drop=True))
 
 
@@ -90,7 +90,7 @@ class PU(object):
             bearing = ALL_DATA[k]
             label = ALL_LABEL[k]
 
-            for i in range(1, 5):
+            for i in range(1, 10):
                 name = f"{state}_{bearing}_{i}"
                 d, l = self._data_load(
                     os.path.join(self.data_dir, bearing, f"{name}.mat"),
@@ -181,8 +181,8 @@ class PU(object):
         # --- optional per-class caps ---
         train_pd = cap_per_class(train_pd, n_per_class=100, seed=self.random_state)
         test_pd = cap_per_class(test_pd, n_per_class=100, seed=self.random_state)
-        classifier_pd = cap_per_class(classifier_pd, n_per_class=10, seed=self.random_state)
         val_pd = cap_per_class(val_pd, n_per_class=100, seed=self.random_state)
+        classifier_pd = cap_per_class(classifier_pd, n_per_class=10, seed=self.random_state)
 
         train_dataset = view(train_pd, transform_1=train_t1, transform_2=train_t2)
         val_dataset   = view(val_pd,   transform_1=eval_t1,  transform_2=eval_t2)

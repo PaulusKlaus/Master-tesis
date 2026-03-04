@@ -14,7 +14,7 @@ class Classifier(nn.Module):
     def __init__(self, latent_dim: int = 16, classes: int = 32):
         super().__init__()
         # ensure integer hidden size
-        hidden = int(latent_dim // 2)
+        hidden = int(latent_dim // 4)
 
 
         self.layer_1 = nn.Sequential(

@@ -26,18 +26,22 @@ label_ALL = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
 label = [1, 2, 3]
 axis = ["_DE_time", "_FE_time", "_BA_time"]
 
+import pandas as pd
+
 def cap_per_class(df: pd.DataFrame, n_per_class: int, seed: int = 42) -> pd.DataFrame:
     """
-    Keep at most n_per_class samples per label (balanced cap).
-    If a class has fewer than n_per_class, it keeps all available samples.
+    Keep up to n_per_class per label (no oversampling).
+    If a class has fewer than n_per_class, keep all of them.
     """
     if n_per_class is None:
         return df
 
-    # sample within each label group deterministically
-    return (df.groupby("label", group_keys=False)
-              .apply(lambda g: g.sample(n=min(len(g), n_per_class), random_state=seed))
-              .reset_index(drop=True))
+    parts = []
+    for label, group in df.groupby("label", sort=False):
+        k = min(len(group), n_per_class)
+        parts.append(group.sample(n=k, random_state=seed, replace=False))
+
+    return pd.concat(parts, ignore_index=True)
 
 
 
@@ -148,7 +152,7 @@ class CWRU(object):
             # stratified random split
             train_pd, temp_pd = train_test_split(
                 data_pd,
-                test_size=0.30,
+                test_size=0.50,
                 random_state=self.random_state,
                 stratify=data_pd["label"],
             )
@@ -187,8 +191,8 @@ class CWRU(object):
         # --- optional per-class caps ---
         train_pd = cap_per_class(train_pd, n_per_class=100, seed=self.random_state)
         test_pd = cap_per_class(test_pd, n_per_class=100, seed=self.random_state)
-        classifier_pd = cap_per_class(classifier_pd, n_per_class=10, seed=self.random_state)
         val_pd = cap_per_class(val_pd, n_per_class=100, seed=self.random_state)
+        classifier_pd = cap_per_class(classifier_pd, n_per_class=10, seed=self.random_state)
 
         train_dataset = view(train_pd, transform_1=train_t1, transform_2=train_t2)
         val_dataset   = view(val_pd,   transform_1=eval_t1,  transform_2=eval_t2)

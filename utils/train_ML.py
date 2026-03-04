@@ -99,11 +99,11 @@ class Trainer(object):
                                                                                       ).data_prepare(split = args.processing_type,
                                                                                                               view = dataset_view)
         # ---- DataLoader -----
-        self.train_loader = DataLoader(self.train_ds, batch_size=args.batch_size, shuffle=False, drop_last=True)
+        self.train_loader = DataLoader(self.train_ds, batch_size=args.batch_size, shuffle=False)
         #drop_last=True,              # keep pairs aligned for contrastive loss
-        self.val_loader = DataLoader(self.val_ds, batch_size=args.batch_size, shuffle=False, drop_last=True)
+        self.val_loader = DataLoader(self.val_ds, batch_size=args.batch_size, shuffle=False)
         self.test_loader = DataLoader(self.test_ds, batch_size=args.batch_size, shuffle=False)
-        self.classifier_loader = DataLoader(self.classifier_ds, batch_size=args.batch_size, shuffle=False, drop_last=True)
+        self.classifier_loader = DataLoader(self.classifier_ds, batch_size=args.batch_size, shuffle=False)
         logging.info("Split sizes: train=%d val=%d test=%d, classier=%d",
                     len(self.train_ds), len(self.val_ds), len(self.test_ds), len(self.classifier_ds))
         logging.info("Label counts train: %s", count_labels(self.train_loader))
@@ -175,7 +175,7 @@ class Trainer(object):
             
 
         if args.num_blocks_ssf != None:
-            self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim, num_blocks = args.num_blocks_ssf )
+            self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim, num_blocks = args.num_blocks_ssf, hidden_channels= args.hidden_channel )
         else:
             self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim)
 
@@ -560,7 +560,7 @@ class Trainer(object):
                 # --- early stop ---
                 if no_improve >= patience:
                     logging.info(f"Early stopping at epoch {epoch} (best {select_key}={best_value:.4f}).")
-                    #break
+                    break
 
                 # ----- logging (conditional acc) -----
                 msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f}"
