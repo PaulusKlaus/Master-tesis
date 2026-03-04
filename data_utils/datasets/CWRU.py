@@ -26,6 +26,19 @@ label_ALL = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
 label = [1, 2, 3]
 axis = ["_DE_time", "_FE_time", "_BA_time"]
 
+def cap_per_class(df: pd.DataFrame, n_per_class: int, seed: int = 42) -> pd.DataFrame:
+    """
+    Keep at most n_per_class samples per label (balanced cap).
+    If a class has fewer than n_per_class, it keeps all available samples.
+    """
+    if n_per_class is None:
+        return df
+
+    # sample within each label group deterministically
+    return (df.groupby("label", group_keys=False)
+              .apply(lambda g: g.sample(n=min(len(g), n_per_class), random_state=seed))
+              .reset_index(drop=True))
+
 
 
 def find_de_channel_key(mat_dict: dict):
@@ -171,6 +184,12 @@ class CWRU(object):
         eval_t2 = data_transforms("normal", self.normlizetype)
 
         # --- build datasets ---
+        # --- optional per-class caps ---
+        train_pd = cap_per_class(train_pd, n_per_class=100, seed=self.random_state)
+        test_pd = cap_per_class(test_pd, n_per_class=100, seed=self.random_state)
+        classifier_pd = cap_per_class(classifier_pd, n_per_class=10, seed=self.random_state)
+        val_pd = cap_per_class(val_pd, n_per_class=100, seed=self.random_state)
+
         train_dataset = view(train_pd, transform_1=train_t1, transform_2=train_t2)
         val_dataset   = view(val_pd,   transform_1=eval_t1,  transform_2=eval_t2)
         test_dataset  = view(test_pd,  transform_1=eval_t1,  transform_2=eval_t2)

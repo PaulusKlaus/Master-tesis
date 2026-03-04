@@ -113,9 +113,9 @@ def parse_args():
     parser.add_argument('--eta_min', type=float, default=0.00001, help='learning rate scheduler parameter for cos ')
 
     
-    parser.add_argument('--latent_space', type=int, default=96, help='the size of the latent space' )
+    parser.add_argument('--latent_space', type=int, default=128, help='the size of the latent space' )
 
-    parser.add_argument('--num_blocks_ssf', type = int, default=None, help = 'Number of convolutional blocks in SSF model')
+    parser.add_argument('--num_blocks_ssf', type = int, default=5, help = 'Number of convolutional blocks in SSF model')
 
     args = parser.parse_args()
     return args
@@ -150,7 +150,7 @@ if __name__ == "__main__":
         ("randomcrop", "scale"),        # 0.7622
         ("normal", "randomcrop"),       # 0.7511
         ("gaussian", "randomstrech"),   # 0.7474
-        ("normal", "fft"),           # 0.7452
+        ("normal", "normal"),           # 0.7452
         ("randomstrech", "scale"),      # 0.7452
         ("gaussian", "normal"),           # 0.7437
     ]
