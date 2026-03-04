@@ -155,8 +155,8 @@ if __name__ == "__main__":
         #("gaussian", "normal"),           # 0.7437
     ]
     
-    latent_space = [64,96,128,256]
-    hidden_channel =[256,128,96]
+    latent_space = [64,96,128,192,256]
+    hidden_channel =[256,196,128,96]
     number_blocks=[10,9,7,5,3]
 
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
