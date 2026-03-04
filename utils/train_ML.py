@@ -491,7 +491,7 @@ class Trainer(object):
         return {"best_val_acc": best_acc, "test_acc": test_acc, "ckpt_path": out_path}
 
 
-    def train(self, pretrained = True, continue_from_best_val_loss_checkopoint = False, pretrained_dir = None):
+    def train(self, pretrained = True, continue_from_best_val_loss_checkopoint = True, pretrained_dir = None):
         """
         High level training organization
         """
@@ -500,7 +500,7 @@ class Trainer(object):
         self.setup()
 
         if pretrained == False: 
-            patience = 7
+            patience = 10
             min_delta = 0.0
             no_improve = 0
             # pick selection metric based on task
