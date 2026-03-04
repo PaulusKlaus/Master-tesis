@@ -22,6 +22,7 @@ paths_augmentetion = [
     #"checkpoint/SSF_PU_0303-112311/training.log",
     #"checkpoint/SSF_PU_0303-140932/training.log"
     "checkpoint/SSF_PU_0304-105004/training.log",
+   # "checkpoint/SSF_CWRU_0304-111807/training.log"
 ]
 
 def parse_training_log(path):
@@ -122,11 +123,19 @@ def scatter_plots(paths):
     plt.figure()
     for path in paths:
         df = parse_training_log(path)
-        plt.scatter(df["latent_dim"], df["best_val_acc"], label=path)
+        sc = plt.scatter(
+        df["latent_dim"],
+        df["best_val_acc"],
+        c=df["num_blocks_ssf"],   # color by block number
+        cmap="viridis",           # choose colormap
+        alpha=0.8
+    )
+
     plt.xlabel("latent_dim")
     plt.ylabel("best_val_acc")
     plt.title("Latent Dimension vs Best Validation Accuracy")
-    plt.legend()
+
+    plt.colorbar(sc, label="num_blocks_ssf")
     plt.savefig("figures/training_vis/1_latent_vs_val_acc.pdf", bbox_inches="tight")
 
     # 2️⃣ Latent dim vs best val loss
