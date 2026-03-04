@@ -176,7 +176,7 @@ if __name__ == "__main__":
                         args.aug_1, args.aug_2 = pair
                         args.latent_space = features
                         args.hidden_channel = hidden_size
-                        args.num_blocks_ssf=None
+                        args.num_blocks_ssf=blocks
 
                         # save the args
                         for k, v in args.__dict__.items():

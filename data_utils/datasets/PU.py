@@ -54,20 +54,6 @@ WC = ["N15_M07_F10","N09_M07_F10","N15_M01_F10","N15_M07_F04"]
 state = WC[0] #WC[0] can be changed to different working states
 
 
-def cap_per_class(df: pd.DataFrame, n_per_class: int, seed: int = 42) -> pd.DataFrame:
-    """
-    Keep at most n_per_class samples per label (balanced cap).
-    If a class has fewer than n_per_class, it keeps all available samples.
-    """
-    if n_per_class is None:
-        return df
-
-    # sample within each label group deterministically
-    return (df.groupby("label", group_keys=False)
-              .sample(n=n_per_class, random_state=seed, replace=False)
-              .reset_index(drop=True))
-
-
 
 
 class PU(object):
