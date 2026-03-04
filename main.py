@@ -183,18 +183,19 @@ if __name__ == "__main__":
                             logging.info("{}: {}".format(k, v))
 
                         trainer = Trainer(args, save_dir)
-                        encoder = trainer.train(pretrained=False)
+                        encoder = trainer.train(pretrained=True, pretrained_dir="checkpoint/SSF_CWRU_0304-150303/best_pt")
                         train_loader = trainer.train_loader
-                        val_loader = trainer.val_loader
+                        val_loader = trainer.test_loader
 
-                        trainer.train_classifier(encoder)
+                        #trainer.train_classifier(encoder)
+    device = next(encoder.parameters()).device  # gets cuda or cpu automatically
 
     all_features = []
     all_labels = []
-
+    encoder.eval()
     with torch.no_grad():
         for x1,x2, y in val_loader:
-            z1, z2, p1, p2 = encoder(x1,x2)      # get latent features
+            z1, z2, p1, p2 = encoder(x1.to(device),x2.to(device))      # get latent features
             all_features.append(z1)
             all_labels.append(y)
 
