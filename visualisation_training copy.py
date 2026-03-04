@@ -21,13 +21,14 @@ paths_augmentetion = [
   #  "checkpoint/SSF_PU_0303-093038/training.log",
     #"checkpoint/SSF_PU_0303-112311/training.log",
     #"checkpoint/SSF_PU_0303-140932/training.log"
-    "checkpoint/SSF_PU_0304-094719/training.log",
+    "checkpoint/SSF_PU_0304-105004/training.log",
 ]
 
 def parse_training_log(path):
 
     latent_re = re.compile(r'latent.*?(\d+)', re.IGNORECASE)
     blocks_re = re.compile(r'num_blocks_ssf.*?(\d+)', re.IGNORECASE)
+    hid_ch_size = re.compile(r'hidden_channel.*?(\d+)', re.IGNORECASE)
     lp_re = re.compile(r'\[LP epoch\s+(\d+)\].*?val_loss=([\d\.]+).*?val_acc=([\d\.]+)')
     test_re = re.compile(r'TEST linear-probe:.*?loss=([\d\.]+).*?acc=([\d\.]+)', re.IGNORECASE)
         
@@ -52,7 +53,8 @@ def parse_training_log(path):
                     "best_val_acc": -np.inf,
                     "best_val_loss": np.inf,
                     "test_acc": None,
-                    "test_loss": None
+                    "test_loss": None,
+                    "hidden_channel": None
                 }
 
             if current is None:
@@ -73,6 +75,10 @@ def parse_training_log(path):
             if m_blocks and current["num_blocks_ssf"] is None:
                 current["num_blocks_ssf"] = int(m_blocks.group(1))
 
+            m_h_ch_size = hid_ch_size.search(line)
+            if m_h_ch_size and current["hidden_channel"] is None:
+                current["hidden_channel"] = int(m_h_ch_size.group(1))
+
             m_lp = lp_re.search(line)
             if m_lp:
                 val_loss = float(m_lp.group(2))
@@ -91,7 +97,7 @@ def parse_training_log(path):
 
     df = pd.DataFrame(runs)
     # Keep only "real runs" (must have aug info + latent/blocks)
-    df = df.dropna(subset=["latent_dim", "num_blocks_ssf", "aug_1", "aug_2"])
+    df = df.dropna(subset=["latent_dim", "num_blocks_ssf", "aug_1", "aug_2", "hidden_channel"])
     return df
 
 def sted_mean_val(paths):
@@ -171,6 +177,33 @@ def scatter_plots(paths):
     plt.legend()
     plt.savefig("figures/training_vis/4_blocks_vs_val_loss.pdf", bbox_inches="tight")
 
+    # 5 hidden_channel_size vs best val acc
+    plt.figure()
+    for path in paths:
+        df = parse_training_log(path)
+        plt.scatter(df["hidden_channel"], df["best_val_acc"], label=path)
+    plt.xlabel("hidden_channel")
+    plt.ylabel("best_val_acc")
+    plt.title("hidden_channel vs Best Validation Accuracy")
+    plt.legend()
+    plt.savefig("figures/training_vis/5_hidden_vs_val_acc.pdf", bbox_inches="tight")
+
+    # 6 hidden_channel_size vs best val loss
+    plt.figure()
+    for path in paths:
+        df = parse_training_log(path)
+        plt.scatter(
+            df["hidden_channel"],
+            df["best_val_loss"],
+            alpha=0.7,
+            label=path.split("/")[-2]
+        )
+    plt.xlabel("hidden_channel")
+    plt.ylabel("best_val_loss")
+    plt.title("hidden_channel vs Best Validation Loss")
+    plt.legend()
+    plt.savefig("figures/training_vis/6_hidden_channel_vs_val_loss.pdf", bbox_inches="tight")
+
 
 def augmentation_test(paths):
     all_df = []
@@ -203,3 +236,4 @@ def augmentation_test(paths):
 
 
 augmentation_test(paths_augmentetion)
+scatter_plots(paths_augmentetion)
