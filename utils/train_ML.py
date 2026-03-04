@@ -500,7 +500,7 @@ class Trainer(object):
         self.setup()
 
         if pretrained == False: 
-            patience = 5
+            patience = 7
             min_delta = 0.0
             no_improve = 0
             # pick selection metric based on task

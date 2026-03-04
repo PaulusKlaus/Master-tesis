@@ -8452,3 +8452,128 @@
 03-04 10:40:05 Early stopping at epoch 50 (best val_loss=-0.9414).
 03-04 10:40:05 Epoch 050 Train loss -0.9554 | Val loss -0.9370
 03-04 10:40:05 -----Epoch 51/99-----
+03-04 10:40:06 current lr: 0.0242199
+03-04 10:40:06 No improvement in val_loss for 31/5 epochs.
+03-04 10:40:06 Early stopping at epoch 51 (best val_loss=-0.9414).
+03-04 10:40:06 Epoch 051 Train loss -0.9553 | Val loss -0.9365
+03-04 10:40:06 -----Epoch 52/99-----
+03-04 10:40:06 current lr: 0.0234356
+03-04 10:40:06 No improvement in val_loss for 32/5 epochs.
+03-04 10:40:06 Early stopping at epoch 52 (best val_loss=-0.9414).
+03-04 10:40:06 Epoch 052 Train loss -0.9553 | Val loss -0.9364
+03-04 10:40:06 -----Epoch 53/99-----
+03-04 10:40:06 current lr: 0.0226528
+03-04 10:40:06 No improvement in val_loss for 33/5 epochs.
+03-04 10:40:06 Early stopping at epoch 53 (best val_loss=-0.9414).
+03-04 10:40:06 Epoch 053 Train loss -0.9552 | Val loss -0.9363
+03-04 10:40:06 -----Epoch 54/99-----
+03-04 10:40:06 current lr: 0.0218723
+03-04 10:40:06 No improvement in val_loss for 34/5 epochs.
+03-04 10:40:06 Early stopping at epoch 54 (best val_loss=-0.9414).
+03-04 10:40:06 Epoch 054 Train loss -0.9551 | Val loss -0.9358
+03-04 10:40:06 -----Epoch 55/99-----
+03-04 10:40:07 current lr: 0.0210949
+03-04 10:40:07 No improvement in val_loss for 35/5 epochs.
+03-04 10:40:07 Early stopping at epoch 55 (best val_loss=-0.9414).
+03-04 10:40:07 Epoch 055 Train loss -0.9550 | Val loss -0.9356
+03-04 10:40:07 -----Epoch 56/99-----
+03-04 10:40:07 current lr: 0.0203214
+03-04 10:40:07 No improvement in val_loss for 36/5 epochs.
+03-04 10:40:07 Early stopping at epoch 56 (best val_loss=-0.9414).
+03-04 10:40:07 Epoch 056 Train loss -0.9560 | Val loss -0.9354
+03-04 10:40:07 -----Epoch 57/99-----
+03-04 10:40:07 current lr: 0.0195525
+03-04 10:40:07 No improvement in val_loss for 37/5 epochs.
+03-04 10:40:07 Early stopping at epoch 57 (best val_loss=-0.9414).
+03-04 10:40:07 Epoch 057 Train loss -0.9560 | Val loss -0.9349
+03-04 10:40:07 -----Epoch 58/99-----
+03-04 10:40:08 current lr: 0.018789
+03-04 10:40:08 No improvement in val_loss for 38/5 epochs.
+03-04 10:40:08 Early stopping at epoch 58 (best val_loss=-0.9414).
+03-04 10:40:08 Epoch 058 Train loss -0.9559 | Val loss -0.9346
+03-04 10:40:08 -----Epoch 59/99-----
+03-04 10:40:08 current lr: 0.0180316
+03-04 10:40:08 No improvement in val_loss for 39/5 epochs.
+03-04 10:40:08 Early stopping at epoch 59 (best val_loss=-0.9414).
+03-04 10:40:08 Epoch 059 Train loss -0.9561 | Val loss -0.9342
+03-04 10:40:08 -----Epoch 60/99-----
+03-04 10:40:08 current lr: 0.0172811
+03-04 10:40:08 No improvement in val_loss for 40/5 epochs.
+03-04 10:40:08 Early stopping at epoch 60 (best val_loss=-0.9414).
+03-04 10:40:08 Epoch 060 Train loss -0.9557 | Val loss -0.9338
+03-04 10:40:08 -----Epoch 61/99-----
+03-04 10:40:09 current lr: 0.0165382
+03-04 10:40:09 No improvement in val_loss for 41/5 epochs.
+03-04 10:40:09 Early stopping at epoch 61 (best val_loss=-0.9414).
+03-04 10:40:09 Epoch 061 Train loss -0.9558 | Val loss -0.9335
+03-04 10:40:09 -----Epoch 62/99-----
+03-04 10:40:09 current lr: 0.0158037
+03-04 10:40:09 No improvement in val_loss for 42/5 epochs.
+03-04 10:40:09 Early stopping at epoch 62 (best val_loss=-0.9414).
+03-04 10:40:09 Epoch 062 Train loss -0.9556 | Val loss -0.9334
+03-04 10:40:09 -----Epoch 63/99-----
+03-04 10:40:09 current lr: 0.0150783
+03-04 10:40:09 No improvement in val_loss for 43/5 epochs.
+03-04 10:40:09 Early stopping at epoch 63 (best val_loss=-0.9414).
+03-04 10:40:09 Epoch 063 Train loss -0.9561 | Val loss -0.9331
+03-04 10:40:09 -----Epoch 64/99-----
+03-04 10:40:10 current lr: 0.0143626
+03-04 10:40:10 No improvement in val_loss for 44/5 epochs.
+03-04 10:40:10 Early stopping at epoch 64 (best val_loss=-0.9414).
+03-04 10:40:10 Epoch 064 Train loss -0.9560 | Val loss -0.9327
+03-04 10:40:10 -----Epoch 65/99-----
+03-04 10:40:10 current lr: 0.0136575
+03-04 10:40:10 No improvement in val_loss for 45/5 epochs.
+03-04 10:40:10 Early stopping at epoch 65 (best val_loss=-0.9414).
+03-04 10:40:10 Epoch 065 Train loss -0.9554 | Val loss -0.9325
+03-04 10:40:10 -----Epoch 66/99-----
+03-04 10:40:10 current lr: 0.0129636
+03-04 10:40:10 No improvement in val_loss for 46/5 epochs.
+03-04 10:40:10 Early stopping at epoch 66 (best val_loss=-0.9414).
+03-04 10:40:10 Epoch 066 Train loss -0.9558 | Val loss -0.9324
+03-04 10:40:10 -----Epoch 67/99-----
+03-04 10:40:11 current lr: 0.0122815
+03-04 10:40:11 No improvement in val_loss for 47/5 epochs.
+03-04 10:40:11 Early stopping at epoch 67 (best val_loss=-0.9414).
+03-04 10:40:11 Epoch 067 Train loss -0.9559 | Val loss -0.9322
+03-04 10:40:11 -----Epoch 68/99-----
+03-04 10:40:11 current lr: 0.011612
+03-04 10:40:11 No improvement in val_loss for 48/5 epochs.
+03-04 10:40:11 Early stopping at epoch 68 (best val_loss=-0.9414).
+03-04 10:40:11 Epoch 068 Train loss -0.9554 | Val loss -0.9320
+03-04 10:40:11 -----Epoch 69/99-----
+03-04 10:40:11 current lr: 0.0109557
+03-04 10:40:11 No improvement in val_loss for 49/5 epochs.
+03-04 10:40:11 Early stopping at epoch 69 (best val_loss=-0.9414).
+03-04 10:40:11 Epoch 069 Train loss -0.9562 | Val loss -0.9316
+03-04 10:40:11 -----Epoch 70/99-----
+03-04 10:40:12 current lr: 0.0103133
+03-04 10:40:12 No improvement in val_loss for 50/5 epochs.
+03-04 10:40:12 Early stopping at epoch 70 (best val_loss=-0.9414).
+03-04 10:40:12 Epoch 070 Train loss -0.9565 | Val loss -0.9315
+03-04 10:40:12 -----Epoch 71/99-----
+03-04 10:40:12 current lr: 0.00968539
+03-04 10:40:12 No improvement in val_loss for 51/5 epochs.
+03-04 10:40:12 Early stopping at epoch 71 (best val_loss=-0.9414).
+03-04 10:40:12 Epoch 071 Train loss -0.9558 | Val loss -0.9312
+03-04 10:40:12 -----Epoch 72/99-----
+03-04 10:40:12 current lr: 0.00907259
+03-04 10:40:12 No improvement in val_loss for 52/5 epochs.
+03-04 10:40:12 Early stopping at epoch 72 (best val_loss=-0.9414).
+03-04 10:40:12 Epoch 072 Train loss -0.9559 | Val loss -0.9311
+03-04 10:40:12 -----Epoch 73/99-----
+03-04 10:40:13 current lr: 0.00847551
+03-04 10:40:13 No improvement in val_loss for 53/5 epochs.
+03-04 10:40:13 Early stopping at epoch 73 (best val_loss=-0.9414).
+03-04 10:40:13 Epoch 073 Train loss -0.9564 | Val loss -0.9309
+03-04 10:40:13 -----Epoch 74/99-----
+03-04 10:40:13 current lr: 0.00789475
+03-04 10:40:13 No improvement in val_loss for 54/5 epochs.
+03-04 10:40:13 Early stopping at epoch 74 (best val_loss=-0.9414).
+03-04 10:40:13 Epoch 074 Train loss -0.9560 | Val loss -0.9307
+03-04 10:40:13 -----Epoch 75/99-----
+03-04 10:40:14 current lr: 0.00733087
+03-04 10:40:14 No improvement in val_loss for 55/5 epochs.
+03-04 10:40:14 Early stopping at epoch 75 (best val_loss=-0.9414).
+03-04 10:40:14 Epoch 075 Train loss -0.9558 | Val loss -0.9306
+03-04 10:40:14 -----Epoch 76/99-----
