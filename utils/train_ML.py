@@ -97,7 +97,9 @@ class Trainer(object):
                                                                                       augmentype_2 = args.aug_2,
                                                                                       rand = 42  #random split of the data 
                                                                                       ).data_prepare(split = args.processing_type,
-                                                                                                              view = dataset_view)
+                                                                                                              view = dataset_view,
+                                                                                                              per_class_num = args.per_class_samples, 
+                                                                                                              classifier_num = args.classifier_samples )
         # ---- DataLoader -----
         self.train_loader = DataLoader(self.train_ds, batch_size=args.batch_size, shuffle=False)
         #drop_last=True,              # keep pairs aligned for contrastive loss
