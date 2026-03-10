@@ -20,7 +20,7 @@ def tsne(device, encoder, loader):
     features = torch.cat(all_features).cpu().numpy()
     labels = torch.cat(all_labels).cpu().numpy()
     # Run t-SNE
-    tsne = TSNE(n_components=2, perplexity=50, random_state=42)
+    tsne = TSNE(n_components=2, perplexity=30, random_state=42)
     features_2d = tsne.fit_transform(features)
 
     # Plot

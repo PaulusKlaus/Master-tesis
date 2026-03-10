@@ -15,7 +15,7 @@ class ConvBlock1D(nn.Module):
         padding: int = 1,
         pool: str = "max",
         pool_kernel: int = 2,
-        pool_stride: int = 2,
+        pool_stride: int = 1,
     ):
         super().__init__()
         self.conv = nn.Conv1d(in_ch, out_ch, kernel_size=kernel_size,
