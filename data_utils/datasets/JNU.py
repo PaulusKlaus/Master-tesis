@@ -36,18 +36,6 @@ class_to_idx = {"healthy": 0, "inner_race": 1, "outer_race": 2, "ball" : 3}
 ALL_DATA  = [sid for sid, _ in samples]
 ALL_LABEL = [class_to_idx[c] for _, c in samples]
 
-def cap_per_class(df: pd.DataFrame, n_per_class: int, seed: int = 42) -> pd.DataFrame:
-    """
-    Keep at most n_per_class samples per label (balanced cap).
-    If a class has fewer than n_per_class, it keeps all available samples.
-    """
-    if n_per_class is None:
-        return df
-
-    # sample within each label group deterministically
-    return (df.groupby("label", group_keys=False)
-              .sample(n=n_per_class, random_state=seed, replace=False)
-              .reset_index(drop=True))
 
 
 
@@ -92,7 +80,7 @@ class JNU(object):
 
         return data, lab
 
-    def data_prepare(self, split="RA", view=OneViewDataset):
+    def data_prepare(self, split="RA", per_class_num = None, classifier_num = 10, view=OneViewDataset):
         """
         Returns: train_dataset, val_dataset, test_dataset
         split:
@@ -145,10 +133,10 @@ class JNU(object):
         eval_t1 = data_transforms("normal", self.normlizetype)
         eval_t2 = data_transforms("normal", self.normlizetype)
         
-        train_pd = cap_per_class(train_pd, n_per_class=100, seed=self.random_state)
-        test_pd = cap_per_class(test_pd, n_per_class=100, seed=self.random_state)
-        val_pd = cap_per_class(val_pd, n_per_class=100, seed=self.random_state)
-        classifier_pd = cap_per_class(classifier_pd, n_per_class=10, seed=self.random_state)
+        train_pd = cap_per_class(train_pd, n_per_class=per_class_num, seed=self.random_state)
+        test_pd = cap_per_class(test_pd, n_per_class=per_class_num, seed=self.random_state)
+        val_pd = cap_per_class(val_pd, n_per_class=per_class_num, seed=self.random_state)
+        classifier_pd = cap_per_class(classifier_pd, n_per_class=classifier_num, seed=self.random_state)
 
         # --- build datasets ---
         train_dataset = view(train_pd, transform_1=train_t1, transform_2=train_t2)

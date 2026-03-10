@@ -121,7 +121,7 @@ class CWRU(object):
 
         return data, lab
 
-    def data_prepare(self, split="RA", view=TwoViewDataset):
+    def data_prepare(self, split="RA", view=TwoViewDataset, per_class_num =None, classifier_num = None):
         """
         Returns: train_dataset, val_dataset, test_dataset
         split:
@@ -219,10 +219,10 @@ class CWRU(object):
 
         # --- build datasets ---
         # --- optional per-class caps ---
-        train_pd = cap_per_class(train_pd, n_per_class=None, seed=self.random_state)
-        test_pd = cap_per_class(test_pd, n_per_class=None, seed=self.random_state)
-        val_pd = cap_per_class(val_pd, n_per_class=None, seed=self.random_state)
-        classifier_pd = cap_per_class(classifier_pd, n_per_class=None, seed=self.random_state)
+        train_pd = cap_per_class(train_pd, n_per_class=per_class_num, seed=self.random_state)
+        test_pd = cap_per_class(test_pd, n_per_class=per_class_num, seed=self.random_state)
+        val_pd = cap_per_class(val_pd, n_per_class=per_class_num, seed=self.random_state)
+        classifier_pd = cap_per_class(classifier_pd, n_per_class=classifier_num, seed=self.random_state)
 
         train_dataset = view(train_pd, transform_1=train_t1, transform_2=train_t2)
         val_dataset   = view(val_pd,   transform_1=eval_t1,  transform_2=eval_t2)
