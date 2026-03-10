@@ -120,8 +120,8 @@ def parse_args():
     parser.add_argument('--num_blocks_ssf', type = int, default=5, help = 'Number of convolutional blocks in SSF model')
     parser.add_argument('--hidden_channel', type=int, default =256 )
 
-    parser.add_argument('--per_class_samples', type=int, default =None )
-    parser.add_argument('--classifier_samples', type=int, default =None )
+    parser.add_argument('--per_class_samples', type=int, default =100 )
+    parser.add_argument('--classifier_samples', type=int, default =10 )
     
 
     args = parser.parse_args()
