@@ -1,0 +1,36 @@
+03-10 13:19:44 model_name: SSF
+03-10 13:19:44 data_name: PU
+03-10 13:19:44 aug_1: randomcrop
+03-10 13:19:44 aug_2: scale
+03-10 13:19:44 max_epoch: 20
+03-10 13:19:44 classifier_epoch: 50
+03-10 13:19:44 data_view: TwoViewDataset
+03-10 13:19:44 cuda_device: 0
+03-10 13:19:44 checkpoint_dir: ./anomaly_detection
+03-10 13:19:44 batch_size: 64
+03-10 13:19:44 data_dir: raw_data/PU
+03-10 13:19:44 out_channel: 4
+03-10 13:19:44 normlizetype: minus_one_one
+03-10 13:19:44 processing_type: O_N
+03-10 13:19:44 opt: sgd
+03-10 13:19:44 lr: 0.05
+03-10 13:19:44 momentum: 0.9
+03-10 13:19:44 weight_decay: 0.0001
+03-10 13:19:44 lr_scheduler: cos
+03-10 13:19:44 gamma: 0.95
+03-10 13:19:44 eta_min: 1e-05
+03-10 13:19:44 latent_space: 192
+03-10 13:19:44 num_blocks_ssf: 5
+03-10 13:19:44 hidden_channel: 128
+03-10 13:19:44 task: self_supervised
+03-10 13:19:44 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+03-10 13:19:44 using 1 gpus
+03-10 13:19:44 Dataset class: <class 'data_utils.datasets.PU.PU'>
+03-10 13:19:45 Split sizes: train=6750 val=2250 test=15768, classier=2000
+03-10 13:19:45 Label counts train: Counter({0: 6750})
+03-10 13:19:45 Label counts val:   Counter({0: 2250})
+03-10 13:19:46 Label counts test:  Counter({1: 5637, 3: 5629, 2: 3377, 0: 1125})
+03-10 13:19:46 Label counts classifier:  Counter({2: 500, 0: 500, 1: 500, 3: 500})
+03-10 13:19:48 Loaded best checkpoint from ./anomaly_detection/SSF_PU_0310-131203/best_pt (val_loss=-0.9984540839195252)
+03-10 13:19:48 Loaded best checkpoint from ./anomaly_detection/SSF_PU_0310-131203/best_pt (val_loss=-0.9984540839195252)
+03-10 13:19:53 TEST (best): loss -0.9937

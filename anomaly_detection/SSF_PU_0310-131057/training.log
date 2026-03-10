@@ -1,0 +1,66 @@
+03-10 13:10:57 model_name: SSF
+03-10 13:10:57 data_name: PU
+03-10 13:10:57 aug_1: randomcrop
+03-10 13:10:57 aug_2: scale
+03-10 13:10:57 max_epoch: 20
+03-10 13:10:57 classifier_epoch: 50
+03-10 13:10:57 data_view: TwoViewDataset
+03-10 13:10:57 cuda_device: 0
+03-10 13:10:57 checkpoint_dir: ./anomaly_detection
+03-10 13:10:57 batch_size: 64
+03-10 13:10:57 data_dir: raw_data/PU
+03-10 13:10:57 out_channel: 4
+03-10 13:10:57 normlizetype: minus_one_one
+03-10 13:10:57 processing_type: O_N
+03-10 13:10:57 opt: sgd
+03-10 13:10:57 lr: 0.05
+03-10 13:10:57 momentum: 0.9
+03-10 13:10:57 weight_decay: 0.0001
+03-10 13:10:57 lr_scheduler: cos
+03-10 13:10:57 gamma: 0.95
+03-10 13:10:57 eta_min: 1e-05
+03-10 13:10:57 latent_space: 192
+03-10 13:10:57 num_blocks_ssf: 5
+03-10 13:10:57 hidden_channel: 128
+03-10 13:10:57 task: self_supervised
+03-10 13:10:57 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+03-10 13:10:57 using 1 gpus
+03-10 13:10:57 Dataset class: <class 'data_utils.datasets.PU.PU'>
+03-10 13:10:58 Split sizes: train=6750 val=2250 test=15768, classier=2000
+03-10 13:10:59 Label counts train: Counter({0: 6750})
+03-10 13:10:59 Label counts val:   Counter({0: 2250})
+03-10 13:11:00 Label counts test:  Counter({1: 5637, 3: 5629, 2: 3377, 0: 1125})
+03-10 13:11:00 Label counts classifier:  Counter({3: 500, 0: 500, 1: 500, 2: 500})
+03-10 13:11:01 -----Epoch 0/19-----
+03-10 13:11:08 current lr: 0.05
+03-10 13:11:08 Saved best checkpoint to ./anomaly_detection\SSF_PU_0310-131057\best_pt (val_loss=-0.9875)
+03-10 13:11:08 Epoch 000 Train loss -0.9389 | Val loss -0.9875
+03-10 13:11:08 -----Epoch 1/19-----
+03-10 13:11:13 current lr: 0.0496923
+03-10 13:11:13 Saved best checkpoint to ./anomaly_detection\SSF_PU_0310-131057\best_pt (val_loss=-0.9942)
+03-10 13:11:13 Epoch 001 Train loss -0.9915 | Val loss -0.9942
+03-10 13:11:13 -----Epoch 2/19-----
+03-10 13:11:19 current lr: 0.0487767
+03-10 13:11:19 Saved best checkpoint to ./anomaly_detection\SSF_PU_0310-131057\best_pt (val_loss=-0.9958)
+03-10 13:11:19 Epoch 002 Train loss -0.9948 | Val loss -0.9958
+03-10 13:11:19 -----Epoch 3/19-----
+03-10 13:11:25 current lr: 0.0472757
+03-10 13:11:25 Saved best checkpoint to ./anomaly_detection\SSF_PU_0310-131057\best_pt (val_loss=-0.9968)
+03-10 13:11:25 Epoch 003 Train loss -0.9960 | Val loss -0.9968
+03-10 13:11:25 -----Epoch 4/19-----
+03-10 13:11:30 current lr: 0.0452264
+03-10 13:11:30 Saved best checkpoint to ./anomaly_detection\SSF_PU_0310-131057\best_pt (val_loss=-0.9973)
+03-10 13:11:30 Epoch 004 Train loss -0.9967 | Val loss -0.9973
+03-10 13:11:30 -----Epoch 5/19-----
+03-10 13:11:36 current lr: 0.0426791
+03-10 13:11:36 Saved best checkpoint to ./anomaly_detection\SSF_PU_0310-131057\best_pt (val_loss=-0.9976)
+03-10 13:11:36 Epoch 005 Train loss -0.9971 | Val loss -0.9976
+03-10 13:11:36 -----Epoch 6/19-----
+03-10 13:11:42 current lr: 0.0396967
+03-10 13:11:42 Saved best checkpoint to ./anomaly_detection\SSF_PU_0310-131057\best_pt (val_loss=-0.9978)
+03-10 13:11:42 Epoch 006 Train loss -0.9974 | Val loss -0.9978
+03-10 13:11:42 -----Epoch 7/19-----
+03-10 13:11:48 current lr: 0.0363525
+03-10 13:11:48 Saved best checkpoint to ./anomaly_detection\SSF_PU_0310-131057\best_pt (val_loss=-0.9980)
+03-10 13:11:48 Epoch 007 Train loss -0.9976 | Val loss -0.9980
+03-10 13:11:48 -----Epoch 8/19-----

@@ -149,6 +149,51 @@ class PU(object):
             train_pd, temp_pd = train_test_split_order(data_pd, test_size=0.30)
             val_temp, test_pd   = train_test_split_order(temp_pd, test_size=0.5)
             val_pd, classifier_pd   = train_test_split_order(val_temp, test_size=0.5)
+         
+        elif split =="O_N":   # Train on only normal dataset 
+            "train: only normal"
+            "val: only normal "
+            "test: all classes"
+            "classifier: all classes"
+            normal_pd = data_pd[data_pd["label"] == 0].reset_index(drop=True)
+            faults_pd = data_pd[data_pd["label"] != 0].reset_index(drop=True)   
+
+            # split normal into train/val and rest for test and classifier
+            train_pd, temp = train_test_split(
+                normal_pd,
+                test_size=0.40,  # 70% normal -> train, 30% normal -> rest
+                random_state=self.random_state,
+                shuffle=True,
+            )
+            val_pd, test_classifier_normals = train_test_split(
+                temp,
+                test_size=0.50,  # half of the rest -> val, half stays for test/classifier
+                random_state=self.random_state,
+                shuffle=True,
+            ) 
+            test_normals, classifier_normals = train_test_split(
+                test_classifier_normals,
+                test_size=0.50,
+                random_state=self.random_state,
+                shuffle=True,
+            )
+            # Split FAULTS into test/classifier (both contain all fault classes)
+            #    Stratify by label so each fault type appears in both sets
+            test_faults, classifier_faults = train_test_split(
+                faults_pd,
+                test_size=0.50,
+                random_state=self.random_state,
+                stratify=faults_pd["label"] if len(faults_pd["label"].unique()) > 1 else None,
+            )
+            # Add normal samples to test/classifier 
+            test_pd = pd.concat([test_normals, test_faults], ignore_index=True).sample(
+                frac=1.0, random_state=self.random_state
+            ).reset_index(drop=True)
+
+            classifier_pd = pd.concat([classifier_normals, classifier_faults], ignore_index=True).sample(
+                frac=1.0, random_state=self.random_state
+            ).reset_index(drop=True)
+        
         else:
             raise ValueError(f"Unknown split='{split}'. Use 'RA', 'R_NA', or 'O_A'.")
 
@@ -165,7 +210,7 @@ class PU(object):
 
         # --- build datasets ---
         # --- optional per-class caps ---
-        n_p_class= 2*200
+        n_p_class= None
         train_pd = cap_per_class(train_pd, n_per_class=n_p_class, seed=self.random_state)
         test_pd = cap_per_class(test_pd, n_per_class=n_p_class, seed=self.random_state)
         val_pd = cap_per_class(val_pd, n_per_class=n_p_class, seed=self.random_state)
