@@ -170,7 +170,6 @@ class JNU(object):
 
         # --- choose transforms ---
         if split in ("RA", "O_A", "O_N"):  # augmentation on train only
-            print(" Augmentetion Hi")
             train_t1 = data_transforms(self.augmentation_1, self.normlizetype)
             train_t2 = data_transforms(self.augmentation_2, self.normlizetype)
         else:  # no augmentation

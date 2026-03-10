@@ -1,0 +1,168 @@
+03-10 13:47:52 model_name: SSF
+03-10 13:47:52 data_name: XJTU
+03-10 13:47:52 aug_1: randomcrop
+03-10 13:47:52 aug_2: scale
+03-10 13:47:52 max_epoch: 20
+03-10 13:47:52 classifier_epoch: 50
+03-10 13:47:52 data_view: TwoViewDataset
+03-10 13:47:52 cuda_device: 0
+03-10 13:47:52 checkpoint_dir: ./anomaly_detection
+03-10 13:47:52 batch_size: 64
+03-10 13:47:52 data_dir: raw_data/XJTU/XJTU-SY_Bearing_Datasets/XJTU-SY_Bearing_Datasets
+03-10 13:47:52 out_channel: 15
+03-10 13:47:52 normlizetype: minus_one_one
+03-10 13:47:52 processing_type: O_N
+03-10 13:47:52 opt: sgd
+03-10 13:47:52 lr: 0.05
+03-10 13:47:52 momentum: 0.9
+03-10 13:47:52 weight_decay: 0.0001
+03-10 13:47:52 lr_scheduler: cos
+03-10 13:47:52 gamma: 0.95
+03-10 13:47:52 eta_min: 1e-05
+03-10 13:47:52 latent_space: 192
+03-10 13:47:52 num_blocks_ssf: 5
+03-10 13:47:52 hidden_channel: 128
+03-10 13:47:52 task: self_supervised
+03-10 13:47:52 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+03-10 13:47:52 using 1 gpus
+03-10 13:47:52 Dataset class: <class 'data_utils.datasets.XJTU.XJTU'>
+03-10 13:47:54 Split sizes: train=76 val=26 test=909, classier=909
+03-10 13:47:54 Label counts train: Counter({0: 76})
+03-10 13:47:54 Label counts val:   Counter({0: 26})
+03-10 13:47:54 Label counts test:  Counter({9: 64, 2: 64, 13: 64, 4: 64, 5: 64, 12: 64, 14: 64, 7: 64, 3: 64, 11: 64, 10: 64, 1: 64, 6: 64, 8: 64, 0: 13})
+03-10 13:47:54 Label counts classifier:  Counter({8: 64, 7: 64, 11: 64, 4: 64, 14: 64, 6: 64, 13: 64, 10: 64, 2: 64, 12: 64, 9: 64, 3: 64, 1: 64, 5: 64, 0: 13})
+03-10 13:47:56 -----Epoch 0/19-----
+03-10 13:47:56 current lr: 0.05
+03-10 13:47:56 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.1594)
+03-10 13:47:56 Epoch 000 Train loss -0.0392 | Val loss -0.1594
+03-10 13:47:56 -----Epoch 1/19-----
+03-10 13:47:56 current lr: 0.0496923
+03-10 13:47:56 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.4326)
+03-10 13:47:56 Epoch 001 Train loss -0.3686 | Val loss -0.4326
+03-10 13:47:56 -----Epoch 2/19-----
+03-10 13:47:57 current lr: 0.0487767
+03-10 13:47:57 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.5868)
+03-10 13:47:57 Epoch 002 Train loss -0.7439 | Val loss -0.5868
+03-10 13:47:57 -----Epoch 3/19-----
+03-10 13:47:57 current lr: 0.0472757
+03-10 13:47:57 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.6582)
+03-10 13:47:57 Epoch 003 Train loss -0.8982 | Val loss -0.6582
+03-10 13:47:57 -----Epoch 4/19-----
+03-10 13:47:57 current lr: 0.0452264
+03-10 13:47:57 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.7143)
+03-10 13:47:57 Epoch 004 Train loss -0.9434 | Val loss -0.7143
+03-10 13:47:57 -----Epoch 5/19-----
+03-10 13:47:57 current lr: 0.0426791
+03-10 13:47:57 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.7667)
+03-10 13:47:57 Epoch 005 Train loss -0.9580 | Val loss -0.7667
+03-10 13:47:57 -----Epoch 6/19-----
+03-10 13:47:57 current lr: 0.0396967
+03-10 13:47:57 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.8144)
+03-10 13:47:57 Epoch 006 Train loss -0.9632 | Val loss -0.8144
+03-10 13:47:57 -----Epoch 7/19-----
+03-10 13:47:57 current lr: 0.0363525
+03-10 13:47:57 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.8564)
+03-10 13:47:57 Epoch 007 Train loss -0.9661 | Val loss -0.8564
+03-10 13:47:57 -----Epoch 8/19-----
+03-10 13:47:57 current lr: 0.0327289
+03-10 13:47:57 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.8909)
+03-10 13:47:57 Epoch 008 Train loss -0.9677 | Val loss -0.8909
+03-10 13:47:57 -----Epoch 9/19-----
+03-10 13:47:57 current lr: 0.0289151
+03-10 13:47:57 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.9171)
+03-10 13:47:57 Epoch 009 Train loss -0.9690 | Val loss -0.9171
+03-10 13:47:57 -----Epoch 10/19-----
+03-10 13:47:57 current lr: 0.025005
+03-10 13:47:57 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.9357)
+03-10 13:47:57 Epoch 010 Train loss -0.9701 | Val loss -0.9357
+03-10 13:47:57 -----Epoch 11/19-----
+03-10 13:47:58 current lr: 0.0210949
+03-10 13:47:58 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.9479)
+03-10 13:47:58 Epoch 011 Train loss -0.9713 | Val loss -0.9479
+03-10 13:47:58 -----Epoch 12/19-----
+03-10 13:47:58 current lr: 0.0172811
+03-10 13:47:58 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.9556)
+03-10 13:47:58 Epoch 012 Train loss -0.9722 | Val loss -0.9556
+03-10 13:47:58 -----Epoch 13/19-----
+03-10 13:47:58 current lr: 0.0136575
+03-10 13:47:58 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.9603)
+03-10 13:47:58 Epoch 013 Train loss -0.9732 | Val loss -0.9603
+03-10 13:47:58 -----Epoch 14/19-----
+03-10 13:47:58 current lr: 0.0103133
+03-10 13:47:58 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.9634)
+03-10 13:47:58 Epoch 014 Train loss -0.9738 | Val loss -0.9634
+03-10 13:47:58 -----Epoch 15/19-----
+03-10 13:47:58 current lr: 0.00733087
+03-10 13:47:58 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.9652)
+03-10 13:47:58 Epoch 015 Train loss -0.9743 | Val loss -0.9652
+03-10 13:47:58 -----Epoch 16/19-----
+03-10 13:47:58 current lr: 0.00478362
+03-10 13:47:58 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.9664)
+03-10 13:47:58 Epoch 016 Train loss -0.9747 | Val loss -0.9664
+03-10 13:47:58 -----Epoch 17/19-----
+03-10 13:47:58 current lr: 0.00273429
+03-10 13:47:58 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.9672)
+03-10 13:47:58 Epoch 017 Train loss -0.9749 | Val loss -0.9672
+03-10 13:47:58 -----Epoch 18/19-----
+03-10 13:47:58 current lr: 0.00123334
+03-10 13:47:58 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.9676)
+03-10 13:47:58 Epoch 018 Train loss -0.9751 | Val loss -0.9676
+03-10 13:47:58 -----Epoch 19/19-----
+03-10 13:47:59 current lr: 0.00031773
+03-10 13:47:59 Saved best checkpoint to ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.9679)
+03-10 13:47:59 Epoch 019 Train loss -0.9752 | Val loss -0.9679
+03-10 13:47:59 TEST (last): loss -0.8934
+03-10 13:47:59 Loaded best checkpoint from ./anomaly_detection\SSF_XJTU_0310-134752\best_pt (val_loss=-0.9679096937179565)
+03-10 13:47:59 TEST (best): loss -0.8934
+03-10 13:48:00 [LP epoch 00] train_loss=2.4376 train_acc=0.2200 | val_loss=3.0811 val_acc=0.0000 | 
+03-10 13:48:00 [LP epoch 01] train_loss=2.1632 train_acc=0.3718 | val_loss=3.1572 val_acc=0.0000 | 
+03-10 13:48:01 [LP epoch 02] train_loss=1.9645 train_acc=0.4631 | val_loss=2.7803 val_acc=0.0000 | 
+03-10 13:48:01 [LP epoch 03] train_loss=1.8019 train_acc=0.5875 | val_loss=2.8584 val_acc=0.0000 | 
+03-10 13:48:01 [LP epoch 04] train_loss=1.6465 train_acc=0.6744 | val_loss=2.5825 val_acc=0.0000 | 
+03-10 13:48:02 [LP epoch 05] train_loss=1.5137 train_acc=0.7382 | val_loss=2.5453 val_acc=0.0000 | 
+03-10 13:48:02 [LP epoch 06] train_loss=1.4010 train_acc=0.7745 | val_loss=2.2748 val_acc=0.0000 | 
+03-10 13:48:02 [LP epoch 07] train_loss=1.3255 train_acc=0.7998 | val_loss=2.3540 val_acc=0.0000 | 
+03-10 13:48:03 [LP epoch 08] train_loss=1.2867 train_acc=0.8163 | val_loss=2.1221 val_acc=0.3077 | 
+03-10 13:48:03 [LP epoch 09] train_loss=1.1948 train_acc=0.8262 | val_loss=2.1160 val_acc=0.1923 | 
+03-10 13:48:03 [LP epoch 10] train_loss=1.1834 train_acc=0.8306 | val_loss=2.1613 val_acc=0.3462 | 
+03-10 13:48:04 [LP epoch 11] train_loss=1.1163 train_acc=0.8570 | val_loss=2.0481 val_acc=0.1923 | 
+03-10 13:48:04 [LP epoch 12] train_loss=1.0795 train_acc=0.8658 | val_loss=1.9327 val_acc=0.3846 | 
+03-10 13:48:04 [LP epoch 13] train_loss=1.0566 train_acc=0.8735 | val_loss=1.9265 val_acc=0.3077 | 
+03-10 13:48:05 [LP epoch 14] train_loss=1.0645 train_acc=0.8636 | val_loss=2.0508 val_acc=0.2308 | 
+03-10 13:48:05 [LP epoch 15] train_loss=1.0369 train_acc=0.8636 | val_loss=1.8241 val_acc=0.5000 | 
+03-10 13:48:06 [LP epoch 16] train_loss=1.0128 train_acc=0.8757 | val_loss=1.7274 val_acc=0.6923 | 
+03-10 13:48:06 [LP epoch 17] train_loss=0.9963 train_acc=0.8823 | val_loss=1.5976 val_acc=0.7308 | 
+03-10 13:48:06 [LP epoch 18] train_loss=0.9844 train_acc=0.8955 | val_loss=1.8580 val_acc=0.4615 | 
+03-10 13:48:07 [LP epoch 19] train_loss=0.9664 train_acc=0.8966 | val_loss=1.6190 val_acc=0.6154 | 
+03-10 13:48:07 [LP epoch 20] train_loss=0.9563 train_acc=0.9054 | val_loss=1.7138 val_acc=0.5385 | 
+03-10 13:48:07 [LP epoch 21] train_loss=0.9535 train_acc=0.8988 | val_loss=1.7175 val_acc=0.5769 | 
+03-10 13:48:08 [LP epoch 22] train_loss=0.9332 train_acc=0.9087 | val_loss=1.7896 val_acc=0.5000 | 
+03-10 13:48:08 [LP epoch 23] train_loss=0.9369 train_acc=0.9054 | val_loss=1.5645 val_acc=0.6538 | 
+03-10 13:48:09 [LP epoch 24] train_loss=0.9279 train_acc=0.9153 | val_loss=1.6790 val_acc=0.5000 | 
+03-10 13:48:09 [LP epoch 25] train_loss=0.9161 train_acc=0.9087 | val_loss=1.6737 val_acc=0.5000 | 
+03-10 13:48:10 [LP epoch 26] train_loss=0.8948 train_acc=0.9241 | val_loss=1.5075 val_acc=0.7308 | 
+03-10 13:48:10 [LP epoch 27] train_loss=0.9181 train_acc=0.9076 | val_loss=1.6064 val_acc=0.5769 | 
+03-10 13:48:10 [LP epoch 28] train_loss=0.9381 train_acc=0.8944 | val_loss=1.5739 val_acc=0.6154 | 
+03-10 13:48:11 [LP epoch 29] train_loss=0.9065 train_acc=0.9164 | val_loss=1.5394 val_acc=0.5385 | 
+03-10 13:48:11 [LP epoch 30] train_loss=0.9125 train_acc=0.9120 | val_loss=1.6214 val_acc=0.5385 | 
+03-10 13:48:12 [LP epoch 31] train_loss=0.9307 train_acc=0.9065 | val_loss=1.5102 val_acc=0.6538 | 
+03-10 13:48:12 [LP epoch 32] train_loss=0.8847 train_acc=0.9285 | val_loss=1.6322 val_acc=0.5769 | 
+03-10 13:48:13 [LP epoch 33] train_loss=0.8953 train_acc=0.9109 | val_loss=1.3666 val_acc=0.6923 | 
+03-10 13:48:13 [LP epoch 34] train_loss=0.8778 train_acc=0.9175 | val_loss=1.3780 val_acc=0.6538 | 
+03-10 13:48:13 [LP epoch 35] train_loss=0.8869 train_acc=0.9241 | val_loss=1.6304 val_acc=0.5000 | 
+03-10 13:48:14 [LP epoch 36] train_loss=0.8685 train_acc=0.9230 | val_loss=1.5044 val_acc=0.6154 | 
+03-10 13:48:14 [LP epoch 37] train_loss=0.8708 train_acc=0.9307 | val_loss=1.5481 val_acc=0.5385 | 
+03-10 13:48:15 [LP epoch 38] train_loss=0.8582 train_acc=0.9318 | val_loss=1.4702 val_acc=0.6538 | 
+03-10 13:48:15 [LP epoch 39] train_loss=0.8594 train_acc=0.9384 | val_loss=1.3240 val_acc=0.6923 | 
+03-10 13:48:16 [LP epoch 40] train_loss=0.8621 train_acc=0.9285 | val_loss=1.5253 val_acc=0.5769 | 
+03-10 13:48:16 [LP epoch 41] train_loss=0.8396 train_acc=0.9373 | val_loss=1.5334 val_acc=0.5385 | 
+03-10 13:48:16 [LP epoch 42] train_loss=0.8391 train_acc=0.9395 | val_loss=1.3211 val_acc=0.6154 | 
+03-10 13:48:17 [LP epoch 43] train_loss=0.8189 train_acc=0.9450 | val_loss=1.3266 val_acc=0.6538 | 
+03-10 13:48:17 [LP epoch 44] train_loss=0.8493 train_acc=0.9208 | val_loss=1.2861 val_acc=0.6923 | 
+03-10 13:48:18 [LP epoch 45] train_loss=0.8300 train_acc=0.9362 | val_loss=1.2020 val_acc=0.6923 | 
+03-10 13:48:18 [LP epoch 46] train_loss=0.8320 train_acc=0.9439 | val_loss=1.2993 val_acc=0.6538 | 
+03-10 13:48:19 [LP epoch 47] train_loss=0.8244 train_acc=0.9439 | val_loss=1.2294 val_acc=0.6923 | 
+03-10 13:48:19 [LP epoch 48] train_loss=0.8259 train_acc=0.9428 | val_loss=1.3004 val_acc=0.6923 | 
+03-10 13:48:19 [LP epoch 49] train_loss=0.8200 train_acc=0.9428 | val_loss=1.3646 val_acc=0.7308 | 
+03-10 13:48:19 Saved linear-probe checkpoint: ./anomaly_detection\SSF_XJTU_0310-134752\linear_probe_best.pt (best_val_acc=0.7308)
+03-10 13:48:20 TEST linear-probe: loss=1.3190 acc=0.6645
