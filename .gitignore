@@ -6,7 +6,7 @@
 *.mat
 *.csv
 *.png
-*.pdf
+
 .log
 best_pt
 
