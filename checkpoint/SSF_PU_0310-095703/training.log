@@ -1,0 +1,34 @@
+03-10 09:57:03 model_name: SSF
+03-10 09:57:03 data_name: PU
+03-10 09:57:03 aug_1: randomcrop
+03-10 09:57:03 aug_2: scale
+03-10 09:57:03 max_epoch: 20
+03-10 09:57:03 classifier_epoch: 50
+03-10 09:57:03 data_view: TwoViewDataset
+03-10 09:57:03 cuda_device: 0
+03-10 09:57:03 checkpoint_dir: ./checkpoint
+03-10 09:57:03 batch_size: 64
+03-10 09:57:03 data_dir: raw_data/PU
+03-10 09:57:03 out_channel: 4
+03-10 09:57:03 normlizetype: minus_one_one
+03-10 09:57:03 processing_type: RA
+03-10 09:57:03 opt: sgd
+03-10 09:57:03 lr: 0.05
+03-10 09:57:03 momentum: 0.9
+03-10 09:57:03 weight_decay: 0.0001
+03-10 09:57:03 lr_scheduler: cos
+03-10 09:57:03 gamma: 0.95
+03-10 09:57:03 eta_min: 1e-05
+03-10 09:57:03 latent_space: 192
+03-10 09:57:03 num_blocks_ssf: 100
+03-10 09:57:03 hidden_channel: 128
+03-10 09:57:03 task: self_supervised
+03-10 09:57:03 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+03-10 09:57:04 using 1 gpus
+03-10 09:57:04 Dataset class: <class 'data_utils.datasets.PU.PU'>
+03-10 09:57:04 Split sizes: train=1600 val=1600 test=1600, classier=2000
+03-10 09:57:05 Label counts train: Counter({1: 400, 0: 400, 3: 400, 2: 400})
+03-10 09:57:05 Label counts val:   Counter({0: 400, 3: 400, 1: 400, 2: 400})
+03-10 09:57:05 Label counts test:  Counter({2: 400, 0: 400, 3: 400, 1: 400})
+03-10 09:57:05 Label counts classifier:  Counter({1: 500, 3: 500, 2: 500, 0: 500})
+03-10 09:57:07 -----Epoch 0/19-----

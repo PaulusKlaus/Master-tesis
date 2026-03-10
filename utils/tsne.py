@@ -20,7 +20,7 @@ def tsne(device, encoder, loader):
     features = torch.cat(all_features).cpu().numpy()
     labels = torch.cat(all_labels).cpu().numpy()
     # Run t-SNE
-    tsne = TSNE(n_components=2, perplexity=50, random_state=42)
+    tsne = TSNE(n_components=2, perplexity=30, random_state=42)
     features_2d = tsne.fit_transform(features)
 
     # Plot
@@ -30,7 +30,12 @@ def tsne(device, encoder, loader):
     plt.ylabel("t-SNE 2")
     plt.title("t-SNE Feature Visualization")
     plt.colorbar(label="Class")
-    plt.show()
+    # Save instead of show
+    plt.tight_layout()
+    plt.savefig("figures/tsne/tsne.pdf", format="pdf", dpi=300)
+    plt.close()   # important to free memory
+    path = "figures/tsne"
+    print(f"t-SNE plot saved to {path}")
 
 
 

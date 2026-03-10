@@ -11,6 +11,7 @@ from utils.tsne import tsne
 from utils.loss_SSL import SimSiamLoss
 from utils.logger import setlogger
 from utils.train_ML import Trainer
+from utils.anomaly_detection import *
 
 
 
@@ -83,7 +84,7 @@ def parse_args():
     parser.add_argument('--data_view', type=str, default=None, help='Dataset view with either one or two tensors')
     
     parser.add_argument('--cuda_device', type=str, default='0', help='assign device')
-    parser.add_argument('--checkpoint_dir', type=str, default='./checkpoint', help='the directory to save the model')
+    parser.add_argument('--checkpoint_dir', type=str, default='./anomaly_detection', help='the directory to save the model')
     #parser.add_argument("--pretrained", type=bool, default=True, help='whether to load the pretrained model')
     parser.add_argument('--batch_size', type=int, default=64, help='batchsize of the training process')
     
@@ -174,20 +175,40 @@ if __name__ == "__main__":
                         args.aug_1, args.aug_2 = pair
                         args.latent_space = features
                         args.hidden_channel = hidden_size
-                        args.num_blocks_ssf=11
+                        args.num_blocks_ssf=5
 
                         # save the args
                         for k, v in args.__dict__.items():
                             logging.info("{}: {}".format(k, v))
 
                         trainer = Trainer(args, save_dir)
-                        encoder = trainer.train(pretrained=False, pretrained_dir="./checkpoint/SSF_PU_0310-090957/best_pt")
+                        encoder = trainer.train(pretrained=True, pretrained_dir="./anomaly_detection/SSF_PU_0310-115450/best_pt")
                         train_loader = trainer.train_loader
                         val_loader = trainer.val_loader
                         test_loader = trainer.test_loader
                         classifier_loader = trainer.classifier_loader
 
-                        trainer.train_classifier(encoder)
+                       # trainer.train_classifier(encoder)
     device = next(encoder.parameters()).device  # gets cuda or cpu automatically
 
-    tsne(device, encoder, classifier_loader )
+    tsne(device, encoder, train_loader)
+
+    test_pred, test_labels, threshold = run_anomaly_detection(
+            device,
+            encoder,
+            train_loader,
+            test_loader,
+            normal_class=0,
+            std_factor=2.0,
+            metric="euclidean",
+            n_jobs=-1,
+            verbose=True,
+            )
+    
+    acc, cm, report = anomaly_metrics_from_multiclass(test_labels, test_pred, normal_class=0)
+    print("Binary accuracy:", acc)
+    print("Confusion matrix:\n", cm)
+    print(report)
+
+    rates = per_fault_detection_rate(test_labels, test_pred, normal_class=0)
+    print(rates)
