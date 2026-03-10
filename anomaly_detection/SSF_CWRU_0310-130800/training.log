@@ -1,0 +1,36 @@
+03-10 13:08:00 model_name: SSF
+03-10 13:08:00 data_name: CWRU
+03-10 13:08:00 aug_1: randomcrop
+03-10 13:08:00 aug_2: scale
+03-10 13:08:00 max_epoch: 20
+03-10 13:08:00 classifier_epoch: 50
+03-10 13:08:00 data_view: TwoViewDataset
+03-10 13:08:00 cuda_device: 0
+03-10 13:08:00 checkpoint_dir: ./anomaly_detection
+03-10 13:08:00 batch_size: 64
+03-10 13:08:00 data_dir: raw_data/CWRU
+03-10 13:08:00 out_channel: 4
+03-10 13:08:00 normlizetype: minus_one_one
+03-10 13:08:00 processing_type: O_N
+03-10 13:08:00 opt: sgd
+03-10 13:08:00 lr: 0.05
+03-10 13:08:00 momentum: 0.9
+03-10 13:08:00 weight_decay: 0.0001
+03-10 13:08:00 lr_scheduler: cos
+03-10 13:08:00 gamma: 0.95
+03-10 13:08:00 eta_min: 1e-05
+03-10 13:08:00 latent_space: 192
+03-10 13:08:00 num_blocks_ssf: 5
+03-10 13:08:00 hidden_channel: 128
+03-10 13:08:00 task: self_supervised
+03-10 13:08:00 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+03-10 13:08:00 using 1 gpus
+03-10 13:08:00 Dataset class: <class 'data_utils.datasets.CWRU.CWRU'>
+03-10 13:08:00 Split sizes: train=993 val=331 test=878, classier=878
+03-10 13:08:00 Label counts train: Counter({0: 993})
+03-10 13:08:00 Label counts val:   Counter({0: 331})
+03-10 13:08:00 Label counts test:  Counter({1: 238, 3: 238, 2: 236, 0: 166})
+03-10 13:08:00 Label counts classifier:  Counter({1: 238, 2: 237, 3: 237, 0: 166})
+03-10 13:08:02 Loaded best checkpoint from ./anomaly_detection/SSF_PU_0310-115450/best_pt (val_loss=-0.9926297688484191)
+03-10 13:08:02 Loaded best checkpoint from ./anomaly_detection/SSF_PU_0310-115450/best_pt (val_loss=-0.9926297688484191)
+03-10 13:08:02 TEST (best): loss -0.9157

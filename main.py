@@ -73,7 +73,7 @@ def parse_args():
     # Model parameters 
     parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SSF', help='the name of the model')
         # Data parameters 
-    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="PU", help="the name of the dataset",
+    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="CWRU", help="the name of the dataset",
                     )
     parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
     parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='randomcrop', help='Augmentation type on the target pipeline')
@@ -101,7 +101,7 @@ def parse_args():
                     )
                          
     parser.add_argument('--normlizetype', type=str, choices=["zero_one", "minus_one_one", 'mean_std'], default='minus_one_one', help='data normalization methods')
-    parser.add_argument('--processing_type', type=str, choices=['RA', 'R_NA', 'O_A'], default='RA',
+    parser.add_argument('--processing_type', type=str, choices=['RA', 'R_NA', 'O_A', "O_N"], default='O_N',
                         help='RA: random split with data augmentation, R_NA: random split without data augmentation, O_A: order split with data augmentation')
 
 
