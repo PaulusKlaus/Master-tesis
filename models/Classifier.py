@@ -11,7 +11,7 @@ def mlp_block(in_dim: int, out_dim: int) -> nn.Sequential:
 
 
 class Classifier(nn.Module):
-    def __init__(self, latent_dim: int = 16, classes: int = 32):
+    def __init__(self, latent_dim: int, classes: int):
         super().__init__()
         # ensure integer hidden size
         hidden = int(latent_dim // 4)
@@ -25,8 +25,6 @@ class Classifier(nn.Module):
         self.layer_2 = nn.Sequential(
             nn.Linear(hidden, out_features=classes )
         )
-
-
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         

@@ -4,7 +4,10 @@ import os
 from datetime import datetime
 import logging
 from torch import nn
+from itertools import combinations_with_replacement
 
+
+from utils.tsne import tsne
 from utils.loss_SSL import SimSiamLoss
 from utils.logger import setlogger
 from utils.train_ML import Trainer
@@ -82,7 +85,7 @@ def parse_args():
     parser.add_argument('--cuda_device', type=str, default='0', help='assign device')
     parser.add_argument('--checkpoint_dir', type=str, default='./checkpoint', help='the directory to save the model')
     #parser.add_argument("--pretrained", type=bool, default=True, help='whether to load the pretrained model')
-    parser.add_argument('--batch_size', type=int, default=32, help='batchsize of the training process')
+    parser.add_argument('--batch_size', type=int, default=64, help='batchsize of the training process')
     
 
     parser.add_argument("--data_dir",
@@ -103,18 +106,18 @@ def parse_args():
 
     # optimization information
     parser.add_argument('--opt', type=str, choices=['sgd', 'adam'], default='sgd', help='the optimizer')
-    parser.add_argument('--lr', type=float, default=0.01, help='the initial learning rate')
+    parser.add_argument('--lr', type=float, default=0.05, help='the initial learning rate')
     parser.add_argument('--momentum', type=float, default=0.9, help='the momentum for sgd')
-    parser.add_argument('--weight_decay', type=float, default=1e-5, help='the weight decay')
+    parser.add_argument('--weight_decay', type=float, default=1e-4, help='the weight decay')
     parser.add_argument('--lr_scheduler', type=str, choices=['cos', 'exp', 'stepLR', 'fix'], default='cos', help='the learning rate schedule')
-    parser.add_argument('--gamma', type=float, default=0.1, help='learning rate scheduler parameter for step and exp')
+    parser.add_argument('--gamma', type=float, default=0.95, help='learning rate scheduler parameter for step and exp')
     parser.add_argument('--eta_min', type=float, default=0.00001, help='learning rate scheduler parameter for cos ')
 
     
-    parser.add_argument('--latent_space', type=int, default=256, help='the size of the latent space' )
+    parser.add_argument('--latent_space', type=int, default=128, help='the size of the latent space' )
 
-    parser.add_argument('--num_blocks_ssf', type = int, default=3, help = 'Number of convolutional blocks in SSF model')
-
+    parser.add_argument('--num_blocks_ssf', type = int, default=5, help = 'Number of convolutional blocks in SSF model')
+    parser.add_argument('--hidden_channel', type=int, default =256 )
     args = parser.parse_args()
     return args
 
@@ -141,27 +144,50 @@ if __name__ == "__main__":
     setlogger(os.path.join(save_dir, 'training.log'))
 
 
-    latent_list = [ 192, 256]
-    conv_blocks = [3, 4, 5]
-    augmentations=['gaussian', 'normal', 'scale', 'randomstrech', 'fft']
-    for blocks in conv_blocks:
-        for latent in latent_list:
-            for aug in augmentations:
-                for r in range (3):
-                    r+=1
-                    args.latent_space= latent
-                    args.num_blocks_ssf = blocks
-                    args.aug_2=aug
+    #augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft']
+    #pairs = list(combinations_with_replacement(augmentations, 2))
 
-                    # save the args
-                    for k, v in args.__dict__.items():
-                        logging.info("{}: {}".format(k, v))
+    aug_pairs = [
+        ("randomcrop", "scale"),        # 0.7622
+        #("normal", "randomcrop"),       # 0.7511
+        #("gaussian", "randomstrech"),   # 0.7474
+        #("normal", "normal"),           # 0.7452
+       # ("randomstrech", "scale"),      # 0.7452
+        #("gaussian", "normal"),           # 0.7437
+    ]
+    
+    latent_space = [192]
+    hidden_channel =[128]
+    number_blocks=[5]
 
-                    trainer = Trainer(args, save_dir)
-                    trainer.train(pretrained=False)
-                #trainer.train(pretrained=True, pretrained_dir = './checkpoint/SSF_PU_0224-122003/best_pt')
+    augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
 
+    pairs = list(combinations_with_replacement(augmentations, 2))
+    print(len(pairs))  # 21
 
+    for pair in aug_pairs:  
+        for hidden_size in hidden_channel:
+            for features in latent_space:
+                for blocks in number_blocks:
 
+                    for seed in range (1):  # seeds 
+                        args.aug_1, args.aug_2 = pair
+                        args.latent_space = features
+                        args.hidden_channel = hidden_size
+                        args.num_blocks_ssf=11
 
+                        # save the args
+                        for k, v in args.__dict__.items():
+                            logging.info("{}: {}".format(k, v))
 
+                        trainer = Trainer(args, save_dir)
+                        encoder = trainer.train(pretrained=False, pretrained_dir="./checkpoint/SSF_PU_0310-090957/best_pt")
+                        train_loader = trainer.train_loader
+                        val_loader = trainer.val_loader
+                        test_loader = trainer.test_loader
+                        classifier_loader = trainer.classifier_loader
+
+                        trainer.train_classifier(encoder)
+    device = next(encoder.parameters()).device  # gets cuda or cpu automatically
+
+    tsne(device, encoder, classifier_loader )

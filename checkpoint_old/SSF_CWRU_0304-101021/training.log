@@ -1,0 +1,28 @@
+03-04 10:10:21 model_name: SSF
+03-04 10:10:21 data_name: CWRU
+03-04 10:10:21 aug_1: randomcrop
+03-04 10:10:21 aug_2: scale
+03-04 10:10:21 max_epoch: 100
+03-04 10:10:21 classifier_epoch: 50
+03-04 10:10:21 data_view: TwoViewDataset
+03-04 10:10:21 cuda_device: 0
+03-04 10:10:21 checkpoint_dir: ./checkpoint
+03-04 10:10:21 batch_size: 64
+03-04 10:10:21 data_dir: raw_data/CWRU
+03-04 10:10:21 out_channel: 4
+03-04 10:10:21 normlizetype: minus_one_one
+03-04 10:10:21 processing_type: RA
+03-04 10:10:21 opt: sgd
+03-04 10:10:21 lr: 0.05
+03-04 10:10:21 momentum: 0.9
+03-04 10:10:21 weight_decay: 1e-05
+03-04 10:10:21 lr_scheduler: cos
+03-04 10:10:21 gamma: 0.95
+03-04 10:10:21 eta_min: 1e-05
+03-04 10:10:21 latent_space: 128
+03-04 10:10:21 num_blocks_ssf: 5
+03-04 10:10:21 hidden_channel: 256
+03-04 10:10:21 task: self_supervised
+03-04 10:10:21 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+03-04 10:10:21 using 1 gpus
+03-04 10:10:21 Dataset class: <class 'data_utils.datasets.CWRU.CWRU'>

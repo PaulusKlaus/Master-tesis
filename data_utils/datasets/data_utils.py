@@ -3,6 +3,21 @@ import pandas as pd
 from datasets_aug.sequence_dataset import *  
 from datasets_aug.sequence_aug import *
 
+def cap_per_class(df: pd.DataFrame, n_per_class: int, seed: int = 42) -> pd.DataFrame:
+    """
+    Keep up to n_per_class per label (no oversampling).
+    If a class has fewer than n_per_class, keep all of them.
+    """
+    if n_per_class is None:
+        return df
+
+    parts = []
+    for label, group in df.groupby("label", sort=False):
+        k = min(len(group), n_per_class)
+        parts.append(group.sample(n=k, random_state=seed, replace=False))
+
+    return pd.concat(parts, ignore_index=True)
+
 
 
 def data_transforms(transform="fft", normlize_type="minus_one_one"):

@@ -76,27 +76,15 @@ class PU(object):
             bearing = ALL_DATA[k]
             label = ALL_LABEL[k]
 
-            #NOTE: This only uses 1 of 20 samples, which ends with _1.mat 
-            name = state + "_" + bearing + "_1"
-            path = os.path.join(self.data_dir, bearing, name + ".mat")        
-            d, l = self._data_load(path, name=name, label=label)
-            data += d
-            lab += l
-            name = state + "_" + bearing + "_2"
-            path = os.path.join(self.data_dir, bearing, name + ".mat")        
-            d, l = self._data_load(path, name=name, label=label)
-            data += d
-            lab += l
-            name = state + "_" + bearing + "_3"
-            path = os.path.join(self.data_dir, bearing, name + ".mat")        
-            d, l = self._data_load(path, name=name, label=label)
-            data += d
-            lab += l
-            name = state + "_" + bearing + "_4"
-            path = os.path.join(self.data_dir, bearing, name + ".mat")        
-            d, l = self._data_load(path, name=name, label=label)
-            data += d
-            lab += l
+            for i in range(1, 10):
+                name = f"{state}_{bearing}_{i}"
+                d, l = self._data_load(
+                    os.path.join(self.data_dir, bearing, f"{name}.mat"),
+                    name=name,
+                    label=label
+                )
+                data += d
+                lab += l
 
             
 
@@ -176,6 +164,13 @@ class PU(object):
         eval_t2 = data_transforms("normal", self.normlizetype)
 
         # --- build datasets ---
+        # --- optional per-class caps ---
+        n_p_class= 2*200
+        train_pd = cap_per_class(train_pd, n_per_class=n_p_class, seed=self.random_state)
+        test_pd = cap_per_class(test_pd, n_per_class=n_p_class, seed=self.random_state)
+        val_pd = cap_per_class(val_pd, n_per_class=n_p_class, seed=self.random_state)
+        classifier_pd = cap_per_class(classifier_pd, n_per_class=500, seed=self.random_state)
+
         train_dataset = view(train_pd, transform_1=train_t1, transform_2=train_t2)
         val_dataset   = view(val_pd,   transform_1=eval_t1,  transform_2=eval_t2)
         test_dataset  = view(test_pd,  transform_1=eval_t1,  transform_2=eval_t2)

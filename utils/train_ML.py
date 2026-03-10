@@ -103,7 +103,7 @@ class Trainer(object):
         #drop_last=True,              # keep pairs aligned for contrastive loss
         self.val_loader = DataLoader(self.val_ds, batch_size=args.batch_size, shuffle=False)
         self.test_loader = DataLoader(self.test_ds, batch_size=args.batch_size, shuffle=False)
-        self.classifier_loader = DataLoader(self.classifier_ds, batch_size=args.batch_size, shuffle=False)
+        self.classifier_loader = DataLoader(self.classifier_ds, batch_size=32, shuffle=True)
         logging.info("Split sizes: train=%d val=%d test=%d, classier=%d",
                     len(self.train_ds), len(self.val_ds), len(self.test_ds), len(self.classifier_ds))
         logging.info("Label counts train: %s", count_labels(self.train_loader))
@@ -136,7 +136,6 @@ class Trainer(object):
         else:
             raise Exception("lr schedule not implement")
         
-
     def setup(self):
         """
         Initialise model, dataset, loss, and optimizer from the argparse arguments
@@ -167,15 +166,17 @@ class Trainer(object):
             latent_dim = args.latent_space 
             # Define the classifier
             self.classifier = models.cls(latent_dim, args.out_channel)
-            self.cls_criterion = nn.CrossEntropyLoss()
-            self.cls_opt = torch.optim.Adam(self.classifier.parameters(), lr=1e-3, weight_decay=args.weight_decay)
+            self.cls_criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
+            self.cls_opt = torch.optim.Adam(self.classifier.parameters(), lr=1e-3, weight_decay=1e-3)
             self.cls_lr = None
             #self.cls_opt = optim.SGD(self.classifier.parameters(), 0.01, momentum=args.momentum, weight_decay=args.weight_decay)
             #self.cls_lr = optim.lr_scheduler.CosineAnnealingLR(self.cls_opt,  T_max = args.classifier_epoch, eta_min=1e-05 )
             
 
-
-        self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim, num_blocks = args.num_blocks_ssf )
+        if args.num_blocks_ssf != None:
+            self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim, num_blocks = args.num_blocks_ssf, hidden_channels= args.hidden_channel )
+        else:
+            self.model = getattr(models, args.model_name)(in_channel = 1, out_channel = latent_dim)
 
         if self.device_count > 1:
                             self.model = torch.nn.DataParallel(self.model)
@@ -189,7 +190,6 @@ class Trainer(object):
         self.model.to(self.device)
 
         # This need to be different for different models !!!!!
-        
         self.criterion = args.critetion()
 
     def _train_epoch(self, epoch):
@@ -202,8 +202,12 @@ class Trainer(object):
         epoch_loss = 0.0
         epoch_acc = 0
         t_samples = 0
-
-        train_loader = self.train_loader
+        epoch_zstd = 0.0
+        if args.task == "supervised":
+            train_loader = self.classifier_loader
+        else:
+            train_loader=self.train_loader
+            
         device = self.device
         loop = tqdm.tqdm(train_loader, desc=f"Train Epoch {epoch}", leave=False)
         for batch_idx, batch in enumerate(loop):
@@ -227,6 +231,7 @@ class Trainer(object):
                 x2 = x2.to(device, non_blocking=True)
 
                 z1, z2, p1, p2 = self.model(x1, x2)
+
                 loss = self.criterion(z1, z2, p1, p2)
 
                 preds = None
@@ -254,6 +259,13 @@ class Trainer(object):
             t_samples += bs
 
             avg_loss = epoch_loss / t_samples
+
+            # Collaps monitor -> should not go to 0 
+#            with torch.no_grad():
+ #               z_std = z1.std(dim=0).mean().item()
+  #              epoch_zstd += z_std * bs
+
+            #avg_zstd = epoch_zstd / t_samples
 
             # accuracy only for supervised
             if args.task == "supervised":
@@ -347,7 +359,7 @@ class Trainer(object):
             metrics[f"{prefix}_acc"] = avg_acc
         return metrics
 
-    def _train_classifier (self, frozen_encoder):
+    def _train_classifier(self, frozen_encoder):
         args = self.args
         device = self.device
         encoder = frozen_encoder.eval()
@@ -485,7 +497,7 @@ class Trainer(object):
         return {"best_val_acc": best_acc, "test_acc": test_acc, "ckpt_path": out_path}
 
 
-    def train(self, pretrained = True, continue_from_best_val_loss_checkopoint = False, pretrained_dir = None):
+    def train(self, pretrained = True, continue_from_best_val_loss_checkopoint = True, pretrained_dir = None):
         """
         High level training organization
         """
@@ -494,7 +506,7 @@ class Trainer(object):
         self.setup()
 
         if pretrained == False: 
-            patience = 5
+            patience = 10
             min_delta = 0.0
             no_improve = 0
             # pick selection metric based on task
@@ -554,7 +566,7 @@ class Trainer(object):
                 # --- early stop ---
                 if no_improve >= patience:
                     logging.info(f"Early stopping at epoch {epoch} (best {select_key}={best_value:.4f}).")
-                    #break
+                    break
 
                 # ----- logging (conditional acc) -----
                 msg = f"Epoch {epoch:03d} Train loss {train_metric['loss']:.4f}"
@@ -599,13 +611,17 @@ class Trainer(object):
                 logging.info(msg)
 
         # Freeze weights 
-
         for p in self.model.parameters():
             p.requires_grad = False 
-
         encoder = self.model.eval()
 
-        self._train_classifier(frozen_encoder = encoder)
+        return encoder 
+
+
+
+    def train_classifier(self, frosen_encoder):
+        self._train_classifier(frozen_encoder = frosen_encoder)
+        
          
 
         
