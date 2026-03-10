@@ -84,7 +84,7 @@ def parse_args():
     parser.add_argument('--data_view', type=str, default=None, help='Dataset view with either one or two tensors')
     
     parser.add_argument('--cuda_device', type=str, default='0', help='assign device')
-    parser.add_argument('--checkpoint_dir', type=str, default='./anomaly_detection', help='the directory to save the model')
+    parser.add_argument('--checkpoint_dir', type=str, default='./checkpoint', help='the directory to save the model')
     #parser.add_argument("--pretrained", type=bool, default=True, help='whether to load the pretrained model')
     parser.add_argument('--batch_size', type=int, default=64, help='batchsize of the training process')
     
@@ -150,37 +150,38 @@ if __name__ == "__main__":
     setlogger(os.path.join(save_dir, 'training.log'))
 
 
-    #augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft']
-    #pairs = list(combinations_with_replacement(augmentations, 2))
+    augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft']
+    pairs = list(combinations_with_replacement(augmentations, 2))
 
     aug_pairs = [
         ("randomcrop", "scale"),        # 0.7622
-        #("normal", "randomcrop"),       # 0.7511
-        #("gaussian", "randomstrech"),   # 0.7474
-        #("normal", "normal"),           # 0.7452
-       # ("randomstrech", "scale"),      # 0.7452
-        #("gaussian", "normal"),           # 0.7437
+        ("normal", "randomcrop"),       # 0.7511
+        ("gaussian", "randomstrech"),   # 0.7474
+        ("normal", "normal"),           # 0.7452
+        ("randomstrech", "scale"),      # 0.7452
+        ("gaussian", "normal"),           # 0.7437
+
     ]
     
     latent_space = [192]
     hidden_channel =[128]
-    number_blocks=[5]
+    number_blocks=[1,2,3,4,5,6,7,8,9,10]
 
-    augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
 
-    pairs = list(combinations_with_replacement(augmentations, 2))
-    print(len(pairs))  # 21
-
-    for pair in aug_pairs:  
+    for pair in pairs:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
 
-                    for seed in range (1):  # seeds 
+                    for seed in range (3):  # seeds 
                         args.aug_1, args.aug_2 = pair
                         args.latent_space = features
                         args.hidden_channel = hidden_size
                         args.num_blocks_ssf=5
+
+                        run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
+                        logging.info("=" * 80)
+                        logging.info("RUN: %s", run_id)
 
                         # save the args
                         for k, v in args.__dict__.items():
@@ -188,32 +189,26 @@ if __name__ == "__main__":
 
                         trainer = Trainer(args, save_dir)
                         encoder = trainer.train(pretrained=False, pretrained_dir="./anomaly_detection/SSF_PU_0310-131203/best_pt")
-                        train_loader = trainer.train_loader
-                        val_loader = trainer.val_loader
-                        test_loader = trainer.test_loader
-                        classifier_loader = trainer.classifier_loader
+                        device = next(encoder.parameters()).device  # gets cuda or cpu automatically
+                        
+                        tsne(device, encoder, trainer.test_loader)
 
+                        test_pred, test_labels, threshold = run_anomaly_detection(
+                            device, encoder, trainer.train_loader, trainer.test_loader,
+                            normal_class=0, std_factor=2.0, metric="euclidean",
+                            n_jobs=-1, verbose=True,
+                        )
+
+                        acc, cm, report = anomaly_metrics_from_multiclass(test_labels, test_pred, normal_class=0)
+                        logging.info("Threshold: %s", threshold)
+                        logging.info("Binary accuracy: %.6f", acc)
+                        logging.info("Confusion matrix:\n%s", cm)
+                        logging.info("Report:\n%s", report)
+
+                        rates = per_fault_detection_rate(test_labels, test_pred, normal_class=0)
+                        logging.info("Rates: %s", rates)
+
+                        # Classification 
                         trainer.train_classifier(encoder)
-    device = next(encoder.parameters()).device  # gets cuda or cpu automatically
 
-    tsne(device, encoder, test_loader)
 
-    test_pred, test_labels, threshold = run_anomaly_detection(
-            device,
-            encoder,
-            train_loader,
-            test_loader,
-            normal_class=0,
-            std_factor=2.0,
-            metric="euclidean",
-            n_jobs=-1,
-            verbose=True,
-            )
-    
-    acc, cm, report = anomaly_metrics_from_multiclass(test_labels, test_pred, normal_class=0)
-    print("Binary accuracy:", acc)
-    print("Confusion matrix:\n", cm)
-    print(report)
-
-    rates = per_fault_detection_rate(test_labels, test_pred, normal_class=0)
-    print(rates)
