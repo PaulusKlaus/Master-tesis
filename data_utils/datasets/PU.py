@@ -169,7 +169,7 @@ class PU(object):
         train_pd = cap_per_class(train_pd, n_per_class=None, seed=self.random_state)
         test_pd = cap_per_class(test_pd, n_per_class=n_p_class, seed=self.random_state)
         val_pd = cap_per_class(val_pd, n_per_class=n_p_class, seed=self.random_state)
-        classifier_pd = cap_per_class(classifier_pd, n_per_class=20, seed=self.random_state)
+        classifier_pd = cap_per_class(classifier_pd, n_per_class=500, seed=self.random_state)
 
         train_dataset = view(train_pd, transform_1=train_t1, transform_2=train_t2)
         val_dataset   = view(val_pd,   transform_1=eval_t1,  transform_2=eval_t2)

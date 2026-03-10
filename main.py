@@ -63,7 +63,7 @@ MODEL_CONFIG = {
     },
 }
 
-max_epoc = 50
+max_epoc = 20
 
 
 def parse_args():
@@ -174,18 +174,20 @@ if __name__ == "__main__":
                         args.aug_1, args.aug_2 = pair
                         args.latent_space = features
                         args.hidden_channel = hidden_size
-                        args.num_blocks_ssf=3
+                        args.num_blocks_ssf=5
 
                         # save the args
                         for k, v in args.__dict__.items():
                             logging.info("{}: {}".format(k, v))
 
                         trainer = Trainer(args, save_dir)
-                        encoder = trainer.train(pretrained=False, pretrained_dir="./checkpoint/SSF_PU_0304-152831/best_pt")
+                        encoder = trainer.train(pretrained=True, pretrained_dir="./checkpoint/SSF_PU_0310-090957/best_pt")
                         train_loader = trainer.train_loader
-                        val_loader = trainer.test_loader
+                        val_loader = trainer.val_loader
+                        test_loader = trainer.test_loader
+                        classifier_loader = trainer.classifier_loader
 
-                        trainer.train_classifier(encoder)
+                       # trainer.train_classifier(encoder)
     device = next(encoder.parameters()).device  # gets cuda or cpu automatically
-    
-    tsne(device, encoder, val_loader )
+
+    tsne(device, encoder, classifier_loader )
