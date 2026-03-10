@@ -129,6 +129,7 @@ def run_anomaly_detection(
             test_loader,
             normal_class=0,
             std_factor=2.0,
+            k_neighbors = 2,
             metric="euclidean",
             n_jobs=-1,
             verbose=True,
@@ -146,7 +147,7 @@ def run_anomaly_detection(
     # 3) Fit threshold via 1-NN distances within normal set ----
     #threshold_1, _ = fit_nn_threshold(normal_feats, k=1, std_factor=2.0)
     # Using knn
-    nn = NearestNeighbors(n_neighbors=2, metric=metric, n_jobs=n_jobs).fit(normal_feats)
+    nn = NearestNeighbors(n_neighbors=k_neighbors, metric=metric, n_jobs=n_jobs).fit(normal_feats)
     dists, _ = nn.kneighbors(normal_feats, return_distance=True)
     nn1 = dists[:, 1]  # exclude self-distance
     threshold = float(nn1.mean() + std_factor * nn1.std())
@@ -164,10 +165,9 @@ def run_anomaly_detection(
     print("Should be all 1:", pred)
 
     # 5) Predict for ALL test samples
-    dists_test, _ = nn.kneighbors(test_feats, n_neighbors=1, return_distance=True)
+    dists_test, _ = nn.kneighbors(test_feats, n_neighbors=k_neighbors, return_distance=True)
     dmin = dists_test[:, 0]
     test_pred = (dmin > threshold).astype(np.int64)  # 0 normal, 1 anomaly
-
     return test_pred, test_labels, threshold
     # pred: 0 normal, 1 anomaly
 

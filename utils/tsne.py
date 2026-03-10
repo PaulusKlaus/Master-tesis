@@ -30,7 +30,12 @@ def tsne(device, encoder, loader):
     plt.ylabel("t-SNE 2")
     plt.title("t-SNE Feature Visualization")
     plt.colorbar(label="Class")
-    plt.show()
+    # Save instead of show
+    plt.tight_layout()
+    plt.savefig("figures/tsne/tsne.pdf", format="pdf", dpi=300)
+    plt.close()   # important to free memory
+    path = "figures/tsne"
+    print(f"t-SNE plot saved to {path}")
 
 
 

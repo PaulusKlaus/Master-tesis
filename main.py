@@ -182,13 +182,13 @@ if __name__ == "__main__":
                             logging.info("{}: {}".format(k, v))
 
                         trainer = Trainer(args, save_dir)
-                        encoder = trainer.train(pretrained=False, pretrained_dir="./anomaly_detection/SSF_CWRU_0310-110729/best_pt")
+                        encoder = trainer.train(pretrained=True, pretrained_dir="./anomaly_detection/SSF_PU_0310-115450/best_pt")
                         train_loader = trainer.train_loader
                         val_loader = trainer.val_loader
                         test_loader = trainer.test_loader
                         classifier_loader = trainer.classifier_loader
 
-                        trainer.train_classifier(encoder)
+                       # trainer.train_classifier(encoder)
     device = next(encoder.parameters()).device  # gets cuda or cpu automatically
 
     tsne(device, encoder, train_loader)
