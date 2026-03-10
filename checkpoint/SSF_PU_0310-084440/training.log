@@ -1,0 +1,288 @@
+03-10 08:44:40 model_name: SSF
+03-10 08:44:40 data_name: PU
+03-10 08:44:40 aug_1: randomcrop
+03-10 08:44:40 aug_2: scale
+03-10 08:44:40 max_epoch: 50
+03-10 08:44:40 classifier_epoch: 50
+03-10 08:44:40 data_view: TwoViewDataset
+03-10 08:44:40 cuda_device: 0
+03-10 08:44:40 checkpoint_dir: ./checkpoint
+03-10 08:44:40 batch_size: 64
+03-10 08:44:40 data_dir: raw_data/PU
+03-10 08:44:40 out_channel: 4
+03-10 08:44:40 normlizetype: minus_one_one
+03-10 08:44:40 processing_type: RA
+03-10 08:44:40 opt: sgd
+03-10 08:44:40 lr: 0.05
+03-10 08:44:40 momentum: 0.9
+03-10 08:44:40 weight_decay: 0.0001
+03-10 08:44:40 lr_scheduler: cos
+03-10 08:44:40 gamma: 0.95
+03-10 08:44:40 eta_min: 1e-05
+03-10 08:44:40 latent_space: 192
+03-10 08:44:40 num_blocks_ssf: 3
+03-10 08:44:40 hidden_channel: 128
+03-10 08:44:40 task: self_supervised
+03-10 08:44:40 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+03-10 08:44:40 using 1 gpus
+03-10 08:44:40 Dataset class: <class 'data_utils.datasets.PU.PU'>
+03-10 08:44:41 Split sizes: train=28376 val=1600 test=1600, classier=80
+03-10 08:44:44 Label counts train: Counter({1: 7892, 3: 7881, 0: 7876, 2: 4727})
+03-10 08:44:44 Label counts val:   Counter({0: 400, 3: 400, 1: 400, 2: 400})
+03-10 08:44:44 Label counts test:  Counter({2: 400, 0: 400, 3: 400, 1: 400})
+03-10 08:44:44 Label counts classifier:  Counter({3: 20, 2: 20, 0: 20, 1: 20})
+03-10 08:44:46 -----Epoch 0/49-----
+03-10 08:44:58 current lr: 0.05
+03-10 08:44:58 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9958)
+03-10 08:44:58 Epoch 000 Train loss -0.9803 | Val loss -0.9958
+03-10 08:44:58 -----Epoch 1/49-----
+03-10 08:45:09 current lr: 0.0499507
+03-10 08:45:09 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9971)
+03-10 08:45:09 Epoch 001 Train loss -0.9961 | Val loss -0.9971
+03-10 08:45:09 -----Epoch 2/49-----
+03-10 08:45:21 current lr: 0.0498029
+03-10 08:45:21 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9976)
+03-10 08:45:21 Epoch 002 Train loss -0.9970 | Val loss -0.9976
+03-10 08:45:21 -----Epoch 3/49-----
+03-10 08:45:35 current lr: 0.0495573
+03-10 08:45:35 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9979)
+03-10 08:45:35 Epoch 003 Train loss -0.9974 | Val loss -0.9979
+03-10 08:45:35 -----Epoch 4/49-----
+03-10 08:45:49 current lr: 0.0492147
+03-10 08:45:49 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9981)
+03-10 08:45:49 Epoch 004 Train loss -0.9977 | Val loss -0.9981
+03-10 08:45:49 -----Epoch 5/49-----
+03-10 08:46:02 current lr: 0.0487767
+03-10 08:46:02 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9983)
+03-10 08:46:02 Epoch 005 Train loss -0.9978 | Val loss -0.9983
+03-10 08:46:02 -----Epoch 6/49-----
+03-10 08:46:14 current lr: 0.0482448
+03-10 08:46:14 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9984)
+03-10 08:46:14 Epoch 006 Train loss -0.9979 | Val loss -0.9984
+03-10 08:46:14 -----Epoch 7/49-----
+03-10 08:46:25 current lr: 0.0476212
+03-10 08:46:25 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9985)
+03-10 08:46:25 Epoch 007 Train loss -0.9981 | Val loss -0.9985
+03-10 08:46:25 -----Epoch 8/49-----
+03-10 08:46:37 current lr: 0.0469083
+03-10 08:46:37 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9986)
+03-10 08:46:37 Epoch 008 Train loss -0.9982 | Val loss -0.9986
+03-10 08:46:37 -----Epoch 9/49-----
+03-10 08:46:51 current lr: 0.046109
+03-10 08:46:51 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9987)
+03-10 08:46:51 Epoch 009 Train loss -0.9983 | Val loss -0.9987
+03-10 08:46:51 -----Epoch 10/49-----
+03-10 08:47:04 current lr: 0.0452264
+03-10 08:47:04 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9987)
+03-10 08:47:04 Epoch 010 Train loss -0.9983 | Val loss -0.9987
+03-10 08:47:04 -----Epoch 11/49-----
+03-10 08:47:17 current lr: 0.044264
+03-10 08:47:17 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9988)
+03-10 08:47:17 Epoch 011 Train loss -0.9984 | Val loss -0.9988
+03-10 08:47:17 -----Epoch 12/49-----
+03-10 08:47:30 current lr: 0.0432256
+03-10 08:47:30 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9988)
+03-10 08:47:30 Epoch 012 Train loss -0.9984 | Val loss -0.9988
+03-10 08:47:30 -----Epoch 13/49-----
+03-10 08:47:43 current lr: 0.0421153
+03-10 08:47:43 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9988)
+03-10 08:47:43 Epoch 013 Train loss -0.9985 | Val loss -0.9988
+03-10 08:47:43 -----Epoch 14/49-----
+03-10 08:47:57 current lr: 0.0409374
+03-10 08:47:57 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9989)
+03-10 08:47:57 Epoch 014 Train loss -0.9985 | Val loss -0.9989
+03-10 08:47:57 -----Epoch 15/49-----
+03-10 08:48:10 current lr: 0.0396967
+03-10 08:48:10 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9989)
+03-10 08:48:10 Epoch 015 Train loss -0.9985 | Val loss -0.9989
+03-10 08:48:10 -----Epoch 16/49-----
+03-10 08:48:24 current lr: 0.038398
+03-10 08:48:24 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9989)
+03-10 08:48:24 Epoch 016 Train loss -0.9986 | Val loss -0.9989
+03-10 08:48:24 -----Epoch 17/49-----
+03-10 08:48:35 current lr: 0.0370464
+03-10 08:48:35 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9989)
+03-10 08:48:35 Epoch 017 Train loss -0.9986 | Val loss -0.9989
+03-10 08:48:35 -----Epoch 18/49-----
+03-10 08:48:46 current lr: 0.0356474
+03-10 08:48:46 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9989)
+03-10 08:48:46 Epoch 018 Train loss -0.9986 | Val loss -0.9989
+03-10 08:48:46 -----Epoch 19/49-----
+03-10 08:48:58 current lr: 0.0342063
+03-10 08:48:58 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9990)
+03-10 08:48:58 Epoch 019 Train loss -0.9986 | Val loss -0.9990
+03-10 08:48:58 -----Epoch 20/49-----
+03-10 08:49:10 current lr: 0.0327289
+03-10 08:49:10 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9990)
+03-10 08:49:10 Epoch 020 Train loss -0.9987 | Val loss -0.9990
+03-10 08:49:10 -----Epoch 21/49-----
+03-10 08:49:22 current lr: 0.031221
+03-10 08:49:22 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9990)
+03-10 08:49:22 Epoch 021 Train loss -0.9987 | Val loss -0.9990
+03-10 08:49:22 -----Epoch 22/49-----
+03-10 08:49:34 current lr: 0.0296886
+03-10 08:49:34 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9990)
+03-10 08:49:34 Epoch 022 Train loss -0.9987 | Val loss -0.9990
+03-10 08:49:34 -----Epoch 23/49-----
+03-10 08:49:45 current lr: 0.0281377
+03-10 08:49:45 No improvement in val_loss for 1/10 epochs.
+03-10 08:49:45 Epoch 023 Train loss -0.9987 | Val loss -0.9990
+03-10 08:49:45 -----Epoch 24/49-----
+03-10 08:49:57 current lr: 0.0265744
+03-10 08:49:57 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9991)
+03-10 08:49:57 Epoch 024 Train loss -0.9987 | Val loss -0.9991
+03-10 08:49:57 -----Epoch 25/49-----
+03-10 08:50:09 current lr: 0.025005
+03-10 08:50:09 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9991)
+03-10 08:50:09 Epoch 025 Train loss -0.9988 | Val loss -0.9991
+03-10 08:50:09 -----Epoch 26/49-----
+03-10 08:50:20 current lr: 0.0234356
+03-10 08:50:20 No improvement in val_loss for 1/10 epochs.
+03-10 08:50:20 Epoch 026 Train loss -0.9988 | Val loss -0.9991
+03-10 08:50:20 -----Epoch 27/49-----
+03-10 08:50:32 current lr: 0.0218723
+03-10 08:50:32 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9991)
+03-10 08:50:32 Epoch 027 Train loss -0.9988 | Val loss -0.9991
+03-10 08:50:32 -----Epoch 28/49-----
+03-10 08:50:44 current lr: 0.0203214
+03-10 08:50:44 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9991)
+03-10 08:50:44 Epoch 028 Train loss -0.9988 | Val loss -0.9991
+03-10 08:50:44 -----Epoch 29/49-----
+03-10 08:50:55 current lr: 0.018789
+03-10 08:50:55 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9991)
+03-10 08:50:55 Epoch 029 Train loss -0.9989 | Val loss -0.9991
+03-10 08:50:55 -----Epoch 30/49-----
+03-10 08:51:07 current lr: 0.0172811
+03-10 08:51:07 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9992)
+03-10 08:51:07 Epoch 030 Train loss -0.9989 | Val loss -0.9992
+03-10 08:51:07 -----Epoch 31/49-----
+03-10 08:51:19 current lr: 0.0158037
+03-10 08:51:19 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9992)
+03-10 08:51:19 Epoch 031 Train loss -0.9989 | Val loss -0.9992
+03-10 08:51:19 -----Epoch 32/49-----
+03-10 08:51:31 current lr: 0.0143626
+03-10 08:51:31 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9992)
+03-10 08:51:31 Epoch 032 Train loss -0.9989 | Val loss -0.9992
+03-10 08:51:31 -----Epoch 33/49-----
+03-10 08:51:42 current lr: 0.0129636
+03-10 08:51:42 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9992)
+03-10 08:51:42 Epoch 033 Train loss -0.9989 | Val loss -0.9992
+03-10 08:51:42 -----Epoch 34/49-----
+03-10 08:51:54 current lr: 0.011612
+03-10 08:51:54 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9992)
+03-10 08:51:54 Epoch 034 Train loss -0.9989 | Val loss -0.9992
+03-10 08:51:54 -----Epoch 35/49-----
+03-10 08:52:05 current lr: 0.0103133
+03-10 08:52:05 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9992)
+03-10 08:52:05 Epoch 035 Train loss -0.9989 | Val loss -0.9992
+03-10 08:52:05 -----Epoch 36/49-----
+03-10 08:52:17 current lr: 0.00907259
+03-10 08:52:17 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9992)
+03-10 08:52:17 Epoch 036 Train loss -0.9990 | Val loss -0.9992
+03-10 08:52:17 -----Epoch 37/49-----
+03-10 08:52:29 current lr: 0.00789475
+03-10 08:52:29 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9992)
+03-10 08:52:29 Epoch 037 Train loss -0.9990 | Val loss -0.9992
+03-10 08:52:29 -----Epoch 38/49-----
+03-10 08:52:40 current lr: 0.00678443
+03-10 08:52:40 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9992)
+03-10 08:52:40 Epoch 038 Train loss -0.9990 | Val loss -0.9992
+03-10 08:52:40 -----Epoch 39/49-----
+03-10 08:52:52 current lr: 0.00574602
+03-10 08:52:52 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9992)
+03-10 08:52:52 Epoch 039 Train loss -0.9990 | Val loss -0.9992
+03-10 08:52:52 -----Epoch 40/49-----
+03-10 08:53:03 current lr: 0.00478362
+03-10 08:53:03 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9992)
+03-10 08:53:03 Epoch 040 Train loss -0.9990 | Val loss -0.9992
+03-10 08:53:03 -----Epoch 41/49-----
+03-10 08:53:15 current lr: 0.00390102
+03-10 08:53:15 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9993)
+03-10 08:53:15 Epoch 041 Train loss -0.9990 | Val loss -0.9993
+03-10 08:53:15 -----Epoch 42/49-----
+03-10 08:53:27 current lr: 0.00310171
+03-10 08:53:27 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9993)
+03-10 08:53:27 Epoch 042 Train loss -0.9990 | Val loss -0.9993
+03-10 08:53:27 -----Epoch 43/49-----
+03-10 08:53:39 current lr: 0.00238885
+03-10 08:53:39 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9993)
+03-10 08:53:39 Epoch 043 Train loss -0.9990 | Val loss -0.9993
+03-10 08:53:39 -----Epoch 44/49-----
+03-10 08:53:50 current lr: 0.00176524
+03-10 08:53:50 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9993)
+03-10 08:53:50 Epoch 044 Train loss -0.9990 | Val loss -0.9993
+03-10 08:53:50 -----Epoch 45/49-----
+03-10 08:54:02 current lr: 0.00123334
+03-10 08:54:02 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9993)
+03-10 08:54:02 Epoch 045 Train loss -0.9990 | Val loss -0.9993
+03-10 08:54:02 -----Epoch 46/49-----
+03-10 08:54:15 current lr: 0.000795264
+03-10 08:54:15 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9993)
+03-10 08:54:15 Epoch 046 Train loss -0.9990 | Val loss -0.9993
+03-10 08:54:15 -----Epoch 47/49-----
+03-10 08:54:29 current lr: 0.00045273
+03-10 08:54:29 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9993)
+03-10 08:54:29 Epoch 047 Train loss -0.9990 | Val loss -0.9993
+03-10 08:54:29 -----Epoch 48/49-----
+03-10 08:54:42 current lr: 0.000207093
+03-10 08:54:42 Saved best checkpoint to ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9993)
+03-10 08:54:42 Epoch 048 Train loss -0.9990 | Val loss -0.9993
+03-10 08:54:42 -----Epoch 49/49-----
+03-10 08:54:56 current lr: 5.93219e-05
+03-10 08:54:56 No improvement in val_loss for 1/10 epochs.
+03-10 08:54:56 Epoch 049 Train loss -0.9990 | Val loss -0.9993
+03-10 08:54:56 TEST (last): loss -0.9993
+03-10 08:54:56 Loaded best checkpoint from ./checkpoint\SSF_PU_0310-084440\best_pt (val_loss=-0.9992615342140198)
+03-10 08:54:57 TEST (best): loss -0.9993
+03-10 08:54:57 [LP epoch 00] train_loss=1.4782 train_acc=0.2625 | val_loss=1.3852 val_acc=0.2500 | 
+03-10 08:54:57 [LP epoch 01] train_loss=1.3681 train_acc=0.2875 | val_loss=1.3784 val_acc=0.2587 | 
+03-10 08:54:58 [LP epoch 02] train_loss=1.3170 train_acc=0.4125 | val_loss=1.3718 val_acc=0.3400 | 
+03-10 08:54:58 [LP epoch 03] train_loss=1.2765 train_acc=0.4375 | val_loss=1.3657 val_acc=0.3700 | 
+03-10 08:54:58 [LP epoch 04] train_loss=1.2477 train_acc=0.4500 | val_loss=1.3599 val_acc=0.3731 | 
+03-10 08:54:59 [LP epoch 05] train_loss=1.2212 train_acc=0.4750 | val_loss=1.3537 val_acc=0.3819 | 
+03-10 08:54:59 [LP epoch 06] train_loss=1.2005 train_acc=0.4750 | val_loss=1.3469 val_acc=0.3862 | 
+03-10 08:54:59 [LP epoch 07] train_loss=1.1768 train_acc=0.4750 | val_loss=1.3399 val_acc=0.3900 | 
+03-10 08:55:00 [LP epoch 08] train_loss=1.1578 train_acc=0.4750 | val_loss=1.3315 val_acc=0.4012 | 
+03-10 08:55:00 [LP epoch 09] train_loss=1.1398 train_acc=0.5000 | val_loss=1.3201 val_acc=0.4131 | 
+03-10 08:55:00 [LP epoch 10] train_loss=1.1231 train_acc=0.5500 | val_loss=1.3065 val_acc=0.4313 | 
+03-10 08:55:01 [LP epoch 11] train_loss=1.1092 train_acc=0.5500 | val_loss=1.2918 val_acc=0.4444 | 
+03-10 08:55:01 [LP epoch 12] train_loss=1.0891 train_acc=0.5375 | val_loss=1.2789 val_acc=0.4612 | 
+03-10 08:55:01 [LP epoch 13] train_loss=1.0746 train_acc=0.5750 | val_loss=1.2665 val_acc=0.4725 | 
+03-10 08:55:02 [LP epoch 14] train_loss=1.0631 train_acc=0.5875 | val_loss=1.2547 val_acc=0.4744 | 
+03-10 08:55:02 [LP epoch 15] train_loss=1.0513 train_acc=0.6125 | val_loss=1.2421 val_acc=0.4763 | 
+03-10 08:55:02 [LP epoch 16] train_loss=1.0400 train_acc=0.6375 | val_loss=1.2280 val_acc=0.4788 | 
+03-10 08:55:03 [LP epoch 17] train_loss=1.0283 train_acc=0.6500 | val_loss=1.2174 val_acc=0.4831 | 
+03-10 08:55:03 [LP epoch 18] train_loss=1.0164 train_acc=0.6500 | val_loss=1.2081 val_acc=0.4825 | 
+03-10 08:55:03 [LP epoch 19] train_loss=1.0081 train_acc=0.6625 | val_loss=1.1956 val_acc=0.4894 | 
+03-10 08:55:04 [LP epoch 20] train_loss=0.9969 train_acc=0.6625 | val_loss=1.1858 val_acc=0.4894 | 
+03-10 08:55:04 [LP epoch 21] train_loss=0.9855 train_acc=0.6750 | val_loss=1.1822 val_acc=0.4875 | 
+03-10 08:55:04 [LP epoch 22] train_loss=0.9738 train_acc=0.6875 | val_loss=1.1772 val_acc=0.4906 | 
+03-10 08:55:05 [LP epoch 23] train_loss=0.9641 train_acc=0.7000 | val_loss=1.1744 val_acc=0.4931 | 
+03-10 08:55:05 [LP epoch 24] train_loss=0.9534 train_acc=0.7000 | val_loss=1.1750 val_acc=0.4975 | 
+03-10 08:55:06 [LP epoch 25] train_loss=0.9443 train_acc=0.7000 | val_loss=1.1743 val_acc=0.4956 | 
+03-10 08:55:06 [LP epoch 26] train_loss=0.9351 train_acc=0.7125 | val_loss=1.1755 val_acc=0.5025 | 
+03-10 08:55:06 [LP epoch 27] train_loss=0.9262 train_acc=0.7125 | val_loss=1.1767 val_acc=0.5044 | 
+03-10 08:55:07 [LP epoch 28] train_loss=0.9181 train_acc=0.7250 | val_loss=1.1765 val_acc=0.5044 | 
+03-10 08:55:07 [LP epoch 29] train_loss=0.9100 train_acc=0.7375 | val_loss=1.1694 val_acc=0.5131 | 
+03-10 08:55:07 [LP epoch 30] train_loss=0.9019 train_acc=0.7500 | val_loss=1.1620 val_acc=0.5219 | 
+03-10 08:55:08 [LP epoch 31] train_loss=0.8914 train_acc=0.7750 | val_loss=1.1568 val_acc=0.5375 | 
+03-10 08:55:08 [LP epoch 32] train_loss=0.8847 train_acc=0.7750 | val_loss=1.1505 val_acc=0.5375 | 
+03-10 08:55:08 [LP epoch 33] train_loss=0.8764 train_acc=0.7875 | val_loss=1.1482 val_acc=0.5363 | 
+03-10 08:55:09 [LP epoch 34] train_loss=0.8674 train_acc=0.8000 | val_loss=1.1489 val_acc=0.5356 | 
+03-10 08:55:09 [LP epoch 35] train_loss=0.8609 train_acc=0.8000 | val_loss=1.1450 val_acc=0.5419 | 
+03-10 08:55:09 [LP epoch 36] train_loss=0.8542 train_acc=0.8125 | val_loss=1.1492 val_acc=0.5381 | 
+03-10 08:55:10 [LP epoch 37] train_loss=0.8476 train_acc=0.8375 | val_loss=1.1533 val_acc=0.5444 | 
+03-10 08:55:10 [LP epoch 38] train_loss=0.8458 train_acc=0.8250 | val_loss=1.1575 val_acc=0.5419 | 
+03-10 08:55:10 [LP epoch 39] train_loss=0.8403 train_acc=0.8250 | val_loss=1.1627 val_acc=0.5406 | 
+03-10 08:55:11 [LP epoch 40] train_loss=0.8319 train_acc=0.8375 | val_loss=1.1656 val_acc=0.5437 | 
+03-10 08:55:11 [LP epoch 41] train_loss=0.8265 train_acc=0.8250 | val_loss=1.1674 val_acc=0.5356 | 
+03-10 08:55:11 [LP epoch 42] train_loss=0.8205 train_acc=0.8250 | val_loss=1.1723 val_acc=0.5331 | 
+03-10 08:55:12 [LP epoch 43] train_loss=0.8174 train_acc=0.8375 | val_loss=1.1755 val_acc=0.5369 | 
+03-10 08:55:12 [LP epoch 44] train_loss=0.8117 train_acc=0.8375 | val_loss=1.1686 val_acc=0.5400 | 
+03-10 08:55:12 [LP epoch 45] train_loss=0.8034 train_acc=0.8750 | val_loss=1.1691 val_acc=0.5356 | 
+03-10 08:55:13 [LP epoch 46] train_loss=0.7991 train_acc=0.8625 | val_loss=1.1760 val_acc=0.5325 | 
+03-10 08:55:13 [LP epoch 47] train_loss=0.7952 train_acc=0.8625 | val_loss=1.1719 val_acc=0.5381 | 
+03-10 08:55:13 [LP epoch 48] train_loss=0.7884 train_acc=0.9000 | val_loss=1.1774 val_acc=0.5363 | 
+03-10 08:55:14 [LP epoch 49] train_loss=0.7833 train_acc=0.8625 | val_loss=1.1734 val_acc=0.5437 | 
+03-10 08:55:14 Saved linear-probe checkpoint: ./checkpoint\SSF_PU_0310-084440\linear_probe_best.pt (best_val_acc=0.5444)
+03-10 08:55:14 TEST linear-probe: loss=1.1781 acc=0.5350
