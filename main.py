@@ -182,7 +182,7 @@ if __name__ == "__main__":
                             logging.info("{}: {}".format(k, v))
 
                         trainer = Trainer(args, save_dir)
-                        encoder = trainer.train(pretrained=True, pretrained_dir="./anomaly_detection/SSF_CWRU_0310-110729/best_pt")
+                        encoder = trainer.train(pretrained=False, pretrained_dir="./anomaly_detection/SSF_CWRU_0310-110729/best_pt")
                         train_loader = trainer.train_loader
                         val_loader = trainer.val_loader
                         test_loader = trainer.test_loader
@@ -193,7 +193,7 @@ if __name__ == "__main__":
 
     tsne(device, encoder, train_loader)
 
-    run_anomaly_detection(
+    test_pred, test_labels, threshold = run_anomaly_detection(
             device,
             encoder,
             train_loader,
@@ -204,3 +204,11 @@ if __name__ == "__main__":
             n_jobs=-1,
             verbose=True,
             )
+    
+    acc, cm, report = anomaly_metrics_from_multiclass(test_labels, test_pred, normal_class=0)
+    print("Binary accuracy:", acc)
+    print("Confusion matrix:\n", cm)
+    print(report)
+
+    rates = per_fault_detection_rate(test_labels, test_pred, normal_class=0)
+    print(rates)

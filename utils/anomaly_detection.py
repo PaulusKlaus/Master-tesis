@@ -3,6 +3,7 @@ import numpy as np
 import torch
 from scipy.spatial.distance import pdist,squareform
 from sklearn.neighbors import NearestNeighbors
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 """
 Docstring for utils.anomaly_detection
@@ -143,22 +144,60 @@ def run_anomaly_detection(
     normal_feats = train_feats[train_labels == normal_class]
 
     # 3) Fit threshold via 1-NN distances within normal set ----
-    threshold_1, _ = fit_nn_threshold(normal_feats, k=1, std_factor=2.0)
+    #threshold_1, _ = fit_nn_threshold(normal_feats, k=1, std_factor=2.0)
     # Using knn
     nn = NearestNeighbors(n_neighbors=2, metric=metric, n_jobs=n_jobs).fit(normal_feats)
     dists, _ = nn.kneighbors(normal_feats, return_distance=True)
     nn1 = dists[:, 1]  # exclude self-distance
-    threshold_2 = float(nn1.mean() + std_factor * nn1.std())
+    threshold = float(nn1.mean() + std_factor * nn1.std())
     if verbose:
-        print("Thresholds:", threshold_1, threshold_2) #same 
+        print("Thresholds:", threshold) #same 
 
     # 3) Extract test features
     test_feats, test_labels = extract_features_from_encoder(device, encoder, test_loader)
     
     test_feats_0 = test_feats[test_labels == normal_class]
     test_feats_other = test_feats[test_labels != normal_class]
-    pred_0 = predict_anomaly_labels(test_feats_0, normal_feats, threshold_1)
-    pred = predict_anomaly_labels(test_feats_other, normal_feats, threshold_1)
+    pred_0 = predict_anomaly_labels(test_feats_0, normal_feats, threshold)
+    pred = predict_anomaly_labels(test_feats_other, normal_feats, threshold)
     print("Should be all 0:", pred_0)
     print("Should be all 1:", pred)
+
+    # 5) Predict for ALL test samples
+    dists_test, _ = nn.kneighbors(test_feats, n_neighbors=1, return_distance=True)
+    dmin = dists_test[:, 0]
+    test_pred = (dmin > threshold).astype(np.int64)  # 0 normal, 1 anomaly
+
+    return test_pred, test_labels, threshold
     # pred: 0 normal, 1 anomaly
+
+
+
+def anomaly_metrics_from_multiclass(y_true, y_pred_bin, normal_class=0):
+    """
+    y_true: (N,) values 0..n_classes-1
+    y_pred_bin: (N,) values 0/1 (0=normal, 1=anomaly)
+    """
+    y_true = np.asarray(y_true)
+    y_pred_bin = np.asarray(y_pred_bin)
+
+    y_true_bin = (y_true != normal_class).astype(np.int64)
+
+    acc = accuracy_score(y_true_bin, y_pred_bin)
+    cm = confusion_matrix(y_true_bin, y_pred_bin)   # [[TN, FP],[FN, TP]]
+    report = classification_report(y_true_bin, y_pred_bin, target_names=["normal", "anomaly"])
+
+    return acc, cm, report
+
+def per_fault_detection_rate(y_true, y_pred_bin, normal_class=0):
+    y_true = np.asarray(y_true)
+    y_pred_bin = np.asarray(y_pred_bin)
+
+    rates = {}
+    for c in np.unique(y_true):
+        if c == normal_class:
+            continue
+        mask = (y_true == c)
+        # among true class c (a fault), how many predicted anomaly=1?
+        rates[int(c)] = float((y_pred_bin[mask] == 1).mean())
+    return rates
