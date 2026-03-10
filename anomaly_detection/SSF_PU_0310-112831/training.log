@@ -1,0 +1,41 @@
+03-10 11:28:31 model_name: SSF
+03-10 11:28:31 data_name: PU
+03-10 11:28:31 aug_1: randomcrop
+03-10 11:28:31 aug_2: scale
+03-10 11:28:31 max_epoch: 20
+03-10 11:28:31 classifier_epoch: 50
+03-10 11:28:31 data_view: TwoViewDataset
+03-10 11:28:31 cuda_device: 0
+03-10 11:28:31 checkpoint_dir: ./anomaly_detection
+03-10 11:28:31 batch_size: 64
+03-10 11:28:31 data_dir: raw_data/PU
+03-10 11:28:31 out_channel: 4
+03-10 11:28:31 normlizetype: minus_one_one
+03-10 11:28:31 processing_type: RA
+03-10 11:28:31 opt: sgd
+03-10 11:28:31 lr: 0.05
+03-10 11:28:31 momentum: 0.9
+03-10 11:28:31 weight_decay: 0.0001
+03-10 11:28:31 lr_scheduler: cos
+03-10 11:28:31 gamma: 0.95
+03-10 11:28:31 eta_min: 1e-05
+03-10 11:28:31 latent_space: 192
+03-10 11:28:31 num_blocks_ssf: 5
+03-10 11:28:31 hidden_channel: 128
+03-10 11:28:31 task: self_supervised
+03-10 11:28:31 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+03-10 11:28:31 using 1 gpus
+03-10 11:28:31 Dataset class: <class 'data_utils.datasets.PU.PU'>
+03-10 11:28:32 Split sizes: train=1600 val=1600 test=1600, classier=2000
+03-10 11:28:32 Label counts train: Counter({1: 400, 0: 400, 3: 400, 2: 400})
+03-10 11:28:32 Label counts val:   Counter({0: 400, 3: 400, 1: 400, 2: 400})
+03-10 11:28:33 Label counts test:  Counter({2: 400, 0: 400, 3: 400, 1: 400})
+03-10 11:28:33 Label counts classifier:  Counter({2: 500, 0: 500, 1: 500, 3: 500})
+03-10 11:28:34 Loaded best checkpoint from ./anomaly_detection/SSF_CWRU_0310-110729/best_pt (val_loss=-0.9506997346878052)
+03-10 11:28:34 Loaded best checkpoint from ./anomaly_detection/SSF_CWRU_0310-110729/best_pt (val_loss=-0.9506997346878052)
+03-10 11:28:35 TEST (best): loss -0.9356
+03-10 11:28:37 [LP epoch 00] train_loss=1.3126 train_acc=0.3920 | val_loss=1.3110 val_acc=0.3944 | 
+03-10 11:28:38 [LP epoch 01] train_loss=1.2447 train_acc=0.4710 | val_loss=1.2313 val_acc=0.5112 | 
+03-10 11:28:40 [LP epoch 02] train_loss=1.2142 train_acc=0.4945 | val_loss=1.2190 val_acc=0.5112 | 
+03-10 11:28:41 [LP epoch 03] train_loss=1.1936 train_acc=0.5140 | val_loss=1.2137 val_acc=0.4925 | 
+03-10 11:28:43 [LP epoch 04] train_loss=1.1787 train_acc=0.5180 | val_loss=1.1864 val_acc=0.5100 | 

@@ -26,7 +26,7 @@ Anomaly detection pipeline :
 """
 
 
-def extract_features_from_encoder(device, encoder, loader, use_head="z1", l2_normalize=True):
+def extract_features_from_encoder(device, encoder, loader, use_head="z1", l2_normalize=False):
     """
     Returns:
       feats: (N, D) numpy float32
@@ -119,3 +119,46 @@ def predict_anomaly_labels(features, normal_features, threshold):
 
 
 
+
+
+def run_anomaly_detection(
+            device,
+            encoder,
+            train_loader,
+            test_loader,
+            normal_class=0,
+            std_factor=2.0,
+            metric="euclidean",
+            n_jobs=-1,
+            verbose=True,
+):
+    """
+    Fits an anomaly threshold using ONLY normal samples from train_loader,
+    then predicts anomalies for samples from test_loader.
+    """
+    
+    # 1) Extract train features 
+    train_feats, train_labels = extract_features_from_encoder(device, encoder, train_loader)
+    # 2) Keep only normal Features
+    normal_feats = train_feats[train_labels == normal_class]
+
+    # 3) Fit threshold via 1-NN distances within normal set ----
+    threshold_1, _ = fit_nn_threshold(normal_feats, k=1, std_factor=2.0)
+    # Using knn
+    nn = NearestNeighbors(n_neighbors=2, metric=metric, n_jobs=n_jobs).fit(normal_feats)
+    dists, _ = nn.kneighbors(normal_feats, return_distance=True)
+    nn1 = dists[:, 1]  # exclude self-distance
+    threshold_2 = float(nn1.mean() + std_factor * nn1.std())
+    if verbose:
+        print("Thresholds:", threshold_1, threshold_2) #same 
+
+    # 3) Extract test features
+    test_feats, test_labels = extract_features_from_encoder(device, encoder, test_loader)
+    
+    test_feats_0 = test_feats[test_labels == normal_class]
+    test_feats_other = test_feats[test_labels != normal_class]
+    pred_0 = predict_anomaly_labels(test_feats_0, normal_feats, threshold_1)
+    pred = predict_anomaly_labels(test_feats_other, normal_feats, threshold_1)
+    print("Should be all 0:", pred_0)
+    print("Should be all 1:", pred)
+    # pred: 0 normal, 1 anomaly

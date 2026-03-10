@@ -73,7 +73,7 @@ def parse_args():
     # Model parameters 
     parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SSF', help='the name of the model')
         # Data parameters 
-    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="CWRU", help="the name of the dataset",
+    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="PU", help="the name of the dataset",
                     )
     parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
     parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='randomcrop', help='Augmentation type on the target pipeline')
@@ -193,23 +193,14 @@ if __name__ == "__main__":
 
     tsne(device, encoder, train_loader)
 
-    # 1) Extract features from a loader that contains ONLY normal samples
-    feats, labels = extract_features_from_encoder(device, encoder, train_loader)
-
-    # 1.1) Normal features 
-    # It labels are torche tensors 
-    #labels = labels.reshape(-1)  # make it (N,)
-    normal_feats = feats[labels == 0]
-    # 2) Fit threshold on normal features
-    threshold, _ = fit_nn_threshold(normal_feats, k=1, std_factor=2.0)
-    print("Threshold:", threshold)
-
-    # 3) Extract features for evaluation data
-    test_feats, test_labels = extract_features_from_encoder(device, encoder, test_loader)
-    test_feats_0 = feats[labels == 0]
-    test_feats = feats[labels != 0]
-    pred_0 = predict_anomaly_labels(test_feats_0, normal_feats, threshold)
-    pred = predict_anomaly_labels(test_feats, normal_feats, threshold)
-    print("Should be all 0:", pred_0)
-    print("Should be all 1:", pred)
-    # pred: 0 normal, 1 anomaly
+    run_anomaly_detection(
+            device,
+            encoder,
+            train_loader,
+            test_loader,
+            normal_class=0,
+            std_factor=2.0,
+            metric="euclidean",
+            n_jobs=-1,
+            verbose=True,
+            )
