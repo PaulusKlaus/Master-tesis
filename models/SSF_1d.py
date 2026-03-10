@@ -9,7 +9,7 @@ class ConvBlock1D(nn.Module):
     def __init__(
         self,
         in_ch: int,
-        out_ch: int = 256,
+        out_ch: int,
         kernel_size: int = 3,
         stride: int = 1,
         padding: int = 1,
@@ -52,10 +52,10 @@ class SSF(nn.Module):
     """
     def __init__(
         self,
-        in_channel: int = 1,
-        out_channel: int = 16,
-        num_blocks: int = 5,
-        hidden_channels: int = 96,
+        in_channel: int,
+        out_channel: int,
+        num_blocks: int ,
+        hidden_channels: int,
     ):
         super().__init__()
 
@@ -81,7 +81,7 @@ class SSF(nn.Module):
             ConvBlock1D(
                 in_ch=hidden_channels,
                 out_ch=out_channel,
-                pool= "avg"
+                pool= None  
             )
         )
 

@@ -166,7 +166,7 @@ class PU(object):
         # --- build datasets ---
         # --- optional per-class caps ---
         n_p_class= 2*200
-        train_pd = cap_per_class(train_pd, n_per_class=None, seed=self.random_state)
+        train_pd = cap_per_class(train_pd, n_per_class=n_p_class, seed=self.random_state)
         test_pd = cap_per_class(test_pd, n_per_class=n_p_class, seed=self.random_state)
         val_pd = cap_per_class(val_pd, n_per_class=n_p_class, seed=self.random_state)
         classifier_pd = cap_per_class(classifier_pd, n_per_class=500, seed=self.random_state)
