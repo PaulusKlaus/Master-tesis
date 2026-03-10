@@ -1,0 +1,90 @@
+03-10 13:28:48 model_name: SSF
+03-10 13:28:48 data_name: JNU
+03-10 13:28:48 aug_1: randomcrop
+03-10 13:28:48 aug_2: scale
+03-10 13:28:48 max_epoch: 20
+03-10 13:28:48 classifier_epoch: 50
+03-10 13:28:48 data_view: TwoViewDataset
+03-10 13:28:48 cuda_device: 0
+03-10 13:28:48 checkpoint_dir: ./anomaly_detection
+03-10 13:28:48 batch_size: 64
+03-10 13:28:48 data_dir: raw_data/JNU/JNU-Bearing-Dataset-main
+03-10 13:28:48 out_channel: 4
+03-10 13:28:48 normlizetype: minus_one_one
+03-10 13:28:48 processing_type: O_N
+03-10 13:28:48 opt: sgd
+03-10 13:28:48 lr: 0.05
+03-10 13:28:48 momentum: 0.9
+03-10 13:28:48 weight_decay: 0.0001
+03-10 13:28:48 lr_scheduler: cos
+03-10 13:28:48 gamma: 0.95
+03-10 13:28:48 eta_min: 1e-05
+03-10 13:28:48 latent_space: 192
+03-10 13:28:48 num_blocks_ssf: 5
+03-10 13:28:48 hidden_channel: 128
+03-10 13:28:48 task: self_supervised
+03-10 13:28:48 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+03-10 13:28:48 using 1 gpus
+03-10 13:28:48 Dataset class: <class 'data_utils.datasets.JNU.JNU'>
+03-10 13:28:50 Split sizes: train=2638 val=880 test=2636, classier=2636
+03-10 13:28:50 Label counts train: Counter({0: 2638})
+03-10 13:28:50 Label counts val:   Counter({0: 880})
+03-10 13:28:50 Label counts test:  Counter({3: 732, 2: 732, 1: 732, 0: 440})
+03-10 13:28:50 Label counts classifier:  Counter({1: 732, 3: 732, 2: 732, 0: 440})
+03-10 13:28:52 -----Epoch 0/19-----
+03-10 13:28:55 current lr: 0.05
+03-10 13:28:55 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9716)
+03-10 13:28:55 Epoch 000 Train loss -0.8746 | Val loss -0.9716
+03-10 13:28:55 -----Epoch 1/19-----
+03-10 13:28:57 current lr: 0.0496923
+03-10 13:28:57 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9853)
+03-10 13:28:57 Epoch 001 Train loss -0.9821 | Val loss -0.9853
+03-10 13:28:57 -----Epoch 2/19-----
+03-10 13:28:59 current lr: 0.0487767
+03-10 13:28:59 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9907)
+03-10 13:28:59 Epoch 002 Train loss -0.9884 | Val loss -0.9907
+03-10 13:28:59 -----Epoch 3/19-----
+03-10 13:29:01 current lr: 0.0472757
+03-10 13:29:01 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9929)
+03-10 13:29:01 Epoch 003 Train loss -0.9919 | Val loss -0.9929
+03-10 13:29:01 -----Epoch 4/19-----
+03-10 13:29:04 current lr: 0.0452264
+03-10 13:29:04 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9941)
+03-10 13:29:04 Epoch 004 Train loss -0.9934 | Val loss -0.9941
+03-10 13:29:04 -----Epoch 5/19-----
+03-10 13:29:06 current lr: 0.0426791
+03-10 13:29:06 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9948)
+03-10 13:29:06 Epoch 005 Train loss -0.9943 | Val loss -0.9948
+03-10 13:29:06 -----Epoch 6/19-----
+03-10 13:29:08 current lr: 0.0396967
+03-10 13:29:08 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9952)
+03-10 13:29:08 Epoch 006 Train loss -0.9948 | Val loss -0.9952
+03-10 13:29:08 -----Epoch 7/19-----
+03-10 13:29:10 current lr: 0.0363525
+03-10 13:29:10 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9956)
+03-10 13:29:10 Epoch 007 Train loss -0.9951 | Val loss -0.9956
+03-10 13:29:10 -----Epoch 8/19-----
+03-10 13:29:13 current lr: 0.0327289
+03-10 13:29:13 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9958)
+03-10 13:29:13 Epoch 008 Train loss -0.9954 | Val loss -0.9958
+03-10 13:29:13 -----Epoch 9/19-----
+03-10 13:29:15 current lr: 0.0289151
+03-10 13:29:15 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9960)
+03-10 13:29:15 Epoch 009 Train loss -0.9956 | Val loss -0.9960
+03-10 13:29:15 -----Epoch 10/19-----
+03-10 13:29:17 current lr: 0.025005
+03-10 13:29:17 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9962)
+03-10 13:29:17 Epoch 010 Train loss -0.9958 | Val loss -0.9962
+03-10 13:29:17 -----Epoch 11/19-----
+03-10 13:29:19 current lr: 0.0210949
+03-10 13:29:20 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9963)
+03-10 13:29:20 Epoch 011 Train loss -0.9959 | Val loss -0.9963
+03-10 13:29:20 -----Epoch 12/19-----
+03-10 13:29:22 current lr: 0.0172811
+03-10 13:29:22 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9964)
+03-10 13:29:22 Epoch 012 Train loss -0.9960 | Val loss -0.9964
+03-10 13:29:22 -----Epoch 13/19-----
+03-10 13:29:24 current lr: 0.0136575
+03-10 13:29:24 Saved best checkpoint to ./anomaly_detection\SSF_JNU_0310-132848\best_pt (val_loss=-0.9965)
+03-10 13:29:24 Epoch 013 Train loss -0.9961 | Val loss -0.9965
+03-10 13:29:24 -----Epoch 14/19-----
