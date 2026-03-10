@@ -23,7 +23,7 @@ DATA_DIRS = {
     "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 4], # {"healthy": 0, "inner_race": 1, "outer_race": 2, "ball" : 3}
     "PU": [r"raw_data/PU", 4], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
     "SEU": [r"raw_data/SEU/gearbox", 5], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3, "ball" : 4}
-    "XJTU": [r"raw_data/XJTU/XJTU-SY_Bearing_Datasets/XJTU-SY_Bearing_Datasets", 15]  # TODO: Check this 
+    "XJTU": [r"raw_data/XJTU/XJTU-SY_Bearing_Datasets/XJTU-SY_Bearing_Datasets", 4]  # TODO: Check this 
 }
 
 MODEL_CONFIG = {
@@ -119,6 +119,9 @@ def parse_args():
 
     parser.add_argument('--num_blocks_ssf', type = int, default=5, help = 'Number of convolutional blocks in SSF model')
     parser.add_argument('--hidden_channel', type=int, default =256 )
+
+    
+
     args = parser.parse_args()
     return args
 

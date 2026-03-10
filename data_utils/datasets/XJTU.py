@@ -9,25 +9,25 @@ from datasets_aug.sequence_aug import *
 from .data_utils import *
 
 
-label1 = [i for i in range(0,5)]
-label2 = [i for i in range(5,10)]
-label3 = [i for i in range(10,15)]
+label1 = [2, 2, 2, 3, 1]
+label2 = [1, 2, 3, 2, 2]
+label3 = [2, 1, 1, 1, 2]
 #--------------------------------------------------------------------------------------------------------------------
 
-HBdata = ["n600_3_2.csv", "n800_3_2.csv","n1000_3_2.csv"]
-or_faults  = ["ob600_2.csv","ob800_2.csv", "ob1000_2.csv"]
-b_fault = [ "tb600_2.csv", "tb800_2.csv", "tb1000_2.csv"]
-ir_faults  = ["ib600_2.csv","ib800_2.csv","ib1000_2.csv",]
+HBdata = []
+or_faults  = [0,1,2, 5, 7, 8, 9, 14]
+cage_fault = []
+ir_faults  = [4, 5, 11, 12, 13]
 
 samples = (
     list(zip(HBdata,     repeat("healthy"))) +
     list(zip(ir_faults,  repeat("inner_race"))) +
     list(zip(or_faults,  repeat("outer_race"))) +
-    list(zip(b_fault,  repeat("ball"))) 
+    list(zip(cage_fault,  repeat("ball"))) 
 )
 
 # stable mapping
-class_to_idx = {"healthy": 0, "inner_race": 1, "outer_race": 2, "ball" : 3}
+class_to_idx = {"healthy": 0, "inner_race": 1, "outer_race": 2, "cage" : 3}
 
 ALL_DATA  = [sid for sid, _ in samples]
 ALL_LABEL = [class_to_idx[c] for _, c in samples]
@@ -56,28 +56,50 @@ class XJTU(object):
 
         data = []
         lab =[]
-
+        
+        # --- WC[0] ---
         for i in tqdm(range(len(datasetname1))):
-            files = os.listdir(os.path.join(root, WC[0], datasetname1[i]))
+            folder = os.path.join(root, WC[0], datasetname1[i])
+            files = os.listdir(folder)
+            # Faults
             for ii in [-4, -3, -2, -1]: # Take the data of the last three CSV files
-                path1 = os.path.join(root, WC[0], datasetname1[i], files[ii])
-                data1, lab1 = self._data_load(path1, label = label1[i])
+                path = os.path.join(folder, files[ii])
+                data1, lab1 = self._data_load(path, label = label1[i])
+                data += data1
+                lab += lab1
+            # Normals 
+            for nn in [0,1,2,3]: # Take the data of the last three CSV files
+                path = os.path.join(folder, files[nn])
+                data1, lab1 = self._data_load(path, label = 0)
                 data += data1
                 lab += lab1
 
         for j in tqdm(range(len(datasetname2))):
-            files = os.listdir(os.path.join(root, WC[1], datasetname2[j]))
+            folder = os.path.join(root, WC[1], datasetname2[j])
+            files = os.listdir(folder)
+
             for jj in [-4, -3, -2, -1]:
-                path2 = os.path.join(root, WC[1], datasetname2[j], files[jj])
-                data2, lab2 = self._data_load(path2, label = label2[j])
+                path = os.path.join(folder, files[jj])
+                data2, lab2 = self._data_load(path, label = label2[j])
+                data += data2
+                lab += lab2
+            for nn in [0,1,2,3]:
+                path = os.path.join(folder, files[jj])
+                data2, lab2 = self._data_load(path, label = 0)
                 data += data2
                 lab += lab2
 
         for k in tqdm(range(len(datasetname3))):
-            files = os.listdir(os.path.join(root, WC[2], datasetname3[k]))
+            folder = os.path.join(root, WC[2], datasetname3[k])
+            files = os.listdir(folder)
             for kk in [-4, -3, -2, -1]:
-                path3 = os.path.join(root, WC[2], datasetname3[k], files[kk])
+                path3 = os.path.join(folder, files[kk])
                 data3, lab3 = self._data_load(path3, label = label3[k])
+                data += data3
+                lab += lab3
+            for nn in [0,1,2,3]:
+                path3 = os.path.join(folder, files[nn])
+                data3, lab3 = self._data_load(path3, label = 0)
                 data += data3
                 lab += lab3
 
