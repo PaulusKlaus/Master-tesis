@@ -190,6 +190,10 @@ class Normalize:
             min_, max_ = seq.min(), seq.max()
             return 2 * (seq - min_) / (max_ - min_ + self.eps) - 1
 
+        elif self.mode == "mean":
+            min_, max_, mean = seq.min(), seq.max(), seq.mean()
+            return (seq - mean) / (max_ - min_ + self.eps)
+
         elif self.mode == "mean_std":
             mean, std = seq.mean(), seq.std()
             return (seq - mean) / (std + self.eps)

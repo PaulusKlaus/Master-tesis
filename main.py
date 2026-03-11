@@ -100,7 +100,7 @@ def parse_args():
                         help="output classes",
                     )
                          
-    parser.add_argument('--normlizetype', type=str, choices=["zero_one", "minus_one_one", 'mean_std'], default='minus_one_one', help='data normalization methods')
+    parser.add_argument('--normlizetype', type=str, choices=["zero_one", "minus_one_one", 'mean_std', 'mean'], default='minus_one_one', help='data normalization methods')
     parser.add_argument('--processing_type', type=str, choices=['RA', 'R_NA', 'O_A', "O_N"], default='O_N',
                         help='RA: random split with data augmentation, R_NA: random split without data augmentation, O_A: order split with data augmentation')
 
