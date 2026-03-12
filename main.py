@@ -64,68 +64,229 @@ MODEL_CONFIG = {
     },
 }
 
-max_epoc = 20
+# =========================
+# Training Defaults
+# =========================
+MAX_EPOCH = 50
 
 
+# =========================
+# Argument Parser
+# =========================
 def parse_args():
-    parser = argparse.ArgumentParser(description='Train')
+    parser = argparse.ArgumentParser(description="Train")
 
-    # Model parameters 
-    parser.add_argument('--model_name', type=str, choices = MODEL_CONFIG.keys(),default='SSF', help='the name of the model')
-        # Data parameters 
-    parser.add_argument("--data_name",type=str, choices=DATA_DIRS.keys(), default="CWRU", help="the name of the dataset",
-                    )
-    parser.add_argument('--aug_1', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='normal', help='Augmentation type on the online pipeline')
-    parser.add_argument('--aug_2', type=str, choices=['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft'], default='randomcrop', help='Augmentation type on the target pipeline')
-    # save, load and display information
-    parser.add_argument('--max_epoch', type=int, default=max_epoc, help='max number of epoch')
-    parser.add_argument('--classifier_epoch', type=int, default=50, help='max number of epoch')
+    # -------------------------------------------------
+    # Model Parameters
+    # -------------------------------------------------
+    parser.add_argument(
+        "--model_name",
+        type=str,
+        choices=MODEL_CONFIG.keys(),
+        default="SSF",
+        help="The name of the model",
+    )
 
-    parser.add_argument('--data_view', type=str, default=None, help='Dataset view with either one or two tensors')
-    
-    parser.add_argument('--cuda_device', type=str, default='0', help='assign device')
-    parser.add_argument('--checkpoint_dir', type=str, default='./checkpoint', help='the directory to save the model')
-    #parser.add_argument("--pretrained", type=bool, default=True, help='whether to load the pretrained model')
-    parser.add_argument('--batch_size', type=int, default=64, help='batchsize of the training process')
-    
+    # -------------------------------------------------
+    # Data Parameters
+    # -------------------------------------------------
+    parser.add_argument(
+        "--data_name",
+        type=str,
+        choices=DATA_DIRS.keys(),
+        default="PU",
+        help="The name of the dataset",
+    )
 
-    parser.add_argument("--data_dir",
-                        type=str,
-                        default=None,
-                        help="optional override for dataset directory",
-                    )
-    parser.add_argument("--out_channel",
-                        type=int,
-                        default=None,
-                        help="output classes",
-                    )
-                         
-    parser.add_argument('--normlizetype', type=str, choices=["zero_one", "minus_one_one", 'mean_std', 'mean'], default='minus_one_one', help='data normalization methods')
-    parser.add_argument('--processing_type', type=str, choices=['RA', 'R_NA', 'O_A', "O_N"], default='O_N',
-                        help='RA: random split with data augmentation, R_NA: random split without data augmentation, O_A: order split with data augmentation')
+    parser.add_argument(
+        "--aug_1",
+        type=str,
+        choices=["gaussian", "normal", "scale", "randomstrech", "randomcrop", "fft"],
+        default="normal",
+        help="Augmentation type on the online pipeline",
+    )
 
+    parser.add_argument(
+        "--aug_2",
+        type=str,
+        choices=["gaussian", "normal", "scale", "randomstrech", "randomcrop", "fft"],
+        default="randomcrop",
+        help="Augmentation type on the target pipeline",
+    )
 
-    # optimization information
-    parser.add_argument('--opt', type=str, choices=['sgd', 'adam'], default='sgd', help='the optimizer')
-    parser.add_argument('--lr', type=float, default=0.05, help='the initial learning rate')
-    parser.add_argument('--momentum', type=float, default=0.9, help='the momentum for sgd')
-    parser.add_argument('--weight_decay', type=float, default=1e-4, help='the weight decay')
-    parser.add_argument('--lr_scheduler', type=str, choices=['cos', 'exp', 'stepLR', 'fix'], default='cos', help='the learning rate schedule')
-    parser.add_argument('--gamma', type=float, default=0.95, help='learning rate scheduler parameter for step and exp')
-    parser.add_argument('--eta_min', type=float, default=0.00001, help='learning rate scheduler parameter for cos ')
+    parser.add_argument(
+        "--data_view",
+        type=str,
+        default=None,
+        help="Dataset view with either one or two tensors",
+    )
 
-    
-    parser.add_argument('--latent_space', type=int, default=128, help='the size of the latent space' )
+    parser.add_argument(
+        "--data_dir",
+        type=str,
+        default=None,
+        help="Optional override for dataset directory",
+    )
 
-    parser.add_argument('--num_blocks_ssf', type = int, default=5, help = 'Number of convolutional blocks in SSF model')
-    parser.add_argument('--hidden_channel', type=int, default =256 )
+    parser.add_argument(
+        "--out_channel",
+        type=int,
+        default=None,
+        help="Output classes",
+    )
 
-    parser.add_argument('--per_class_samples', type=int, default =100 )
-    parser.add_argument('--classifier_samples', type=int, default =10 )
-    
+    parser.add_argument(
+        "--normlizetype",
+        type=str,
+        choices=["zero_one", "minus_one_one", "mean_std", "mean"],
+        default="minus_one_one",
+        help="Data normalization method",
+    )
 
-    args = parser.parse_args()
-    return args
+    parser.add_argument(
+        "--processing_type",
+        type=str,
+        choices=["RA", "R_NA", "O_A", "O_N"],
+        default="O_N",
+        help=(
+            "RA: random split with augmentation | "
+            "R_NA: random split without augmentation | "
+            "O_A: order split with augmentation | "
+            "O_N: order split without augmentation"
+        ),
+    )
+
+    # -------------------------------------------------
+    # Training Parameters
+    # -------------------------------------------------
+    parser.add_argument(
+        "--max_epoch",
+        type=int,
+        default=MAX_EPOCH,
+        help="Maximum number of training epochs",
+    )
+
+    parser.add_argument(
+        "--classifier_epoch",
+        type=int,
+        default=50,
+        help="Maximum number of classifier epochs",
+    )
+
+    parser.add_argument(
+        "--batch_size",
+        type=int,
+        default=64,
+        help="Batch size",
+    )
+
+    parser.add_argument(
+        "--cuda_device",
+        type=str,
+        default="0",
+        help="CUDA device ID",
+    )
+
+    parser.add_argument(
+        "--checkpoint_dir",
+        type=str,
+        default="./checkpoint",
+        help="Directory to save the model",
+    )
+
+    # -------------------------------------------------
+    # Optimization Parameters
+    # -------------------------------------------------
+    parser.add_argument(
+        "--opt",
+        type=str,
+        choices=["sgd", "adam"],
+        default="sgd",
+        help="Optimizer type",
+    )
+
+    parser.add_argument(
+        "--lr",
+        type=float,
+        default=0.05,
+        help="Initial learning rate",
+    )
+
+    parser.add_argument(
+        "--momentum",
+        type=float,
+        default=0.9,
+        help="Momentum for SGD",
+    )
+
+    parser.add_argument(
+        "--weight_decay",
+        type=float,
+        default=1e-4,
+        help="Weight decay",
+    )
+
+    parser.add_argument(
+        "--lr_scheduler",
+        type=str,
+        choices=["cos", "exp", "stepLR", "fix"],
+        default="cos",
+        help="Learning rate scheduler type",
+    )
+
+    parser.add_argument(
+        "--gamma",
+        type=float,
+        default=0.95,
+        help="LR scheduler parameter (step / exp)",
+    )
+
+    parser.add_argument(
+        "--eta_min",
+        type=float,
+        default=1e-5,
+        help="Minimum LR for cosine scheduler",
+    )
+
+    # -------------------------------------------------
+    # Model-Specific Parameters
+    # -------------------------------------------------
+    parser.add_argument(
+        "--latent_space",
+        type=int,
+        default=128,
+        help="Size of the latent space",
+    )
+
+    parser.add_argument(
+        "--num_blocks_ssf",
+        type=int,
+        default=5,
+        help="Number of convolutional blocks in SSF model",
+    )
+
+    parser.add_argument(
+        "--hidden_channel",
+        type=int,
+        default=256,
+        help="Hidden channel size",
+    )
+
+    parser.add_argument(
+        "--per_class_samples",
+        type=int,
+        default=None,
+        help="Number of samples per class",
+    )
+
+    parser.add_argument(
+        "--classifier_samples",
+        type=int,
+        default=10,
+        help="Number of classifier samples",
+    )
+
+    return parser.parse_args()
 
 
 
@@ -178,6 +339,8 @@ if __name__ == "__main__":
                         args.latent_space = features
                         args.hidden_channel = hidden_size
                         args.num_blocks_ssf=blocks
+                        args.per_class_samples = 2000
+                        args.classifier_samples = 200
 
                         run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
                         logging.info("=" * 80)
