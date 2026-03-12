@@ -2,6 +2,8 @@ import re
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import math
+from pathlib import Path
 
 #path = "checkpoint/SSF_PU_0226-130304/training.log"   # <-- adjust path if needed
 paths_latent = [
@@ -300,191 +302,126 @@ def augmentation_test(paths, order_invariant):
     return summary
 
 
-import math
-
-
-def aug_pair_vs_blocks_accuracy(paths,  plot=True, save_dir="figures/training_vis"):
-
+def aug_pair_vs_blocks_accuracy(paths, plot=True, save_dir="figures/training_vis", top_k=3, n_cols=3):
     summary = augmentation_test(paths, True)
-    #print(summary.to_string(index=False))
 
-    # compute one std score per augmentation pair
-    pair_order = (
-        summary
-        .groupby(["aug_a", "aug_b"])["std_acc"]
-        .mean()
-        .sort_values()   # ascending = most stable first
-        .index
-    )
-    pair_order_bin = (
-        summary
-        .groupby(["aug_a", "aug_b"])["std_bin_acc"]
-        .mean()
-        .sort_values()   # ascending = most stable first
-        .index
-    )
+    if not plot:
+        return summary
 
-    if plot:
-        n_pairs = len(pair_order)
+    save_dir = Path(save_dir)
+    save_dir.mkdir(parents=True, exist_ok=True)
 
-        # choose grid shape automatically
-        n_cols = 3  # change if you want wider/narrower layout
-        n_rows = math.ceil(n_pairs / n_cols)
-#######################  1 ###############################
-        fig, axes = plt.subplots(
-            n_rows,
-            n_cols,
-            figsize=(5 * n_cols, 4 * n_rows),
-            sharex=True,
-            sharey=True,
-            squeeze=False
+    # Pre-group once: {(aug_a, aug_b): df}
+    grouped = {
+        k: g.sort_values("num_blocks_ssf")
+        for k, g in summary.groupby(["aug_a", "aug_b"], sort=False)
+    }
+
+    def pair_order_for(std_col):
+        # mean std per pair, ascending -> most stable first
+        return (
+            summary.groupby(["aug_a", "aug_b"], sort=False)[std_col]
+            .mean()
+            .sort_values()
+            .index
+            .tolist()
         )
 
-        axes = axes.flatten()
+    def plot_grid(pair_order, mean_col, std_col, ylabel, out_name, suptitle):
+        n_pairs = len(pair_order)
+        n_rows = math.ceil(n_pairs / n_cols)
 
-        for idx, (a, b) in enumerate(pair_order):
+        fig, axes = plt.subplots(
+            n_rows, n_cols,
+            figsize=(5 * n_cols, 4 * n_rows),
+            sharex=True, sharey=True,
+            squeeze=False
+        )
+        axes = axes.ravel()
+
+        for idx, pair in enumerate(pair_order):
             ax = axes[idx]
-
-            g = summary[
-                (summary["aug_a"] == a) &
-                (summary["aug_b"] == b)
-            ].sort_values("num_blocks_ssf")
+            g = grouped[pair]
 
             ax.errorbar(
                 g["num_blocks_ssf"],
-                g["mean_acc"],
-                yerr=g["std_acc"],
+                g[mean_col],
+                yerr=g[std_col],
                 marker="o",
                 linestyle="none",
                 capsize=3,
             )
-
+            a, b = pair
             ax.set_title(f"{a}+{b}")
             ax.set_xlabel("num_blocks_ssf")
-            ax.set_ylabel("mean test_acc (± std)")
+            ax.set_ylabel(ylabel)
             ax.grid(True, alpha=0.2)
 
-        # Hide unused subplots if grid > number of pairs
+        # hide unused axes (IMPORTANT: use the correct axes array!)
         for j in range(n_pairs, len(axes)):
             fig.delaxes(axes[j])
 
-        fig.suptitle("Augmentation pair vs num_blocks_ssf", fontsize=16)
+        fig.suptitle(suptitle, fontsize=16)
         fig.tight_layout()
-        plt.savefig(f"{save_dir}/augpair_vs_blocks_test_acc.pdf", bbox_inches="tight")
+        fig.savefig(save_dir / out_name, bbox_inches="tight")
         plt.close(fig)
-###################-------- 2 ----------
-        # --- Extra plot: top-3 best (most stable) pairs on one axes ---
-        top_k = 3
-        best_pairs = list(pair_order[:top_k])
 
-        fig2, ax2 = plt.subplots(figsize=(7, 5))
+    def plot_topk(pair_order, mean_col, std_col, ylabel, out_name, title):
+        best_pairs = pair_order[: min(top_k, len(pair_order))]
 
+        fig, ax = plt.subplots(figsize=(7, 5))
         for (a, b) in best_pairs:
-            g = summary[
-                (summary["aug_a"] == a) &
-                (summary["aug_b"] == b)
-            ].sort_values("num_blocks_ssf")
-
-            ax2.errorbar(
-                g["num_blocks_ssf"],
-                g["mean_acc"],
-                yerr=g["std_acc"],
-                marker="o",
-                linestyle="none",
-                capsize=3,
-                label=f"{a}+{b}",
-            )
-
-        ax2.set_xlabel("num_blocks_ssf")
-        ax2.set_ylabel("mean test_acc (± std)")
-        ax2.set_title(f"Top {top_k} most stable augmentation pairs (lowest mean std)")
-        ax2.grid(True, alpha=0.2)
-        ax2.legend()
-
-        fig2.tight_layout()
-        plt.savefig(f"{save_dir}/augpair_vs_blocks_test_acc_top{top_k}.pdf", bbox_inches="tight")
-        plt.close(fig2)
-
-################ 3 ############
-        fig3, axes3 = plt.subplots(
-            n_rows,
-            n_cols,
-            figsize=(5 * n_cols, 4 * n_rows),
-            sharex=True,
-            sharey=True,
-            squeeze=False
-        )
-
-        axes3 = axes3.flatten()
-
-        for idx, (a, b) in enumerate(pair_order_bin):
-            ax = axes3[idx]
-
-            g = summary[
-                (summary["aug_a"] == a) &
-                (summary["aug_b"] == b)
-            ].sort_values("num_blocks_ssf")
-
+            g = grouped[(a, b)]
             ax.errorbar(
                 g["num_blocks_ssf"],
-                g["mean_bin_acc"],
-                yerr=g["std_bin_acc"],
-                marker="o",
-                linestyle="none",
-                capsize=3,
-            )
-
-            ax.set_title(f"{a}+{b}")
-            ax.set_xlabel("num_blocks_ssf")
-            ax.set_ylabel("mean binary_acc (± std)")
-            ax.grid(True, alpha=0.2)
-
-        # Hide unused subplots if grid > number of pairs
-        for j in range(n_pairs, len(axes)):
-            fig3.delaxes(axes[j])
-
-        fig3.suptitle("Augmentation pair vs num_blocks_ssf", fontsize=16)
-        fig3.tight_layout()
-        plt.savefig(f"{save_dir}/augpair_vs_blocks_binary_acc.pdf", bbox_inches="tight")
-        plt.close(fig3)
-
- ############################
- # --- Extra plot: top-3 best (most stable) pairs on one axes ---
-        top_k = 3
-        best_pairs = list(pair_order_bin[:top_k])
-
-        fig4, ax4 = plt.subplots(figsize=(7, 5))
-
-        for (a, b) in best_pairs:
-            g = summary[
-                (summary["aug_a"] == a) &
-                (summary["aug_b"] == b)
-            ].sort_values("num_blocks_ssf")
-
-            ax4.errorbar(
-                g["num_blocks_ssf"],
-                g["mean_bin_acc"],
-                yerr=g["std_bin_acc"],
+                g[mean_col],
+                yerr=g[std_col],
                 marker="o",
                 linestyle="none",
                 capsize=3,
                 label=f"{a}+{b}",
             )
 
-        ax4.set_xlabel("num_blocks_ssf")
-        ax4.set_ylabel("mean Binary_acc (± std)")
-        ax4.set_title(f"Top {top_k} most stable augmentation pairs (lowest mean std)")
-        ax4.grid(True, alpha=0.2)
-        ax4.legend()
+        ax.set_xlabel("num_blocks_ssf")
+        ax.set_ylabel(ylabel)
+        ax.set_title(title)
+        ax.grid(True, alpha=0.2)
+        ax.legend()
+        fig.tight_layout()
+        fig.savefig(save_dir / out_name, bbox_inches="tight")
+        plt.close(fig)
 
-        fig4.tight_layout()
-        plt.savefig(f"{save_dir}/augpair_vs_blocks_bin_acc_top{top_k}.pdf", bbox_inches="tight")
-        plt.close(fig4)
+    # ---- ACC ----
+    order_acc = pair_order_for("std_acc")
+    plot_grid(
+        order_acc, "mean_acc", "std_acc",
+        ylabel="mean test_acc (± std)",
+        out_name="augpair_vs_blocks_test_acc.pdf",
+        suptitle="Augmentation pair vs num_blocks_ssf"
+    )
+    plot_topk(
+        order_acc, "mean_acc", "std_acc",
+        ylabel="mean test_acc (± std)",
+        out_name=f"augpair_vs_blocks_test_acc_top{top_k}.pdf",
+        title=f"Top {top_k} most stable augmentation pairs (lowest mean std)"
+    )
 
-
+    # ---- BIN ACC ----
+    order_bin = pair_order_for("std_bin_acc")
+    plot_grid(
+        order_bin, "mean_bin_acc", "std_bin_acc",
+        ylabel="mean binary_acc (± std)",
+        out_name="augpair_vs_blocks_binary_acc.pdf",
+        suptitle="Augmentation pair vs num_blocks_ssf"
+    )
+    plot_topk(
+        order_bin, "mean_bin_acc", "std_bin_acc",
+        ylabel="mean binary_acc (± std)",
+        out_name=f"augpair_vs_blocks_bin_acc_top{top_k}.pdf",
+        title=f"Top {top_k} most stable augmentation pairs (lowest mean std)"
+    )
 
     return summary
-
 
 paths_augmentetion = [
   #  "checkpoint/SSF_PU_0303-093038/training.log",
