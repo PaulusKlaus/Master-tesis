@@ -33,6 +33,8 @@ def parse_training_log(path):
     aug1_re = re.compile(r'aug_1\s*:\s*([A-Za-z_]+)', re.IGNORECASE)
     aug2_re = re.compile(r'aug_2\s*:\s*([A-Za-z_]+)', re.IGNORECASE)
 
+    thr_re = re.compile(r'Threshold:\s*([\d\.eE+-]+)', re.IGNORECASE)
+
     # binary test block
     bin_acc_re = re.compile(r'Binary accuracy:\s*([\d\.]+)', re.IGNORECASE)
 
@@ -58,7 +60,9 @@ def parse_training_log(path):
                     "best_val_loss": np.inf,
                     "test_acc": -np.inf,
                     "test_loss": np.inf,
-                    "hidden_channel": None
+                    "hidden_channel": None,
+
+                    "threshold": None,
                 }
 
             if current is None:
@@ -101,6 +105,10 @@ def parse_training_log(path):
             if m:
                 current["binary_acc"] = float(m.group(1))
 
+            m_thr = thr_re.search(line)
+            if m_thr:
+                current["threshold"] = float(m_thr.group(1))
+
     if current is not None:
         runs.append(current)
 
@@ -109,26 +117,7 @@ def parse_training_log(path):
     df = df.dropna(subset=["latent_dim", "num_blocks_ssf", "aug_1", "aug_2", "hidden_channel"])
     return df
 
-def sted_mean_val(paths):
-# Calculation of the std and mean per seed
-    results = []
-    for path in paths:
-        df = parse_training_log(path)
-        results.append({
-            "model": path.split("/")[-2],
-            "mean_acc": df["test_acc"].mean(),
-            "std_acc": df["test_acc"].std(),
-            "mean_loss": df["test_loss"].mean(),
-            "std_loss": df["test_loss"].std(),
-        })
-    summary_df = pd.DataFrame(results)
-    print(summary_df)
-
-
 def scatter_plots(paths, save_dir="figures/training_vis"):
-   
-
-
     # 1️⃣ Latent dim vs best val acc
     plt.figure()
     for path in paths:
@@ -182,7 +171,7 @@ def scatter_plots(paths, save_dir="figures/training_vis"):
     plt.savefig("figures/training_vis/3_blocks_vs_test_acc.pdf", bbox_inches="tight")
 
 
-    # Num_blocks vs anomaly detection accuracy
+    # 7 Num_blocks vs anomaly detection accuracy
     plt.figure()
     for path in paths:
         df = parse_training_log(path)
@@ -423,6 +412,72 @@ def aug_pair_vs_blocks_accuracy(paths, plot=True, save_dir="figures/training_vis
 
     return summary
 
+
+def blocks_vs_binary_acc_with_threshold(paths, save_path="figures/training_vis/8_blocks_vs_binary_acc.pdf"):
+    save_path = Path(save_path)
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # --- Load all runs ---
+    all_df = []
+    for path in paths:
+        df = parse_training_log(path)
+        all_df.append(df)
+
+    df = pd.concat(all_df, ignore_index=True)
+
+    # --- Compute mean threshold per block ---
+    thr_summary = (
+        df.dropna(subset=["threshold"])
+          .groupby("num_blocks_ssf", as_index=False)
+          .agg(mean_threshold=("threshold", "mean"),
+               std_threshold=("threshold", "std"))
+          .sort_values("num_blocks_ssf")
+    )
+
+    # ------------------ PLOT ------------------
+    fig, ax1 = plt.subplots()
+
+    # Binary accuracy (BLUE)
+    acc_color = "tab:blue"
+    ax1.scatter(
+        df["num_blocks_ssf"],
+        df["binary_acc"],
+        color=acc_color,
+        alpha=0.7,
+        label="Binary accuracy"
+    )
+    ax1.set_xlabel("num_blocks_ssf")
+    ax1.set_ylabel("Binary accuracy", color=acc_color)
+    ax1.tick_params(axis="y", labelcolor=acc_color)
+
+    # Threshold (RED) on second axis
+    ax2 = ax1.twinx()
+    thr_color = "tab:red"
+    ax2.errorbar(
+        thr_summary["num_blocks_ssf"],
+        thr_summary["mean_threshold"],
+        yerr=thr_summary["std_threshold"].fillna(0.0),
+        marker="o",
+        linestyle="none",
+        capsize=4,
+        color=thr_color,
+        label="Mean threshold ± std"
+    )
+    ax2.set_ylabel("Threshold", color=thr_color)
+    ax2.tick_params(axis="y", labelcolor=thr_color)
+
+    plt.title("num_blocks_ssf vs Binary Accuracy + Mean Threshold")
+
+    # Optional: combined legend
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines1 + lines2, labels1 + labels2, loc="best")
+
+    fig.tight_layout()
+    fig.savefig(save_path, bbox_inches="tight")
+    plt.close(fig)
+
+
 paths_augmentetion = [
   #  "checkpoint/SSF_PU_0303-093038/training.log",
     #"checkpoint/SSF_PU_0303-112311/training.log",
@@ -431,11 +486,12 @@ paths_augmentetion = [
   #  "checkpoint/SSF_CWRU_0304-133140_working/training.log"
    # "checkpoint/SSF_PU_0304-124405/training.log"  # trying to overcome overfitting
    #"checkpoint/SSF_CWRU_0310-151618/training.log",
-   #"checkpoint/SSF_CWRU_0312-090033/training.log",    #Full test on cwru for 10 block and all augmentation pairs 
-   "checkpoint/SSF_PU_0312-102943/training.log"
+   "checkpoint/SSF_CWRU_0312-090033/training.log",    #Full test on cwru for 10 block and all augmentation pairs 
+   #"checkpoint/SSF_PU_0312-102943/training.log"
 ]
 
 aug_pair_vs_blocks_accuracy(paths_augmentetion)
 
 #augmentation_test(paths_augmentetion)
 scatter_plots(paths_augmentetion)
+blocks_vs_binary_acc_with_threshold(paths_augmentetion)
