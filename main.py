@@ -150,7 +150,7 @@ if __name__ == "__main__":
     setlogger(os.path.join(save_dir, 'training.log'))
 
 
-    augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop', 'fft']
+    augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
     pairs = list(combinations_with_replacement(augmentations, 2))
 
     aug_pairs = [
@@ -177,7 +177,7 @@ if __name__ == "__main__":
                         args.aug_1, args.aug_2 = pair
                         args.latent_space = features
                         args.hidden_channel = hidden_size
-                        args.num_blocks_ssf=5
+                        args.num_blocks_ssf=blocks
 
                         run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
                         logging.info("=" * 80)

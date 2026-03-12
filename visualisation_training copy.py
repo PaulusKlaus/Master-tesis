@@ -22,8 +22,9 @@ paths_augmentetion = [
     #"checkpoint/SSF_PU_0303-112311/training.log",
     #"checkpoint/SSF_PU_0303-140932/training.log"
    # "checkpoint/SSF_PU_0304-105004/training.log",
-    "checkpoint/SSF_CWRU_0304-133140_working/training.log"
+  #  "checkpoint/SSF_CWRU_0304-133140_working/training.log"
    # "checkpoint/SSF_PU_0304-124405/training.log"  # trying to overcome overfitting
+   "checkpoint/SSF_CWRU_0310-151618/training.log"
 ]
 
 def parse_training_log(path):
@@ -255,5 +256,7 @@ def augmentation_test(paths):
     print(summary_aug.to_string(index=False))
 
 
-augmentation_test(paths_latent)
-scatter_plots(paths_latent)
+
+
+augmentation_test(paths_augmentetion)
+scatter_plots(paths_augmentetion)

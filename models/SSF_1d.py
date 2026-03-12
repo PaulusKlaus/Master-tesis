@@ -69,14 +69,16 @@ class SSF(nn.Module):
             )
         )
 
+        if num_blocks >= 3:
         # Remaining blocks keep hidden_channels
-        for _ in range(num_blocks - 2):
-            blocks.append(
-                ConvBlock1D(
-                    in_ch=hidden_channels,
-                    out_ch=hidden_channels
+            for _ in range(num_blocks - 2):
+                blocks.append(
+                    ConvBlock1D(
+                        in_ch=hidden_channels,
+                        out_ch=hidden_channels
+                    )
                 )
-            )
+                
         blocks.append(
             ConvBlock1D(
                 in_ch=hidden_channels,
