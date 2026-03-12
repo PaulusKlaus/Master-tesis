@@ -24,7 +24,8 @@ paths_augmentetion = [
    # "checkpoint/SSF_PU_0304-105004/training.log",
   #  "checkpoint/SSF_CWRU_0304-133140_working/training.log"
    # "checkpoint/SSF_PU_0304-124405/training.log"  # trying to overcome overfitting
-   "checkpoint/SSF_CWRU_0310-151618/training.log"
+  # "checkpoint/SSF_CWRU_0310-151618/training.log",
+   "checkpoint/SSF_CWRU_0312-090033/training.log"
 ]
 
 def parse_training_log(path):
@@ -55,8 +56,8 @@ def parse_training_log(path):
                     "aug_2": None,          
                     "best_val_acc": -np.inf,
                     "best_val_loss": np.inf,
-                    "test_acc": None,
-                    "test_loss": None,
+                    "test_acc": -np.inf,
+                    "test_loss": np.inf,
                     "hidden_channel": None
                 }
 
@@ -92,8 +93,8 @@ def parse_training_log(path):
             m_test = test_re.search(line)
             if m_test:
                 # test accucacy and loss fo rthe classification head
-                current["test_loss"] = float(m_test.group(1))
-                current["test_acc"] = float(m_test.group(2))
+                current["test_loss"] = min(current["test_loss"] ,float(m_test.group(1)))
+                current["test_acc"] = max(current["test_acc"],float(m_test.group(2)))
 
     if current is not None:
         runs.append(current)
@@ -256,7 +257,75 @@ def augmentation_test(paths):
     print(summary_aug.to_string(index=False))
 
 
+def aug_pair_vs_blocks_accuracy(paths, order_invariant=True, plot=True, save_dir="figures/training_vis"):
+    all_df = []
+    for path in paths:
+        df = parse_training_log(path)
+        df["model"] = path.split("/")[-2]
+        all_df.append(df)
 
+    all_df = pd.concat(all_df, ignore_index=True)
+
+    # make augmentation pairs order-invariant (recommended for SSL)
+    if order_invariant:
+        all_df[["aug_a", "aug_b"]] = np.sort(all_df[["aug_1", "aug_2"]].values, axis=1)
+    else:
+        all_df["aug_a"] = all_df["aug_1"]
+        all_df["aug_b"] = all_df["aug_2"]
+
+    # summary by aug-pair x num_blocks
+    summary = (
+        all_df
+        .groupby(["aug_a", "aug_b", "num_blocks_ssf"], as_index=False)
+        .agg(
+            n_runs=("best_val_acc", "count"),
+            mean_acc=("best_val_acc", "mean"),
+            std_acc=("best_val_acc", "std"),
+            mean_loss=("best_val_loss", "mean"),
+            std_loss=("best_val_loss", "std"),
+        )
+        .sort_values(["aug_a", "aug_b", "num_blocks_ssf"])
+    )
+
+    #print(summary.to_string(index=False))
+
+    # compute one std score per augmentation pair
+    pair_order = (
+        summary
+        .groupby(["aug_a", "aug_b"])["std_acc"]
+        .mean()
+        .sort_values()   # ascending = most stable first
+        .index
+    )
+
+    if plot:
+        plt.figure()
+
+        for (a, b) in pair_order:
+            g = summary[(summary["aug_a"] == a) & (summary["aug_b"] == b)]
+            g = g.sort_values("num_blocks_ssf")
+
+            plt.errorbar(
+                g["num_blocks_ssf"],
+                g["mean_acc"],
+                yerr=g["std_acc"],
+                marker="o",
+                linestyle="none",
+                capsize=3,
+                label=f"{a}+{b}"
+            )
+            
+        plt.xlabel("num_blocks_ssf")
+        plt.ylabel("mean best_val_acc (± std)")
+        plt.title("Augmentation pair vs num_blocks_ssf (validation accuracy)")
+        plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left")
+        plt.tight_layout()
+        plt.savefig(f"{save_dir}/augpair_vs_blocks_val_acc.pdf", bbox_inches="tight")
+
+    return summary
+
+
+aug_pair_vs_blocks_accuracy(paths_augmentetion)
 
 augmentation_test(paths_augmentetion)
 scatter_plots(paths_augmentetion)
