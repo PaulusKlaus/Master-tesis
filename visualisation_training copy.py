@@ -111,10 +111,10 @@ def sted_mean_val(paths):
         df = parse_training_log(path)
         results.append({
             "model": path.split("/")[-2],
-            "mean_acc": df["best_val_acc"].mean(),
-            "std_acc": df["best_val_acc"].std(),
-            "mean_loss": df["best_val_loss"].mean(),
-            "std_loss": df["best_val_loss"].std(),
+            "mean_acc": df["test_acc"].mean(),
+            "std_acc": df["test_acc"].std(),
+            "mean_loss": df["test_loss"].mean(),
+            "std_loss": df["test_loss"].std(),
         })
     summary_df = pd.DataFrame(results)
     print(summary_df)
@@ -128,14 +128,14 @@ def scatter_plots(paths):
         df = parse_training_log(path)
         sc = plt.scatter(
         df["latent_dim"],
-        df["best_val_acc"],
+        df["test_acc"],
         c=df["num_blocks_ssf"],   # color by block number
         cmap="viridis",           # choose colormap
         alpha=0.8
     )
 
     plt.xlabel("latent_dim")
-    plt.ylabel("best_val_acc")
+    plt.ylabel("test_acc")
     plt.title("Latent Dimension vs Best Validation Accuracy")
 
     plt.colorbar(sc, label="num_blocks_ssf")
@@ -147,12 +147,12 @@ def scatter_plots(paths):
         df = parse_training_log(path)
         plt.scatter(
             df["latent_dim"],
-            df["best_val_loss"],
+            df["test_loss"],
             alpha=0.7,
             label=path.split("/")[-2]  # cleaner legend name
         )
     plt.xlabel("latent_dim")
-    plt.ylabel("best_val_loss")
+    plt.ylabel("test_loss")
     plt.title("Latent Dimension vs Best Validation Loss")
     plt.legend()
     plt.savefig("figures/training_vis/2_latent_vs_val_loss.pdf", bbox_inches="tight")
@@ -165,13 +165,13 @@ def scatter_plots(paths):
         df = parse_training_log(path)
         sc = plt.scatter(
         df["num_blocks_ssf"],
-        df["best_val_acc"],
+        df["test_acc"],
         c=df["latent_dim"],   # color by block number
         cmap="viridis",           # choose colormap
         alpha=0.8
     )
     plt.xlabel("num_blocks_ssf")
-    plt.ylabel("best_val_acc")
+    plt.ylabel("test_acc")
     plt.title("num_blocks_ssf vs Best Validation Accuracy")
     plt.colorbar(sc, label="latent_dim")
     plt.savefig("figures/training_vis/3_blocks_vs_val_acc.pdf", bbox_inches="tight")
@@ -182,12 +182,12 @@ def scatter_plots(paths):
         df = parse_training_log(path)
         plt.scatter(
             df["num_blocks_ssf"],
-            df["best_val_loss"],
+            df["test_loss"],
             alpha=0.7,
             label=path.split("/")[-2]
         )
     plt.xlabel("num_blocks_ssf")
-    plt.ylabel("best_val_loss")
+    plt.ylabel("test_loss")
     plt.title("num_blocks_ssf vs Best Validation Loss")
     plt.legend()
     plt.savefig("figures/training_vis/4_blocks_vs_val_loss.pdf", bbox_inches="tight")
@@ -199,13 +199,13 @@ def scatter_plots(paths):
         df = parse_training_log(path)
         sc = plt.scatter(
         df["hidden_channel"],
-        df["best_val_acc"],
+        df["test_acc"],
         c=df["num_blocks_ssf"],   # color by block number
         cmap="viridis",           # choose colormap
         alpha=0.8
     )
     plt.xlabel("hidden_channel")
-    plt.ylabel("best_val_acc")
+    plt.ylabel("test_acc")
     plt.title("hidden_channel vs Best Validation Accuracy")
     plt.colorbar(sc, label="num_blocks_ssf")
     plt.savefig("figures/training_vis/5_hidden_vs_val_acc.pdf", bbox_inches="tight")
@@ -216,12 +216,12 @@ def scatter_plots(paths):
         df = parse_training_log(path)
         plt.scatter(
             df["hidden_channel"],
-            df["best_val_loss"],
+            df["test_loss"],
             alpha=0.7,
             label=path.split("/")[-2]
         )
     plt.xlabel("hidden_channel")
-    plt.ylabel("best_val_loss")
+    plt.ylabel("test_loss")
     plt.title("hidden_channel vs Best Validation Loss")
     plt.legend()
     plt.savefig("figures/training_vis/6_hidden_channel_vs_val_loss.pdf", bbox_inches="tight")
@@ -245,11 +245,11 @@ def augmentation_test(paths):
         all_df
         .groupby(["aug_a", "aug_b"], as_index=False)
         .agg(
-            n_runs=("best_val_acc", "count"),
-            mean_acc=("best_val_acc", "mean"),
-            std_acc=("best_val_acc", "std"),
-            mean_loss=("best_val_loss", "mean"),
-            std_loss=("best_val_loss", "std"),
+            n_runs=("test_acc", "count"),
+            mean_acc=("test_acc", "mean"),
+            std_acc=("test_acc", "std"),
+            mean_loss=("test_loss", "mean"),
+            std_loss=("test_loss", "std"),
         )
         .sort_values("mean_acc", ascending=False)
     )
@@ -278,11 +278,11 @@ def aug_pair_vs_blocks_accuracy(paths, order_invariant=True, plot=True, save_dir
         all_df
         .groupby(["aug_a", "aug_b", "num_blocks_ssf"], as_index=False)
         .agg(
-            n_runs=("best_val_acc", "count"),
-            mean_acc=("best_val_acc", "mean"),
-            std_acc=("best_val_acc", "std"),
-            mean_loss=("best_val_loss", "mean"),
-            std_loss=("best_val_loss", "std"),
+            n_runs=("test_acc", "count"),
+            mean_acc=("test_acc", "mean"),
+            std_acc=("test_acc", "std"),
+            mean_loss=("test_loss", "mean"),
+            std_loss=("test_loss", "std"),
         )
         .sort_values(["aug_a", "aug_b", "num_blocks_ssf"])
     )
@@ -316,7 +316,7 @@ def aug_pair_vs_blocks_accuracy(paths, order_invariant=True, plot=True, save_dir
             )
             
         plt.xlabel("num_blocks_ssf")
-        plt.ylabel("mean best_val_acc (± std)")
+        plt.ylabel("mean test_acc (± std)")
         plt.title("Augmentation pair vs num_blocks_ssf (validation accuracy)")
         plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left")
         plt.tight_layout()
