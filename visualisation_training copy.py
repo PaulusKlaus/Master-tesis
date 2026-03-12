@@ -17,28 +17,22 @@ paths_latent = [
 ]
 
 
-paths_augmentetion = [
-  #  "checkpoint/SSF_PU_0303-093038/training.log",
-    #"checkpoint/SSF_PU_0303-112311/training.log",
-    #"checkpoint/SSF_PU_0303-140932/training.log"
-   # "checkpoint/SSF_PU_0304-105004/training.log",
-  #  "checkpoint/SSF_CWRU_0304-133140_working/training.log"
-   # "checkpoint/SSF_PU_0304-124405/training.log"  # trying to overcome overfitting
-  # "checkpoint/SSF_CWRU_0310-151618/training.log",
-   "checkpoint/SSF_CWRU_0312-090033/training.log"
-]
-
 def parse_training_log(path):
 
     latent_re = re.compile(r'latent.*?(\d+)', re.IGNORECASE)
     blocks_re = re.compile(r'num_blocks_ssf.*?(\d+)', re.IGNORECASE)
     hid_ch_size = re.compile(r'hidden_channel.*?(\d+)', re.IGNORECASE)
     lp_re = re.compile(r'\[LP epoch\s+(\d+)\].*?val_loss=([\d\.]+).*?val_acc=([\d\.]+)')
+
+    # test linear probe for the classifcation 
     test_re = re.compile(r'TEST linear-probe:.*?loss=([\d\.]+).*?acc=([\d\.]+)', re.IGNORECASE)
         
     #parse augmentation lines like "aug_1: normal"
     aug1_re = re.compile(r'aug_1\s*:\s*([A-Za-z_]+)', re.IGNORECASE)
     aug2_re = re.compile(r'aug_2\s*:\s*([A-Za-z_]+)', re.IGNORECASE)
+
+    # binary test block
+    bin_acc_re = re.compile(r'Binary accuracy:\s*([\d\.]+)', re.IGNORECASE)
 
     runs = []
     current = None
@@ -53,7 +47,11 @@ def parse_training_log(path):
                     "latent_dim": None,
                     "num_blocks_ssf": None,
                     "aug_1": None,          
-                    "aug_2": None,          
+                    "aug_2": None,  
+
+                    # binary test (your anomaly/normal evaluation)
+                    "binary_acc": None,
+
                     "best_val_acc": -np.inf,
                     "best_val_loss": np.inf,
                     "test_acc": -np.inf,
@@ -96,6 +94,11 @@ def parse_training_log(path):
                 current["test_loss"] = min(current["test_loss"] ,float(m_test.group(1)))
                 current["test_acc"] = max(current["test_acc"],float(m_test.group(2)))
 
+             # Binary accuracy (single number)
+            m = bin_acc_re.search(line)
+            if m:
+                current["binary_acc"] = float(m.group(1))
+
     if current is not None:
         runs.append(current)
 
@@ -120,7 +123,9 @@ def sted_mean_val(paths):
     print(summary_df)
 
 
-def scatter_plots(paths):
+def scatter_plots(paths, save_dir="figures/training_vis"):
+   
+
 
     # 1️⃣ Latent dim vs best val acc
     plt.figure()
@@ -139,7 +144,7 @@ def scatter_plots(paths):
     plt.title("Latent Dimension vs Best Validation Accuracy")
 
     plt.colorbar(sc, label="num_blocks_ssf")
-    plt.savefig("figures/training_vis/1_latent_vs_val_acc.pdf", bbox_inches="tight")
+    plt.savefig("figures/training_vis/1_latent_vs_test_acc.pdf", bbox_inches="tight")
 
     # 2️⃣ Latent dim vs best val loss
     plt.figure()
@@ -155,12 +160,10 @@ def scatter_plots(paths):
     plt.ylabel("test_loss")
     plt.title("Latent Dimension vs Best Validation Loss")
     plt.legend()
-    plt.savefig("figures/training_vis/2_latent_vs_val_loss.pdf", bbox_inches="tight")
+    plt.savefig("figures/training_vis/2_latent_vs_test_loss.pdf", bbox_inches="tight")
 
     # 3️⃣ num_blocks_ssf vs best val acc
     plt.figure()
-
-
     for path in paths:
         df = parse_training_log(path)
         sc = plt.scatter(
@@ -174,7 +177,25 @@ def scatter_plots(paths):
     plt.ylabel("test_acc")
     plt.title("num_blocks_ssf vs Best Validation Accuracy")
     plt.colorbar(sc, label="latent_dim")
-    plt.savefig("figures/training_vis/3_blocks_vs_val_acc.pdf", bbox_inches="tight")
+    plt.savefig("figures/training_vis/3_blocks_vs_test_acc.pdf", bbox_inches="tight")
+
+
+    # Num_blocks vs anomaly detection accuracy
+    plt.figure()
+    for path in paths:
+        df = parse_training_log(path)
+        sc = plt.scatter(
+        df["num_blocks_ssf"],
+        df["binary_acc"],
+        alpha=0.7
+    )
+    plt.xlabel("num_blocks_ssf")
+    plt.ylabel("binary_acc")
+    plt.title("num_blocks_ssf vs Best Binary Accuracy")
+    plt.savefig("figures/training_vis/7_blocks_vs_binary_acc.pdf", bbox_inches="tight")
+    plt.close()
+
+
 
     # 4️⃣ num_blocks_ssf vs best val loss
     plt.figure()
@@ -190,7 +211,7 @@ def scatter_plots(paths):
     plt.ylabel("test_loss")
     plt.title("num_blocks_ssf vs Best Validation Loss")
     plt.legend()
-    plt.savefig("figures/training_vis/4_blocks_vs_val_loss.pdf", bbox_inches="tight")
+    plt.savefig("figures/training_vis/4_blocks_vs_test_loss.pdf", bbox_inches="tight")
 
     # 5 hidden_channel_size vs best val acc
     plt.figure()
@@ -208,7 +229,7 @@ def scatter_plots(paths):
     plt.ylabel("test_acc")
     plt.title("hidden_channel vs Best Validation Accuracy")
     plt.colorbar(sc, label="num_blocks_ssf")
-    plt.savefig("figures/training_vis/5_hidden_vs_val_acc.pdf", bbox_inches="tight")
+    plt.savefig("figures/training_vis/5_hidden_vs_test_acc.pdf", bbox_inches="tight")
 
     # 6 hidden_channel_size vs best val loss
     plt.figure()
@@ -224,40 +245,10 @@ def scatter_plots(paths):
     plt.ylabel("test_loss")
     plt.title("hidden_channel vs Best Validation Loss")
     plt.legend()
-    plt.savefig("figures/training_vis/6_hidden_channel_vs_val_loss.pdf", bbox_inches="tight")
+    plt.savefig("figures/training_vis/6_hidden_channel_vs_test_loss.pdf", bbox_inches="tight")
 
 
-def augmentation_test(paths):
-    all_df = []
-
-    for path in paths:
-        df = parse_training_log(path)
-        df["model"] = path.split("/")[-2]  # keep experiment id
-        all_df.append(df)
-
-    all_df = pd.concat(all_df, ignore_index=True)
-
-    # Option A (recommended for SSL): treat (aug_1, aug_2) same as (aug_2, aug_1)
-    # -> sort the pair so it's order-invariant
-    all_df[["aug_a", "aug_b"]] = np.sort(all_df[["aug_1", "aug_2"]].values, axis=1)
-
-    summary_aug = (
-        all_df
-        .groupby(["aug_a", "aug_b"], as_index=False)
-        .agg(
-            n_runs=("test_acc", "count"),
-            mean_acc=("test_acc", "mean"),
-            std_acc=("test_acc", "std"),
-            mean_loss=("test_loss", "mean"),
-            std_loss=("test_loss", "std"),
-        )
-        .sort_values("mean_acc", ascending=False)
-    )
-
-    print(summary_aug.to_string(index=False))
-
-
-def aug_pair_vs_blocks_accuracy(paths, order_invariant=True, plot=True, save_dir="figures/training_vis"):
+def augmentation_test(paths, order_invariant):
     all_df = []
     for path in paths:
         df = parse_training_log(path)
@@ -283,10 +274,38 @@ def aug_pair_vs_blocks_accuracy(paths, order_invariant=True, plot=True, save_dir
             std_acc=("test_acc", "std"),
             mean_loss=("test_loss", "mean"),
             std_loss=("test_loss", "std"),
+            mean_bin_acc=("binary_acc", "mean"),
+            std_bin_acc=("binary_acc", "std"),
+
         )
         .sort_values(["aug_a", "aug_b", "num_blocks_ssf"])
     )
 
+    summary_aug = (
+        all_df
+        .groupby(["aug_a", "aug_b"], as_index=False)
+        .agg(
+            n_runs=("test_acc", "count"),
+            mean_acc=("test_acc", "mean"),
+            std_acc=("test_acc", "std"),
+            mean_loss=("test_loss", "mean"),
+            std_loss=("test_loss", "std"),
+            mean_bin_acc=("binary_acc", "mean"),
+            std_bin_acc=("binary_acc", "std"),
+        )
+        .sort_values("mean_acc", ascending=False)
+    )
+
+    print(summary_aug.to_string(index=False))
+    return summary
+
+
+import math
+
+
+def aug_pair_vs_blocks_accuracy(paths,  plot=True, save_dir="figures/training_vis"):
+
+    summary = augmentation_test(paths, True)
     #print(summary.to_string(index=False))
 
     # compute one std score per augmentation pair
@@ -297,35 +316,189 @@ def aug_pair_vs_blocks_accuracy(paths, order_invariant=True, plot=True, save_dir
         .sort_values()   # ascending = most stable first
         .index
     )
+    pair_order_bin = (
+        summary
+        .groupby(["aug_a", "aug_b"])["std_bin_acc"]
+        .mean()
+        .sort_values()   # ascending = most stable first
+        .index
+    )
 
     if plot:
-        plt.figure()
+        n_pairs = len(pair_order)
 
-        for (a, b) in pair_order:
-            g = summary[(summary["aug_a"] == a) & (summary["aug_b"] == b)]
-            g = g.sort_values("num_blocks_ssf")
+        # choose grid shape automatically
+        n_cols = 3  # change if you want wider/narrower layout
+        n_rows = math.ceil(n_pairs / n_cols)
+#######################  1 ###############################
+        fig, axes = plt.subplots(
+            n_rows,
+            n_cols,
+            figsize=(5 * n_cols, 4 * n_rows),
+            sharex=True,
+            sharey=True,
+            squeeze=False
+        )
 
-            plt.errorbar(
+        axes = axes.flatten()
+
+        for idx, (a, b) in enumerate(pair_order):
+            ax = axes[idx]
+
+            g = summary[
+                (summary["aug_a"] == a) &
+                (summary["aug_b"] == b)
+            ].sort_values("num_blocks_ssf")
+
+            ax.errorbar(
                 g["num_blocks_ssf"],
                 g["mean_acc"],
                 yerr=g["std_acc"],
                 marker="o",
                 linestyle="none",
                 capsize=3,
-                label=f"{a}+{b}"
             )
-            
-        plt.xlabel("num_blocks_ssf")
-        plt.ylabel("mean test_acc (± std)")
-        plt.title("Augmentation pair vs num_blocks_ssf (validation accuracy)")
-        plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left")
-        plt.tight_layout()
-        plt.savefig(f"{save_dir}/augpair_vs_blocks_val_acc.pdf", bbox_inches="tight")
+
+            ax.set_title(f"{a}+{b}")
+            ax.set_xlabel("num_blocks_ssf")
+            ax.set_ylabel("mean test_acc (± std)")
+            ax.grid(True, alpha=0.2)
+
+        # Hide unused subplots if grid > number of pairs
+        for j in range(n_pairs, len(axes)):
+            fig.delaxes(axes[j])
+
+        fig.suptitle("Augmentation pair vs num_blocks_ssf", fontsize=16)
+        fig.tight_layout()
+        plt.savefig(f"{save_dir}/augpair_vs_blocks_test_acc.pdf", bbox_inches="tight")
+        plt.close(fig)
+###################-------- 2 ----------
+        # --- Extra plot: top-3 best (most stable) pairs on one axes ---
+        top_k = 3
+        best_pairs = list(pair_order[:top_k])
+
+        fig2, ax2 = plt.subplots(figsize=(7, 5))
+
+        for (a, b) in best_pairs:
+            g = summary[
+                (summary["aug_a"] == a) &
+                (summary["aug_b"] == b)
+            ].sort_values("num_blocks_ssf")
+
+            ax2.errorbar(
+                g["num_blocks_ssf"],
+                g["mean_acc"],
+                yerr=g["std_acc"],
+                marker="o",
+                linestyle="none",
+                capsize=3,
+                label=f"{a}+{b}",
+            )
+
+        ax2.set_xlabel("num_blocks_ssf")
+        ax2.set_ylabel("mean test_acc (± std)")
+        ax2.set_title(f"Top {top_k} most stable augmentation pairs (lowest mean std)")
+        ax2.grid(True, alpha=0.2)
+        ax2.legend()
+
+        fig2.tight_layout()
+        plt.savefig(f"{save_dir}/augpair_vs_blocks_test_acc_top{top_k}.pdf", bbox_inches="tight")
+        plt.close(fig2)
+
+################ 3 ############
+        fig3, axes3 = plt.subplots(
+            n_rows,
+            n_cols,
+            figsize=(5 * n_cols, 4 * n_rows),
+            sharex=True,
+            sharey=True,
+            squeeze=False
+        )
+
+        axes3 = axes3.flatten()
+
+        for idx, (a, b) in enumerate(pair_order_bin):
+            ax = axes3[idx]
+
+            g = summary[
+                (summary["aug_a"] == a) &
+                (summary["aug_b"] == b)
+            ].sort_values("num_blocks_ssf")
+
+            ax.errorbar(
+                g["num_blocks_ssf"],
+                g["mean_bin_acc"],
+                yerr=g["std_bin_acc"],
+                marker="o",
+                linestyle="none",
+                capsize=3,
+            )
+
+            ax.set_title(f"{a}+{b}")
+            ax.set_xlabel("num_blocks_ssf")
+            ax.set_ylabel("mean binary_acc (± std)")
+            ax.grid(True, alpha=0.2)
+
+        # Hide unused subplots if grid > number of pairs
+        for j in range(n_pairs, len(axes)):
+            fig3.delaxes(axes[j])
+
+        fig3.suptitle("Augmentation pair vs num_blocks_ssf", fontsize=16)
+        fig3.tight_layout()
+        plt.savefig(f"{save_dir}/augpair_vs_blocks_binary_acc.pdf", bbox_inches="tight")
+        plt.close(fig3)
+
+ ############################
+ # --- Extra plot: top-3 best (most stable) pairs on one axes ---
+        top_k = 3
+        best_pairs = list(pair_order_bin[:top_k])
+
+        fig4, ax4 = plt.subplots(figsize=(7, 5))
+
+        for (a, b) in best_pairs:
+            g = summary[
+                (summary["aug_a"] == a) &
+                (summary["aug_b"] == b)
+            ].sort_values("num_blocks_ssf")
+
+            ax4.errorbar(
+                g["num_blocks_ssf"],
+                g["mean_bin_acc"],
+                yerr=g["std_bin_acc"],
+                marker="o",
+                linestyle="none",
+                capsize=3,
+                label=f"{a}+{b}",
+            )
+
+        ax4.set_xlabel("num_blocks_ssf")
+        ax4.set_ylabel("mean Binary_acc (± std)")
+        ax4.set_title(f"Top {top_k} most stable augmentation pairs (lowest mean std)")
+        ax4.grid(True, alpha=0.2)
+        ax4.legend()
+
+        fig4.tight_layout()
+        plt.savefig(f"{save_dir}/augpair_vs_blocks_bin_acc_top{top_k}.pdf", bbox_inches="tight")
+        plt.close(fig4)
+
+
 
     return summary
 
 
+paths_augmentetion = [
+  #  "checkpoint/SSF_PU_0303-093038/training.log",
+    #"checkpoint/SSF_PU_0303-112311/training.log",
+    #"checkpoint/SSF_PU_0303-140932/training.log"
+   # "checkpoint/SSF_PU_0304-105004/training.log",
+  #  "checkpoint/SSF_CWRU_0304-133140_working/training.log"
+   # "checkpoint/SSF_PU_0304-124405/training.log"  # trying to overcome overfitting
+   #"checkpoint/SSF_CWRU_0310-151618/training.log",
+   "checkpoint/SSF_CWRU_0312-090033/training.log",    #Full test on cwru for 10 block and all augmentation pairs 
+   #"checkpoint/SSF_PU_0312-102943/training.log"
+]
+
 aug_pair_vs_blocks_accuracy(paths_augmentetion)
 
-augmentation_test(paths_augmentetion)
+#augmentation_test(paths_augmentetion)
 scatter_plots(paths_augmentetion)
