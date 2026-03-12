@@ -128,6 +128,7 @@ class CWRU(object):
         - "RA"   : random split, augmentation on train
         - "R_NA" : random split, no augmentation
         - "O_A"  : ordered split, augmentation on train
+        - "O_N"  : only normal split.
         view: OneViewDataset or TwoViewDataset
         """
         data, labels = self._get_files()
