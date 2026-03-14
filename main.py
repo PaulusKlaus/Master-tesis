@@ -94,7 +94,7 @@ def parse_args():
         "--data_name",
         type=str,
         choices=DATA_DIRS.keys(),
-        default="PU",
+        default="JNU",  # SEU, JNU ,PU , CSWU
         help="The name of the dataset",
     )
 
@@ -324,8 +324,8 @@ if __name__ == "__main__":
 
     ]
     
-    latent_space = [192]
-    hidden_channel =[128]
+    latent_space = [32,64,128,192, 256]
+    hidden_channel =[32,64,128,192, 256]
     number_blocks=[1,2,3,4,5,6,7,8,9,10]
 
 
@@ -339,8 +339,8 @@ if __name__ == "__main__":
                         args.latent_space = features
                         args.hidden_channel = hidden_size
                         args.num_blocks_ssf=blocks
-                        args.per_class_samples = 2000
-                        args.classifier_samples = 200
+                        args.per_class_samples = 100
+                        args.classifier_samples = 10
 
                         run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
                         logging.info("=" * 80)
