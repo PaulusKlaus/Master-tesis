@@ -487,7 +487,8 @@ paths_augmentetion = [
    # "checkpoint/SSF_PU_0304-124405/training.log"  # trying to overcome overfitting
    #"checkpoint/SSF_CWRU_0310-151618/training.log",
    #"checkpoint/SSF_CWRU_0312-090033/training.log",    #Full test on cwru for 10 block and all augmentation pairs 
-   "checkpoint/SSF_PU_0312-102943/training.log"
+   #"checkpoint/SSF_PU_0312-102943/training.log",
+   "checkpoint/SSF_JNU_0316-103643/training.log"
 ]
 
 aug_pair_vs_blocks_accuracy(paths_augmentetion)
