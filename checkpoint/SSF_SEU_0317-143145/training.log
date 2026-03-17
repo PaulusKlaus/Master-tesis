@@ -1,0 +1,32 @@
+03-17 14:31:45 ================================================================================
+03-17 14:31:45 RUN: aug=('gaussian', 'gaussian') hidden=128 latent=192 blocks=1 seed=0
+03-17 14:31:45 model_name: SSF
+03-17 14:31:45 data_name: SEU
+03-17 14:31:45 aug_1: gaussian
+03-17 14:31:45 aug_2: gaussian
+03-17 14:31:45 data_view: TwoViewDataset
+03-17 14:31:45 data_dir: raw_data/SEU/gearbox
+03-17 14:31:45 out_channel: 5
+03-17 14:31:45 normlizetype: minus_one_one
+03-17 14:31:45 processing_type: O_N
+03-17 14:31:45 max_epoch: 50
+03-17 14:31:45 classifier_epoch: 50
+03-17 14:31:45 batch_size: 64
+03-17 14:31:45 cuda_device: 0
+03-17 14:31:45 checkpoint_dir: ./checkpoint
+03-17 14:31:45 opt: sgd
+03-17 14:31:45 lr: 0.05
+03-17 14:31:45 momentum: 0.9
+03-17 14:31:45 weight_decay: 0.0001
+03-17 14:31:45 lr_scheduler: cos
+03-17 14:31:45 gamma: 0.95
+03-17 14:31:45 eta_min: 1e-05
+03-17 14:31:45 latent_space: 192
+03-17 14:31:45 num_blocks_ssf: 1
+03-17 14:31:45 hidden_channel: 128
+03-17 14:31:45 per_class_samples: 400
+03-17 14:31:45 classifier_samples: 40
+03-17 14:31:45 task: self_supervised
+03-17 14:31:45 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+03-17 14:31:45 using 1 gpus
+03-17 14:31:45 Dataset class: <class 'data_utils.datasets.SEU.SEU'>
