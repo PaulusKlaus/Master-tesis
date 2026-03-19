@@ -306,10 +306,10 @@ def aug_pair_vs_blocks_accuracy(paths, plot=True, save_dir="figures/training_vis
         for k, g in summary.groupby(["aug_a", "aug_b"], sort=False)
     }
 
-    def pair_order_for(std_col):
+    def pair_order_for(metric_col):
         # mean std per pair, ascending -> most stable first
         return (
-            summary.groupby(["aug_a", "aug_b"], sort=False)[std_col]
+            summary.groupby(["aug_a", "aug_b"], sort=False)[metric_col]
             .mean()
             .sort_values()
             .index
@@ -381,7 +381,7 @@ def aug_pair_vs_blocks_accuracy(paths, plot=True, save_dir="figures/training_vis
         plt.close(fig)
 
     # ---- ACC ----
-    order_acc = pair_order_for("std_acc")
+    order_acc = pair_order_for("mean_acc") # can be changed with std_acc
     plot_grid(
         order_acc, "mean_acc", "std_acc",
         ylabel="mean test_acc (± std)",
@@ -392,11 +392,11 @@ def aug_pair_vs_blocks_accuracy(paths, plot=True, save_dir="figures/training_vis
         order_acc, "mean_acc", "std_acc",
         ylabel="mean test_acc (± std)",
         out_name=f"augpair_vs_blocks_test_acc_top{top_k}.pdf",
-        title=f"Top {top_k} most stable augmentation pairs (lowest mean std)"
+        title=f"Top {top_k} augmentation pairs with highest mean accuracy"
     )
 
     # ---- BIN ACC ----
-    order_bin = pair_order_for("std_bin_acc")
+    order_bin = pair_order_for("mean_bin_acc")
     plot_grid(
         order_bin, "mean_bin_acc", "std_bin_acc",
         ylabel="mean binary_acc (± std)",
@@ -407,7 +407,7 @@ def aug_pair_vs_blocks_accuracy(paths, plot=True, save_dir="figures/training_vis
         order_bin, "mean_bin_acc", "std_bin_acc",
         ylabel="mean binary_acc (± std)",
         out_name=f"augpair_vs_blocks_bin_acc_top{top_k}.pdf",
-        title=f"Top {top_k} most stable augmentation pairs (lowest mean std)"
+        title=f"Top {top_k} augmentation pairs with highest mean binary accuracy"
     )
 
     return summary
@@ -479,16 +479,17 @@ def blocks_vs_binary_acc_with_threshold(paths, save_path="figures/training_vis/8
 
 
 paths_augmentetion = [
-  #  "checkpoint/SSF_PU_0303-093038/training.log",
-    #"checkpoint/SSF_PU_0303-112311/training.log",
-    #"checkpoint/SSF_PU_0303-140932/training.log"
-   # "checkpoint/SSF_PU_0304-105004/training.log",
-  #  "checkpoint/SSF_CWRU_0304-133140_working/training.log"
-   # "checkpoint/SSF_PU_0304-124405/training.log"  # trying to overcome overfitting
-   #"checkpoint/SSF_CWRU_0310-151618/training.log",
-   #"checkpoint/SSF_CWRU_0312-090033/training.log",    #Full test on cwru for 10 block and all augmentation pairs 
-   #"checkpoint/SSF_PU_0312-102943/training.log",
-   "checkpoint/SSF_JNU_0316-103643/training.log"
+
+    #Augmentatioon testing 
+    #"checkpoint/SSF_CWRU_0312-090033/training.log",    #Full test on cwru for 10 block and all augmentation pairs 
+   # "checkpoint/SSF_PU_0312-102943/training.log",
+  # "checkpoint/SSF_JNU_0316-103643/training.log"
+ # "checkpoint/SSF_XJTU_0317-090229/training.log"
+ # "checkpoint/SSF_SEU_0317-143145/training.log"
+
+ # Latent space vs hidden size 
+ #"checkpoint/SSF_CWRU_0318-103724/training.log"
+ "checkpoint/SSF_PU_0319-085609/training.log" 
 ]
 
 aug_pair_vs_blocks_accuracy(paths_augmentetion)
