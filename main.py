@@ -91,10 +91,10 @@ def parse_args():
     # Data Parameters
     # -------------------------------------------------
     parser.add_argument(
-        "--data_name",
+        "--data_name", # SEU, JNU ,PU , CWRU
         type=str,
         choices=DATA_DIRS.keys(),
-        default="JNU",  # SEU, JNU ,PU , CSWU
+        default="PU",  # SEU, JNU ,PU , CWRU
         help="The name of the dataset",
     )
 
@@ -314,27 +314,28 @@ if __name__ == "__main__":
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
     pairs = list(combinations_with_replacement(augmentations, 2))
 
-    aug_pairs = [
-        ("randomcrop", "scale"),        # 0.7622
-        ("normal", "randomcrop"),       # 0.7511
+    aug_pairs_best_cwru = [
+        ("gaussian", "scale"),        # 0.7622
+        ("normal", "gaussian"),       # 0.7511
         ("gaussian", "randomstrech"),   # 0.7474
-        ("normal", "normal"),           # 0.7452
-        ("randomstrech", "scale"),      # 0.7452
-        ("gaussian", "normal"),           # 0.7437
+        ("normal", "randomcrop"),           # 0.7452
+        ("randomcrop", "scale"),      # 0.7452
+        ("scale", "scale"),           # 0.7437
 
     ]
     
-    #latent_space = [32,64,128,192, 256]
-    #hidden_channel =[32,64,128,192, 256]
+    latent_space = [32,64,128,192, 256]
+    hidden_channel =[32,64,128,192, 256]
     #number_blocks=[1,2,3,4,5,6,7,8,9,10]
 
-    latent_space = [192]
-    hidden_channel =[128]
-    number_blocks=[1,2,3,4,5,6,7,8,9,10]
+   # latent_space = [192]
+   # hidden_channel =[128]
+    number_blocks=[4,5,7]
     
+     #"--data_name", # SEU, JNU ,PU , CWRU
 
 
-    for pair in pairs:  
+    for pair in aug_pairs_best_cwru:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
@@ -344,8 +345,8 @@ if __name__ == "__main__":
                         args.latent_space = features
                         args.hidden_channel = hidden_size
                         args.num_blocks_ssf=blocks
-                        args.per_class_samples = 400
-                        args.classifier_samples = 40
+                        args.per_class_samples = 2000
+                        args.classifier_samples = 200
 
                         run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
                         logging.info("=" * 80)
