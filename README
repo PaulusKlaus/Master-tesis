@@ -17,3 +17,52 @@ Main things to do in code:
 - implement anomaly detection head 
 - show an overview of the models parameters
 - plot training/validation loss 
+
+
+
+
+TESTS: 
+
+General: 
+ONLY normal dsata + minus_one_one
+
+Augmentation vs block size
+- CWRU 
+    #"checkpoint/SSF_CWRU_0312-090033/training.log",    #Full test on cwru for 10 block and all augmentation pairs 
+- PU 
+   # "checkpoint/SSF_PU_0312-102943/training.log",
+- SEU
+ #"checkpoint/SSF_SEU_0317-143145/training.log"
+- JNU 
+  # "checkpoint/SSF_JNU_0316-103643/training.log"  400
+  # "checkpoint\SSF_JNU_0314-173556\training.log"  smaller dataset 100
+- XJTU
+ # "checkpoint/SSF_XJTU_0317-090229/training.log"
+
+
+
+ Latent space vs hidden size 
+    for 6 different augmentation 
+    5 different latent_dim: 
+    3 num of blocks 4 5 7
+    5 hidden_channels 
+
+
+ - CWRU
+ # "checkpoint\SSF_CWRU_0318-103724\training.log"  bigger dataset 400 -> should do again with 100 
+ - PU 
+ # "checkpoint\SSF_PU_0319-085609\training.log"  2000 samples + 200 for classification
+ - SEU
+ - JNU
+ - XJTU
+
+
+ Different scaling techniques:
+    choose most stable augmentation methods and the best avarage performing latent scape hidden size and block size 
+    and change different scaling methods 
+
+ - CWRU
+ - PU 
+ - SEU
+ - JNU
+ - XJTU
