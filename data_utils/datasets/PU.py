@@ -167,7 +167,7 @@ class PU(object):
             # split normal into train/val and rest for test and classifier
             train_pd, temp = train_test_split(
                 normal_pd,
-                test_size=0.40,  # 70% normal -> train, 30% normal -> rest
+                test_size=0.50,  # 70% normal -> train, 30% normal -> rest
                 random_state=self.random_state,
                 shuffle=True,
             )
@@ -179,7 +179,7 @@ class PU(object):
             ) 
             test_normals, classifier_normals = train_test_split(
                 test_classifier_normals,
-                test_size=0.50,
+                test_size=0.20,
                 random_state=self.random_state,
                 shuffle=True,
             )
@@ -187,7 +187,7 @@ class PU(object):
             #    Stratify by label so each fault type appears in both sets
             test_faults, classifier_faults = train_test_split(
                 faults_pd,
-                test_size=0.50,
+                test_size=0.20,
                 random_state=self.random_state,
                 stratify=faults_pd["label"] if len(faults_pd["label"].unique()) > 1 else None,
             )
@@ -196,9 +196,16 @@ class PU(object):
                 frac=1.0, random_state=self.random_state
             ).reset_index(drop=True)
 
-            classifier_pd = pd.concat([classifier_normals, classifier_faults], ignore_index=True).sample(
+            classifier_temp = pd.concat([classifier_normals, classifier_faults], ignore_index=True).sample(
                 frac=1.0, random_state=self.random_state
             ).reset_index(drop=True)
+
+            classifier_pd, classifier_val_pd = train_test_split(
+                classifier_temp,
+                test_size=0.50,
+                random_state=self.random_state,
+                stratify=classifier_temp["label"] if len(classifier_temp["label"].unique()) > 1 else None,
+            )
         
         else:
             raise ValueError(f"Unknown split='{split}'. Use 'RA', 'R_NA', or 'O_A'.")
@@ -222,11 +229,13 @@ class PU(object):
         test_pd = cap_per_class(test_pd, n_per_class=n_p_class, seed=self.random_state)
         val_pd = cap_per_class(val_pd, n_per_class=n_p_class, seed=self.random_state)
         classifier_pd = cap_per_class(classifier_pd, n_per_class=classifier_num, seed=self.random_state)
+        classifer_val_pd= cap_per_class(classifier_val_pd, n_per_class=classifier_num, seed= self.random_state+1)
 
         train_dataset = view(train_pd, transform_1=train_t1, transform_2=train_t2)
         val_dataset   = view(val_pd,   transform_1=eval_t1,  transform_2=eval_t2)
         test_dataset  = view(test_pd,  transform_1=eval_t1,  transform_2=eval_t2)
         classifier_dataset = view(classifier_pd,  transform_1=eval_t1,  transform_2=eval_t2)
+        classifier_val_dataset = view(classifer_val_pd, transform_1=eval_t1, transform_2=eval_t2)
 
-        return train_dataset, val_dataset, test_dataset, classifier_dataset
+        return train_dataset, val_dataset, test_dataset, classifier_dataset, classifier_val_dataset
 

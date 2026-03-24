@@ -36,6 +36,8 @@ def tsne(device, encoder, loader):
         sc = ax.scatter(features_3d[:, i], features_3d[:, j],
                         c=labels, cmap="tab10", s=20)
         ax.set_title(title)
+        legend = ax.legend(*sc.legend_elements(), title="Classes")
+        ax.add_artist(legend)
 
 
     plt.tight_layout()

@@ -343,7 +343,7 @@ if __name__ == "__main__":
      #"--data_name", # SEU, JNU ,PU , CWRU
 
 
-    for pair in aug_pairs_best_cwru:  
+    for pair in aug_pairs_best_pu:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
