@@ -26,7 +26,7 @@ from .data_utils import *
 #ir_faults  = ['KI01','KI03','KI05','KI07','KI08','KI04','KI14','KI16','KI17','KI18','KI21']
 
 # Data split suggested by the PU paper 
-HBdata = ['K001',"K002",'K003','K004','K005']
+HBdata = ['K001']#,"K002",'K003','K004','K005']
 #or_faults  = ['KA04','KA15','KA16','KA22','KA30']
 #com_faults = ['KB23','KB24','KB27']
 #ir_faults  = ['KI04','KI14','KI16','KI18','KI21']
