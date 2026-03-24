@@ -27,23 +27,29 @@ from .data_utils import *
 
 # Data split suggested by the PU paper 
 HBdata = ['K001',"K002",'K003','K004','K005']
-or_faults  = ['KA04','KA15','KA16','KA22','KA30']
-com_faults = ['KB23','KB24','KB27']
-ir_faults  = ['KI04','KI14','KI16','KI18','KI21']
+#or_faults  = ['KA04','KA15','KA16','KA22','KA30']
+#com_faults = ['KB23','KB24','KB27']
+#ir_faults  = ['KI04','KI14','KI16','KI18','KI21']
+
+
+# Big artifisial damage
+or_faults  = ['KA03','KA06','KA08','KA09']  
+real_damage_faults = ['KA16','KB24','KB23','KI16', 'KI18' ]
+ir_faults  = ['KI07','KI08']
 
 
 
 samples = (
     list(zip(HBdata,     repeat("healthy"))) +
     list(zip(ir_faults,  repeat("inner_race"))) +
-    list(zip(com_faults, repeat("combined"))) +
+    list(zip(real_damage_faults, repeat("real_damage_faults"))) +
     list(zip(or_faults,  repeat("outer_race")))
 )
 
 # stable mapping
 #class_to_idx = {"healthy": 0, "inner_race": 1, "outer_race": 2} #  "outer_race": 3
 #class_to_idx = {"healthy": 0, "inner_race": 1,  "outer_race": 2}
-class_to_idx = {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
+class_to_idx = {"healthy": 0, "inner_race": 1, "real_damage_faults": 2, "outer_race": 3}
 
 
 

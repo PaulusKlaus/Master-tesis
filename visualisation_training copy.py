@@ -495,5 +495,26 @@ paths_augmentetion = [
 aug_pair_vs_blocks_accuracy(paths_augmentetion)
 
 #augmentation_test(paths_augmentetion)
-scatter_plots(paths_augmentetion)
-blocks_vs_binary_acc_with_threshold(paths_augmentetion)
+
+#scatter_plots(paths_augmentetion)
+#blocks_vs_binary_acc_with_threshold(paths_augmentetion)
+
+
+df = parse_training_log("checkpoint/SSF_PU_0319-085609/training.log" )
+
+top5_lp = df.sort_values(["test_acc", "binary_acc"], ascending=[False, False]).head(5)
+top5_bin = df.sort_values(["binary_acc", "test_acc"], ascending=[False, False]).head(5)
+
+show_cols = [
+    "aug_1", "aug_2",
+    "hidden_channel", "latent_dim", "num_blocks_ssf",
+    "best_val_acc", "best_val_loss",
+    "test_acc", "test_loss",
+    "binary_acc", "threshold"
+]
+
+print("\nTop 5 by TEST linear-probe accuracy")
+print(top5_lp[show_cols].to_string(index=False))
+
+print("\nTop 5 by Binary accuracy")
+print(top5_bin[show_cols].to_string(index=False))

@@ -94,7 +94,7 @@ def parse_args():
         "--data_name", # SEU, JNU ,PU , CWRU
         type=str,
         choices=DATA_DIRS.keys(),
-        default="CWRU",  # SEU, JNU ,PU , CWRU
+        default="PU",  # SEU, JNU ,PU , CWRU
         help="The name of the dataset",
     )
 
@@ -139,7 +139,7 @@ def parse_args():
         "--normlizetype",
         type=str,
         choices=["zero_one", "minus_one_one", "mean_std", "mean"],
-        default="minus_one_one",
+        default="mean_std",
         help="Data normalization method",
     )
 
@@ -323,14 +323,22 @@ if __name__ == "__main__":
         ("scale", "scale"),           # 0.7437
 
     ]
-    
-    latent_space = [32,64,128,192, 256]
-    hidden_channel =[32,64,128,192, 256]
+    aug_pairs_best_pu = [
+        ("gaussian", "gaussian"),        # 0.7622
+       # ("normal", "gaussian"),       # 0.7511
+        ("gaussian", "randomcrop"),   # 0.7474
+        ("normal", "randomcrop"),           # 0.7452
+        ("randomcrop", "scale"),      # 0.7452
+        ("scale", "scale"),           # 0.7437
+
+    ]
+    latent_space = [256, 192, 128,32]
+    hidden_channel =[256, 192, 128,64,32]
     #number_blocks=[1,2,3,4,5,6,7,8,9,10]
 
    # latent_space = [192]
    # hidden_channel =[128]
-    number_blocks=[4,5,7]
+    number_blocks=[5,7, 9]
     
      #"--data_name", # SEU, JNU ,PU , CWRU
 
@@ -345,8 +353,8 @@ if __name__ == "__main__":
                         args.latent_space = features
                         args.hidden_channel = hidden_size
                         args.num_blocks_ssf=blocks
-                        args.per_class_samples = 100
-                        args.classifier_samples = 10
+                        args.per_class_samples = 2000
+                        args.classifier_samples = 200
 
                         run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
                         logging.info("=" * 80)
