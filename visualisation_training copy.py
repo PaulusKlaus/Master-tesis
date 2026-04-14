@@ -489,7 +489,8 @@ paths_augmentetion = [
 
  # Latent space vs hidden size 
  #"checkpoint/SSF_CWRU_0318-103724/training.log"
- "checkpoint/SSF_PU_0319-085609/training.log" 
+ #"checkpoint/SSF_PU_0319-085609/training.log",
+ "checkpoint/SSF_PU_0324-135513/training.log"  
 ]
 
 aug_pair_vs_blocks_accuracy(paths_augmentetion)
@@ -500,7 +501,7 @@ aug_pair_vs_blocks_accuracy(paths_augmentetion)
 #blocks_vs_binary_acc_with_threshold(paths_augmentetion)
 
 
-df = parse_training_log("checkpoint/SSF_PU_0319-085609/training.log" )
+df = parse_training_log("checkpoint/SSF_PU_0324-135513/training.log" )
 
 top5_lp = df.sort_values(["test_acc", "binary_acc"], ascending=[False, False]).head(5)
 top5_bin = df.sort_values(["binary_acc", "test_acc"], ascending=[False, False]).head(5)
