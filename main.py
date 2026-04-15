@@ -94,7 +94,7 @@ def parse_args():
         "--data_name", # SEU, JNU ,PU , CWRU
         type=str,
         choices=DATA_DIRS.keys(),
-        default="PU",  # SEU, JNU ,PU , CWRU
+        default="CWRU",  # SEU, JNU ,PU , CWRU
         help="The name of the dataset",
     )
 
@@ -310,10 +310,13 @@ if __name__ == "__main__":
     # set the logger
     setlogger(os.path.join(save_dir, 'training.log'))
 
-
+    import random
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
     pairs = list(combinations_with_replacement(augmentations, 2))
+    # pick 3 random pairs
+    random_pairs = random.sample(pairs, 5)
 
+    print(random_pairs)
     aug_pairs_best_cwru = [
         ("gaussian", "scale"),        # 0.7622
         ("normal", "gaussian"),       # 0.7511
@@ -333,7 +336,7 @@ if __name__ == "__main__":
 
     ]
     latent_space = [256]
-    hidden_channel =[ 192, 128]
+    hidden_channel =[256]
     #number_blocks=[1,2,3,4,5,6,7,8,9,10]
 
    # latent_space = [192]
@@ -344,7 +347,7 @@ if __name__ == "__main__":
 
     norm = ["zero_one", "minus_one_one", "mean_std", "mean"]
 
-    for pair in aug_pairs_best_pu:  
+    for pair in random_pairs:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
@@ -356,8 +359,8 @@ if __name__ == "__main__":
                             args.latent_space = features
                             args.hidden_channel = hidden_size
                             args.num_blocks_ssf=blocks
-                            args.per_class_samples = 1000
-                            args.classifier_samples = 100
+                            args.per_class_samples = 100
+                            args.classifier_samples = 10
                             args.normlizetype=normalization
                             run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
                             logging.info("=" * 80)
