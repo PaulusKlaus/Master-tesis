@@ -21,7 +21,7 @@ from utils.anomaly_detection import *
 DATA_DIRS = {
     "CWRU": [r"raw_data/CWRU", 4],
     "JNU": [r"raw_data/JNU/JNU-Bearing-Dataset-main", 4], # {"healthy": 0, "inner_race": 1, "outer_race": 2, "ball" : 3}
-    "PU": [r"raw_data/PU", 4], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
+    "PU": [r"raw_data/PU", 6], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3}
     "SEU": [r"raw_data/SEU/gearbox", 5], # {"healthy": 0, "inner_race": 1, "combined": 2, "outer_race": 3, "ball" : 4}
     "XJTU": [r"raw_data/XJTU/XJTU-SY_Bearing_Datasets/XJTU-SY_Bearing_Datasets", 4]  # TODO: Check this 
 }
@@ -326,66 +326,69 @@ if __name__ == "__main__":
     aug_pairs_best_pu = [
         ("gaussian", "gaussian"),        # 0.7622
        # ("normal", "gaussian"),       # 0.7511
-        ("gaussian", "randomcrop"),   # 0.7474
+        #("gaussian", "randomcrop"),   # 0.7474
         ("normal", "randomcrop"),           # 0.7452
-        ("randomcrop", "scale"),      # 0.7452
-        ("scale", "scale"),           # 0.7437
+        #("randomcrop", "scale"),      # 0.7452
+        #("scale", "scale"),           # 0.7437
 
     ]
-    latent_space = [256, 192, 128,32]
-    hidden_channel =[256, 192, 128,64,32]
+    latent_space = [256]
+    hidden_channel =[ 192, 128]
     #number_blocks=[1,2,3,4,5,6,7,8,9,10]
 
    # latent_space = [192]
    # hidden_channel =[128]
-    number_blocks=[5,7, 9]
+    number_blocks=[7]
     
      #"--data_name", # SEU, JNU ,PU , CWRU
 
+    norm = ["zero_one", "minus_one_one", "mean_std", "mean"]
 
     for pair in aug_pairs_best_pu:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
+                    for normalization in norm: 
 
-                    for seed in range (3):  # seeds 
-                        args.aug_1, args.aug_2 = pair
-                        args.latent_space = features
-                        args.hidden_channel = hidden_size
-                        args.num_blocks_ssf=blocks
-                        args.per_class_samples = 2000
-                        args.classifier_samples = 200
 
-                        run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
-                        logging.info("=" * 80)
-                        logging.info("RUN: %s", run_id)
+                        for seed in range (1):  # seeds 
+                            args.aug_1, args.aug_2 = pair
+                            args.latent_space = features
+                            args.hidden_channel = hidden_size
+                            args.num_blocks_ssf=blocks
+                            args.per_class_samples = 1000
+                            args.classifier_samples = 100
+                            args.normlizetype=normalization
+                            run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
+                            logging.info("=" * 80)
+                            logging.info("RUN: %s", run_id)
 
-                        # save the args
-                        for k, v in args.__dict__.items():
-                            logging.info("{}: {}".format(k, v))
+                            # save the args
+                            for k, v in args.__dict__.items():
+                                logging.info("{}: {}".format(k, v))
 
-                        trainer = Trainer(args, save_dir)
-                        encoder = trainer.train(pretrained=False, pretrained_dir="./anomaly_detection/SSF_PU_0310-131203/best_pt")
-                        device = next(encoder.parameters()).device  # gets cuda or cpu automatically
-                        
-                        tsne(device, encoder, trainer.test_loader)
+                            trainer = Trainer(args, save_dir)
+                            encoder = trainer.train(pretrained=False, pretrained_dir="./anomaly_detection/SSF_PU_0310-131203/best_pt")
+                            device = next(encoder.parameters()).device  # gets cuda or cpu automatically
+                            
+                            tsne(device, encoder, trainer.test_loader)
 
-                        test_pred, test_labels, threshold = run_anomaly_detection(
-                            device, encoder, trainer.train_loader, trainer.test_loader,
-                            normal_class=0, std_factor=2.0, metric="euclidean",
-                            n_jobs=-1, verbose=True,
-                        )
+                            test_pred, test_labels, threshold = run_anomaly_detection(
+                                device, encoder, trainer.train_loader, trainer.test_loader,
+                                normal_class=0, std_factor=2.0, metric="euclidean",
+                                n_jobs=-1, verbose=True,
+                            )
 
-                        acc, cm, report = anomaly_metrics_from_multiclass(test_labels, test_pred, normal_class=0)
-                        logging.info("Threshold: %s", threshold)
-                        logging.info("Binary accuracy: %.6f", acc)
-                        logging.info("Confusion matrix:\n%s", cm)
-                        logging.info("Report:\n%s", report)
+                            acc, cm, report = anomaly_metrics_from_multiclass(test_labels, test_pred, normal_class=0)
+                            logging.info("Threshold: %s", threshold)
+                            logging.info("Binary accuracy: %.6f", acc)
+                            logging.info("Confusion matrix:\n%s", cm)
+                            logging.info("Report:\n%s", report)
 
-                        rates = per_fault_detection_rate(test_labels, test_pred, normal_class=0)
-                        logging.info("Rates: %s", rates)
+                            rates = per_fault_detection_rate(test_labels, test_pred, normal_class=0)
+                            logging.info("Rates: %s", rates)
 
-                        # Classification 
-                        trainer.train_classifier(encoder)
+                            # Classification 
+                            trainer.train_classifier(encoder)
 
 
