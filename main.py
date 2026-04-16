@@ -94,7 +94,7 @@ def parse_args():
         "--data_name", # SEU, JNU ,PU , CWRU
         type=str,
         choices=DATA_DIRS.keys(),
-        default="PU",  # SEU, JNU ,PU , CWRU
+        default="CWRU",  # SEU, JNU ,PU , CWRU
         help="The name of the dataset",
     )
 
@@ -345,7 +345,7 @@ if __name__ == "__main__":
     
      #"--data_name", # SEU, JNU ,PU , CWRU
 
-    norm = [None]#"zero_one", "minus_one_one", "mean_std", "mean"]
+    norm = [None, "zero_one", "minus_one_one", "mean_std", "mean"]
 
     for pair in aug_pairs_best_pu:  
         for hidden_size in hidden_channel:
@@ -359,8 +359,8 @@ if __name__ == "__main__":
                             args.latent_space = features
                             args.hidden_channel = hidden_size
                             args.num_blocks_ssf=blocks
-                            args.per_class_samples = 1000
-                            args.classifier_samples = 100
+                            args.per_class_samples = 100
+                            args.classifier_samples = 10
                             args.normlizetype=normalization
                             run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
                             logging.info("=" * 80)
