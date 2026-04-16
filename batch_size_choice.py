@@ -6,7 +6,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-def normalization_test(paths, group_by_blocks=False):
+def batch_size_test(paths, group_by_blocks=False):
     all_df = []
     for path in paths:
         df = parse_training_log(path)
@@ -16,11 +16,11 @@ def normalization_test(paths, group_by_blocks=False):
     all_df = pd.concat(all_df, ignore_index=True)
 
     # -------------------------
-    # Summary per normalization
+    # Summary per batch_size
     # -------------------------
     summary_norm = (
         all_df
-        .groupby(["normalization"], as_index=False)
+        .groupby(["batch_size"], as_index=False)
         .agg(
             n_runs=("test_acc", "count"),
 
@@ -43,7 +43,7 @@ def normalization_test(paths, group_by_blocks=False):
 
     summary_norm = summary_norm.sort_values("score", ascending=False)
 
-    print("\n=== Normalization Summary ===")
+    print("\n=== Batch Size  Summary ===")
     print(summary_norm.to_string(index=False))
 
     # -------------------------
@@ -52,7 +52,7 @@ def normalization_test(paths, group_by_blocks=False):
     if group_by_blocks:
         summary_blocks = (
             all_df
-            .groupby(["normalization"], as_index=False)
+            .groupby(["batch_size"], as_index=False)
             .agg(
                 n_runs=("test_acc", "count"),
 
@@ -62,27 +62,27 @@ def normalization_test(paths, group_by_blocks=False):
                 mean_bin_acc=("binary_acc", "mean"),
                 std_bin_acc=("binary_acc", "std"),
             )
-            .sort_values(["normalization", "num_blocks_ssf"])
+            .sort_values(["batch_size", "num_blocks_ssf"])
         )
 
-        print("\n=== Normalization x Blocks ===")
+        print("\n=== Batch Size x Blocks ===")
         print(summary_blocks.to_string(index=False))
 
         return summary_norm, summary_blocks
 
     return summary_norm
 
-def plot_normalization(df):
+def plot_bs(df):
 
-    sns.boxplot(data=df, x="normalization", y="binary_acc")
-    plt.title("Binary Accuracy by Normalization")
+    sns.boxplot(data=df, x="batch_size", y="binary_acc")
+    plt.title("Binary Accuracy by batch_size")
     plt.show()
 
-    sns.boxplot(data=df, x="normalization", y="test_acc")
-    plt.title("Test Accuracy by Normalization")
+    sns.boxplot(data=df, x="batch_size", y="test_acc")
+    plt.title("Test Accuracy by batch_size")
     plt.show()
 
-    sns.scatterplot(data=df, x="test_acc", y="binary_acc", hue="normalization")
+    sns.scatterplot(data=df, x="test_acc", y="binary_acc", hue="batch_size")
     plt.title("Trade-off: Test vs Binary Accuracy")
     plt.show()
 
@@ -90,12 +90,10 @@ def plot_normalization(df):
 
 
 
-paths =[#"checkpoint/SSF_PU_0415-141949/training.log", # aug pu 
-        #"checkpoint/SSF_CWRU_0415-161214/training.log",
-        "checkpoint/SSF_CWRU_0416-105859/training.log"  # aug pu
+paths =[
         ]
-normalization_test(paths)
+batch_size_test(paths)
 
 
 df = parse_training_log("checkpoint/SSF_CWRU_0416-105859/training.log")
-plot_normalization(df)
+plot_bs(df)

@@ -2,7 +2,7 @@ import re
 import pandas as pd
 import matplotlib.pyplot as plt
 
-path = r"checkpoint/SSF_CWRU_0312-090033/training.log"
+path = r"checkpoint/SSF_CWRU_0416-105859/training.log"
 
 # Regex patterns for lines in your log
 re_run = re.compile(r"RUN:\s+aug=\('([^']+)'\s*,\s*'([^']+)'\).*seed=(\d+)")

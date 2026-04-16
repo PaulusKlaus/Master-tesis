@@ -30,6 +30,8 @@ def parse_training_log(path):
 
     norm_type_re = re.compile(r'normlizetype\s*:\s*([A-Za-z_]+)', re.IGNORECASE)
 
+    bs_re = re.compile(r'batch_size.*?(\d+)', re.IGNORECASE)
+
     runs = []
     current = None
 
@@ -56,7 +58,8 @@ def parse_training_log(path):
                     "test_loss": np.inf,
                     "hidden_channel": None,
                     "threshold": None,
-                    "normalization":None
+                    "normalization":None,
+                    "batch_size": None,
                 }
             # -------------------- 3 -------------------
             if current is None:
@@ -106,6 +109,12 @@ def parse_training_log(path):
             m_norm = norm_type_re.search(line)
             if m_norm and current["normalization"] is None:
                 current["normalization"] = m_norm.group(1).lower()
+
+            m_bs = bs_re.search(line)
+            if m_bs and current["batch_size"] is None:
+                current["batch_size"] = int(m_bs.group(1))
+
+                
 
     if current is not None:
         runs.append(current)
