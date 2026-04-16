@@ -1,0 +1,43 @@
+04-16 16:36:02 ================================================================================
+04-16 16:36:02 RUN: aug=('normal', 'scale') hidden=256 latent=256 blocks=7 seed=0
+04-16 16:36:02 model_name: SSF
+04-16 16:36:02 data_name: PU
+04-16 16:36:02 aug_1: normal
+04-16 16:36:02 aug_2: scale
+04-16 16:36:02 data_view: TwoViewDataset
+04-16 16:36:02 data_dir: raw_data/PU
+04-16 16:36:02 out_channel: 6
+04-16 16:36:02 normlizetype: mean_std
+04-16 16:36:02 processing_type: O_N
+04-16 16:36:02 max_epoch: 50
+04-16 16:36:02 classifier_epoch: 50
+04-16 16:36:02 batch_size: 128
+04-16 16:36:02 cuda_device: 0
+04-16 16:36:02 checkpoint_dir: ./checkpoint
+04-16 16:36:02 opt: sgd
+04-16 16:36:02 lr: 0.05
+04-16 16:36:02 momentum: 0.9
+04-16 16:36:02 weight_decay: 0.0001
+04-16 16:36:02 lr_scheduler: cos
+04-16 16:36:02 gamma: 0.95
+04-16 16:36:02 eta_min: 1e-05
+04-16 16:36:02 latent_space: 256
+04-16 16:36:02 num_blocks_ssf: 7
+04-16 16:36:02 hidden_channel: 256
+04-16 16:36:02 per_class_samples: 1000
+04-16 16:36:02 classifier_samples: 100
+04-16 16:36:02 task: self_supervised
+04-16 16:36:02 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+04-16 16:36:02 using 1 gpus
+04-16 16:36:02 Dataset class: <class 'data_utils.datasets.PU.PU'>
+04-16 16:36:06 Split sizes: train=1000 val=1000 test=6000, classier=600
+04-16 16:36:06 Label counts train: Counter({0: 1000})
+04-16 16:36:06 Label counts val:   Counter({0: 1000})
+04-16 16:36:06 Label counts test:  Counter({0: 1000, 2: 1000, 5: 1000, 1: 1000, 3: 1000, 4: 1000})
+04-16 16:36:06 Label counts classifier:  Counter({0: 100, 1: 100, 3: 100, 2: 100, 5: 100, 4: 100})
+04-16 16:36:07 Label counts classifier validation:  Counter({1: 100, 2: 100, 5: 100, 3: 100, 4: 100, 0: 100})
+04-16 16:36:08 -----Epoch 0/49-----
+04-16 16:36:11 current lr: 0.05
+04-16 16:36:11 Saved best checkpoint to ./checkpoint\SSF_PU_0416-163602\best_pt (val_loss=-0.7056)
+04-16 16:36:11 Epoch 000 Train loss -0.5728 | Val loss -0.7056
+04-16 16:36:11 -----Epoch 1/49-----
