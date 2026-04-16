@@ -342,7 +342,7 @@ if __name__ == "__main__":
    # latent_space = [192]
    # hidden_channel =[128]
     number_blocks=[7]
-    batch_sizes =[16,32,64]
+    batch_sizes =[128]
     
      #"--data_name", # SEU, JNU ,PU , CWRU
 
