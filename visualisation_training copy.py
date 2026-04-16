@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 from pathlib import Path
+from utils.log_parther import parse_training_log
+
 
 #path = "checkpoint/SSF_PU_0226-130304/training.log"   # <-- adjust path if needed
 paths_latent = [
@@ -19,103 +21,7 @@ paths_latent = [
 ]
 
 
-def parse_training_log(path):
 
-    latent_re = re.compile(r'latent.*?(\d+)', re.IGNORECASE)
-    blocks_re = re.compile(r'num_blocks_ssf.*?(\d+)', re.IGNORECASE)
-    hid_ch_size = re.compile(r'hidden_channel.*?(\d+)', re.IGNORECASE)
-    lp_re = re.compile(r'\[LP epoch\s+(\d+)\].*?val_loss=([\d\.]+).*?val_acc=([\d\.]+)')
-
-    # test linear probe for the classifcation 
-    test_re = re.compile(r'TEST linear-probe:.*?loss=([\d\.]+).*?acc=([\d\.]+)', re.IGNORECASE)
-        
-    #parse augmentation lines like "aug_1: normal"
-    aug1_re = re.compile(r'aug_1\s*:\s*([A-Za-z_]+)', re.IGNORECASE)
-    aug2_re = re.compile(r'aug_2\s*:\s*([A-Za-z_]+)', re.IGNORECASE)
-
-    thr_re = re.compile(r'Threshold:\s*([\d\.eE+-]+)', re.IGNORECASE)
-
-    # binary test block
-    bin_acc_re = re.compile(r'Binary accuracy:\s*([\d\.]+)', re.IGNORECASE)
-
-    runs = []
-    current = None
-
-    with open(path, "r", errors="ignore") as f:
-        for line in f:
-
-            if "model_name:" in line:
-                if current is not None:
-                    runs.append(current)
-                current = {
-                    "latent_dim": None,
-                    "num_blocks_ssf": None,
-                    "aug_1": None,          
-                    "aug_2": None,  
-
-                    # binary test (your anomaly/normal evaluation)
-                    "binary_acc": None,
-
-                    "best_val_acc": -np.inf,
-                    "best_val_loss": np.inf,
-                    "test_acc": -np.inf,
-                    "test_loss": np.inf,
-                    "hidden_channel": None,
-
-                    "threshold": None,
-                }
-
-            if current is None:
-                continue
-            m_aug1 = aug1_re.search(line)
-            if m_aug1 and current["aug_1"] is None:
-                current["aug_1"] = m_aug1.group(1).lower()
-
-            m_aug2 = aug2_re.search(line)
-            if m_aug2 and current["aug_2"] is None:
-                current["aug_2"] = m_aug2.group(1).lower()
-
-            m_latent = latent_re.search(line)
-            if m_latent and current["latent_dim"] is None:
-                current["latent_dim"] = int(m_latent.group(1))
-
-            m_blocks = blocks_re.search(line)
-            if m_blocks and current["num_blocks_ssf"] is None:
-                current["num_blocks_ssf"] = int(m_blocks.group(1))
-
-            m_h_ch_size = hid_ch_size.search(line)
-            if m_h_ch_size and current["hidden_channel"] is None:
-                current["hidden_channel"] = int(m_h_ch_size.group(1))
-
-            m_lp = lp_re.search(line)
-            if m_lp:
-                val_loss = float(m_lp.group(2))
-                val_acc = float(m_lp.group(3))
-                current["best_val_acc"] = max(current["best_val_acc"], val_acc)
-                current["best_val_loss"] = min(current["best_val_loss"], val_loss)
-
-            m_test = test_re.search(line)
-            if m_test:
-                # test accucacy and loss fo rthe classification head
-                current["test_loss"] = min(current["test_loss"] ,float(m_test.group(1)))
-                current["test_acc"] = max(current["test_acc"],float(m_test.group(2)))
-
-             # Binary accuracy (single number)
-            m = bin_acc_re.search(line)
-            if m:
-                current["binary_acc"] = float(m.group(1))
-
-            m_thr = thr_re.search(line)
-            if m_thr:
-                current["threshold"] = float(m_thr.group(1))
-
-    if current is not None:
-        runs.append(current)
-
-    df = pd.DataFrame(runs)
-    # Keep only "real runs" (must have aug info + latent/blocks)
-    df = df.dropna(subset=["latent_dim", "num_blocks_ssf", "aug_1", "aug_2", "hidden_channel"])
-    return df
 
 def scatter_plots(paths, save_dir="figures/training_vis"):
     # 1️⃣ Latent dim vs best val acc
