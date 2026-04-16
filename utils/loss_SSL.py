@@ -47,10 +47,10 @@ class SimSiamLoss(nn.Module):
         """
         if self.ver == 'simplified':
             # Detach z to stop gradient flow
-            z = z.detach()
+            z_detach = z.detach()
  
             # Simplified formulation: negative cosine similarity
-            return -nn.functional.cosine_similarity(p, z, dim=-1).mean()
+            return -nn.functional.cosine_similarity(p, z_detach, dim=-1).mean()
  
     def forward(self, z1, z2, p1, p2):
         """
