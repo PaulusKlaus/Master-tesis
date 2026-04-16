@@ -94,7 +94,7 @@ def parse_args():
         "--data_name", # SEU, JNU ,PU , CWRU
         type=str,
         choices=DATA_DIRS.keys(),
-        default="CWRU",  # SEU, JNU ,PU , CWRU
+        default="PU",  # SEU, JNU ,PU , CWRU
         help="The name of the dataset",
     )
 
@@ -327,12 +327,12 @@ if __name__ == "__main__":
 
     ]
     aug_pairs_best_pu = [
-        ("gaussian", "gaussian"),        # 0.7622
-       # ("normal", "gaussian"),       # 0.7511
-        #("gaussian", "randomcrop"),   # 0.7474
-        ("normal", "randomcrop"),           # 0.7452
-        #("randomcrop", "scale"),      # 0.7452
-        #("scale", "scale"),           # 0.7437
+        ("normal", "normal"),        # 0.7622
+        ("normal", "scale"),       # 0.7511
+        ("randomstrech", "randomcrop"),   # 0.7474
+        ("randomstrech", "randomstrech"),           # 0.7452
+        ("normal", "gaussian"),      # 0.7452
+      #  ("scale", "scale"),           # 0.7437
 
     ]
     latent_space = [256]
@@ -345,9 +345,9 @@ if __name__ == "__main__":
     
      #"--data_name", # SEU, JNU ,PU , CWRU
 
-    norm = ["zero_one", "minus_one_one", "mean_std", "mean"]
+    norm = [None]#"zero_one", "minus_one_one", "mean_std", "mean"]
 
-    for pair in random_pairs:  
+    for pair in aug_pairs_best_pu:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
@@ -359,8 +359,8 @@ if __name__ == "__main__":
                             args.latent_space = features
                             args.hidden_channel = hidden_size
                             args.num_blocks_ssf=blocks
-                            args.per_class_samples = 100
-                            args.classifier_samples = 10
+                            args.per_class_samples = 1000
+                            args.classifier_samples = 100
                             args.normlizetype=normalization
                             run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
                             logging.info("=" * 80)

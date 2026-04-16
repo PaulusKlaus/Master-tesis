@@ -32,24 +32,32 @@ HBdata = ['K001',"K002",'K003','K004','K005']
 #ir_faults  = ['KI04','KI14','KI16','KI18','KI21']
 
 
-# Big artifisial damage
-or_faults  = ['KA03','KA06','KA08','KA09']  
-real_damage_faults = ['KA16','KB24','KB23','KI16', 'KI18' ]
-ir_faults  = ['KI07','KI08']
+# Big artificial damage
+or_faults_a  = ['KA03','KA06','KA08','KA09']  
+#real_damage_faults = ['KA16','KB24','KB23','KI16', 'KI18' ]
+ir_faults_a  = ['KI07','KI08']
+
+# big real damage 
+or_fault_r = ['KA16']
+ir_faults_r = ['KI16', 'KI18' ]
+#combined faults 
+com_fault_re = ['KB24','KB23']
 
 
 
 samples = (
     list(zip(HBdata,     repeat("healthy"))) +
-    list(zip(ir_faults,  repeat("inner_race"))) +
-    list(zip(real_damage_faults, repeat("real_damage_faults"))) +
-    list(zip(or_faults,  repeat("outer_race")))
+    list(zip(ir_faults_a,  repeat("inner_race_a"))) +
+    list(zip(or_faults_a,  repeat("outer_race_a")))+
+    list(zip(ir_faults_r,  repeat("inner_race_r"))) +
+    list(zip(or_fault_r,  repeat("outer_race_r")))+
+    list(zip(com_fault_re,  repeat("com_fault_re")))
 )
 
 # stable mapping
 #class_to_idx = {"healthy": 0, "inner_race": 1, "outer_race": 2} #  "outer_race": 3
 #class_to_idx = {"healthy": 0, "inner_race": 1,  "outer_race": 2}
-class_to_idx = {"healthy": 0, "inner_race": 1, "real_damage_faults": 2, "outer_race": 3}
+class_to_idx = {"healthy": 0, "inner_race_a": 1, "outer_race_a": 2, "inner_race_r": 3, "outer_race_r": 4, "com_fault_re":5}
 
 
 
