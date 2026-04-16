@@ -30,7 +30,25 @@ def parse_training_log(path):
 
     norm_type_re = re.compile(r'normlizetype\s*:\s*([A-Za-z_]+)', re.IGNORECASE)
 
-    bs_re = re.compile(r'batch_size.*?(\d+)', re.IGNORECASE)
+    bs_re = re.compile(r'batch_size.*?(\d+)', re.IGNORECASE) # batch size
+
+    #f1-score and recall 
+    macro_avg_re = re.compile(
+        r'macro avg\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+(\d+)',
+        re.IGNORECASE
+    )
+
+    normal_re = re.compile(
+        r'normal\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+(\d+)',
+        re.IGNORECASE
+    )
+
+    anomaly_re = re.compile(
+        r'anomaly\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+(\d+)',
+        re.IGNORECASE
+    )
+
+
 
     runs = []
     current = None
@@ -60,6 +78,16 @@ def parse_training_log(path):
                     "threshold": None,
                     "normalization":None,
                     "batch_size": None,
+
+                    "macro_precision": None,
+                    "macro_recall": None,
+                    "macro_f1": None,
+                    "normal_precision": None,
+                    "normal_recall": None,
+                    "normal_f1": None,
+                    "anomaly_precision": None,
+                    "anomaly_recall": None,
+                    "anomaly_f1": None,
                 }
             # -------------------- 3 -------------------
             if current is None:
@@ -114,7 +142,26 @@ def parse_training_log(path):
             if m_bs and current["batch_size"] is None:
                 current["batch_size"] = int(m_bs.group(1))
 
-                
+
+            m_macro = macro_avg_re.search(line)
+            if m_macro:
+                current["macro_precision"] = float(m_macro.group(1))
+                current["macro_recall"] = float(m_macro.group(2))
+                current["macro_f1"] = float(m_macro.group(3))
+
+            m_normal = normal_re.search(line)
+            if m_normal:
+                current["normal_precision"] = float(m_normal.group(1))
+                current["normal_recall"] = float(m_normal.group(2))
+                current["normal_f1"] = float(m_normal.group(3))
+
+            m_anomaly = anomaly_re.search(line)
+            if m_anomaly:
+                current["anomaly_precision"] = float(m_anomaly.group(1))
+                current["anomaly_recall"] = float(m_anomaly.group(2))
+                current["anomaly_f1"] = float(m_anomaly.group(3))
+
+
 
     if current is not None:
         runs.append(current)
