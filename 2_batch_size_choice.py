@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from utils.log_parser import parse_training_log
 
-#import seaborn as sns
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 
@@ -91,6 +91,9 @@ def plot_bs(df):
 
 
 paths =["checkpoint/SSF_PU_0416-122923/training.log",
+        "checkpoint/SSF_PU_0416-163602/training.log" # 128 batch size
+       # "checkpoint/SSF_CWRU_0416-155803/training.log",
+       # "checkpoint/SSF_CWRU_0416-120355/training.log",  # not sure if itis the same augmentetion
         ]
 batch_size_test(paths)
 
