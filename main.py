@@ -341,14 +341,14 @@ if __name__ == "__main__":
 
    # latent_space = [192]
    # hidden_channel =[128]
-    number_blocks=[7]
-    batch_sizes =[128]
+    number_blocks=[6,7,8,9,10]
+    batch_sizes =[64]
     
      #"--data_name", # SEU, JNU ,PU , CWRU
 
     norm = ["mean_std"]
 
-    for pair in aug_pairs_best_pu:  
+    for pair in random_pairs:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
