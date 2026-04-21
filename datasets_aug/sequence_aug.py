@@ -34,7 +34,7 @@ class Retype(object):
 
 class AddGaussian(object):
     "Randomly add Gaussian noise into the input signal."
-    def __init__(self, sigma = 0.05):
+    def __init__(self, sigma = 0.2):
         self.sigma = sigma 
     def __call__(self, seq):
         seq = np.asarray(seq, dtype=np.float32)
@@ -45,21 +45,20 @@ class AddGaussian(object):
 
 class Scale(object):
     "Ranbdomly multiplies the input signal with a scaler, distributed (1, 0.01)"
-    def __init__(self, sigma=0.01):
+    def __init__(self, sigma=0.1):
         self.sigma = sigma
 
     def __call__(self, seq):
         seq = np.asarray(seq, dtype=np.float32)
-        scale_factor = np.random.normal(loc=1, scale=self.sigma, size=(seq.shape[0], 1))
-        scale_matrix = np.matmul(scale_factor, np.ones((1, seq.shape[1])))
-        return seq*scale_matrix
+        scale_factor = np.random.normal(loc=1, scale=self.sigma)
+        return seq*0.9
     
 
 
 
 class RandomStretch(object):
     "Time-streach/time-warp data augmentetion."
-    def __init__(self, sigma=0.3, min_length=2):
+    def __init__(self, sigma=0.5, min_length=2):
         self.sigma = sigma
         self.min_length = min_length
 

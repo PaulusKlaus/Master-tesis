@@ -22,22 +22,15 @@ def parse_args():
             "--data_name", # SEU, JNU ,PU , CWRU
             type=str,
             choices=DATA_DIRS.keys(),
-            default="CWRU",  # SEU, JNU ,PU , CWRU
+            default="PU",  # SEU, JNU ,PU , CWRU
             help="The name of the dataset",
         )
 
     parser.add_argument(
-        "--aug_1",
-        type=str,
-        choices=["gaussian", "normal", "scale", "randomstrech", "randomcrop", "fft"],
-        default="normal",
-        help="Augmentation type on the online pipeline",
-    )
-    parser.add_argument(
             "--normlizetype",
             type=str,
             choices=["zero_one", "minus_one_one", "mean_std", "mean"],
-            default="mean_std",
+            default=None,
             help="Data normalization method",
     )
 
@@ -46,63 +39,159 @@ def parse_args():
 args = parse_args()
 args.data_dir = DATA_DIRS[args.data_name][0]
 
+AUGMENTATIONS = ["normal", "gaussian", "scale", "randomstrech", "randomcrop"]
 
-def data_loading(args):
-    Dataset = getattr(datasets, args.data_name)
+
+
+def build_dataset(data_name,  data_dir, augmentation = "normal"):
+    Dataset = getattr(datasets, data_name)
     dataset_view = views.OneViewDataset
 
     train_ds, val_ds, test_ds, classifier_ds, classifier_val_ds = Dataset(
-        data_dir=args.data_dir,
-        normlizetype=args.normlizetype,
-        augmentype_1=args.aug_1,
-        rand=42,
+         data_dir=data_dir,
+        normlizetype=None,
+        augmentype_1=augmentation,
+        rand=1,
     ).data_prepare(
-        split="O_N",
+        split="RA",
         view=dataset_view,
     )
 
     return train_ds, test_ds
 
-def plot_samples(dataset, num_samples=5, class_names=None, save_path=None, random_samples=False):
-    if len(dataset) == 0:
-        raise ValueError("Dataset is empty.")
 
-    if random_samples:
-        indices = torch.randperm(len(dataset))[:num_samples].tolist()
+def normalize_signal(x, method):
+    if method == "zero_one":
+        return (x - x.min()) / (x.max() - x.min() + 1e-8)
+
+    elif method == "minus_one_one":
+        return 2 * (x - x.min()) / (x.max() - x.min() + 1e-8) - 1
+
+    elif method == "mean_std":
+        return (x - x.mean()) / (x.std() + 1e-8)
+
+    elif method == "mean":
+        return (x - x.mean())/(x.max() -x.min() + 1e-8)
+
     else:
-        indices = list(range(min(num_samples, len(dataset))))
+        raise ValueError(f"Unknown normalization: {method}")
 
-    fig, axes = plt.subplots(len(indices), 1, figsize=(12, 3 * len(indices)), squeeze=False)
 
-    for row, idx in enumerate(indices):
-        x, y = dataset[idx]
+def find_sample_index_by_class(dataset, target_class):
+    for i in range(len(dataset)):
+        x, y = dataset[i]
+        label = int(y) if torch.is_tensor(y) else y
+        if label == target_class:
+            return i
+    raise ValueError(f"Class {target_class} not found in dataset.")
 
-        if torch.is_tensor(x):
-            x = x.detach().cpu().squeeze().numpy()
 
-        label_value = int(y) if torch.is_tensor(y) else y
+def plot_all_augmentations(args, target_class=0, save_path=None):
+    datasets_by_aug = {}
 
-        if class_names is None:
-            label_str = str(label_value)
-        elif isinstance(class_names, dict):
-            label_str = class_names.get(label_value, str(label_value))
-        else:
-            if 0 <= label_value < len(class_names):
-                label_str = class_names[label_value]
-            else:
-                label_str = str(label_value)
+    # build one dataset for each augmentation
+    for aug in AUGMENTATIONS:
+        train, test = build_dataset(
+            data_name=args.data_name,
+            data_dir=args.data_dir,
+            augmentation=aug,
+        )
+        datasets_by_aug[aug] = train
+    # also build "normal" (baseline / no augmentation)
+    train_normal, _ = build_dataset(
+        data_name=args.data_name,
+        data_dir=args.data_dir,
+        augmentation="normal",
+    )
+
+
+    sample_idx = find_sample_index_by_class(train_normal, target_class)
+
+    # get reference signal once
+    x_ref, y_ref = train_normal[sample_idx]
+    if torch.is_tensor(x_ref):
+        x_ref = x_ref.detach().cpu().squeeze().numpy()
+
+    x_ref = x_ref[:512]
+
+    fig, axes = plt.subplots(
+        len(AUGMENTATIONS), 1,
+        figsize=(12, 3 * len(AUGMENTATIONS)),
+        squeeze=False
+    )
+
+    for row, aug in enumerate(AUGMENTATIONS):
+        x_aug, y = datasets_by_aug[aug][sample_idx]
+
+        if torch.is_tensor(x_aug):
+            x_aug = x_aug.detach().cpu().squeeze().numpy()
+
+        x_aug = x_aug[:512]
 
         ax = axes[row, 0]
-        ax.plot(x)
-        ax.set_title(f"Label: {label_str}")
+
+        # plot original
+        ax.plot(x_ref, label="original", color="royalblue", alpha = 0.6)
+
+        # plot augmented
+        ax.plot(x_aug, label=aug, color="royalblue", alpha = 1)
+
+      #  ax.set_xlim(0, 256)
+        ax.set_title(f"{aug} vs original | Class: {target_class}")
         ax.set_xlabel("Time step")
         ax.set_ylabel("Amplitude")
         ax.grid(True)
+        ax.legend()
 
     plt.tight_layout()
 
     if save_path is not None:
-        plt.savefig(save_path, dpi=300, bbox_inches="tight")
+        plt.savefig(save_path, bbox_inches="tight")
+
+    plt.close()
+
+
+def plot_all_augmentations_overlay(args, target_class=0, save_path=None):
+    datasets_by_aug = {}
+
+    # build one dataset per augmentation
+    for aug in AUGMENTATIONS:
+        train, test = build_dataset(
+            data_name=args.data_name,
+            data_dir=args.data_dir,
+            augmentation=aug,
+        )
+        datasets_by_aug[aug] = train
+
+    # find one sample index
+    ref_dataset = datasets_by_aug[AUGMENTATIONS[0]]
+    sample_idx = find_sample_index_by_class(ref_dataset, target_class)
+
+    plt.figure(figsize=(12, 5))
+    i = 1
+    for aug in AUGMENTATIONS:
+        x, y = datasets_by_aug[aug][sample_idx]
+
+        if torch.is_tensor(x):
+            x = x.detach().cpu().squeeze().numpy()
+
+        # plot only part of the signal (same as your subplot version)
+        x = x[:512] + i
+        i+=1
+
+        plt.plot(x, label=aug, alpha=0.8)
+
+    plt.title(f"All Augmentations (Overlay) | Class: {target_class} | Sample idx: {sample_idx}")
+    plt.xlabel("Time step")
+    plt.ylabel("Amplitude + Offset")
+    #plt.xlim(0, 512)
+    plt.grid(True)
+    plt.legend()
+
+    plt.tight_layout()
+
+    if save_path is not None:
+        plt.savefig(save_path, bbox_inches="tight")
 
     plt.close()
 
@@ -147,11 +236,53 @@ def plot_each_class(dataset, save_path):
     plt.close()
 
 
+
+def plot_normalizations(dataset, save_path, target_class=0):
+    # --- find one sample from the target class ---
+    for i in range(len(dataset)):
+        x, y = dataset[i]
+        label = int(y) if torch.is_tensor(y) else y
+
+        if label == target_class:
+            if torch.is_tensor(x):
+                x = x.detach().cpu().squeeze().numpy()
+            break
+    else:
+        raise ValueError(f"Class {target_class} not found in dataset")
+
+    methods = ["zero_one", "minus_one_one", "mean_std", "mean"]
+
+    fig, axes = plt.subplots(len(methods) + 1, 1, figsize=(12, 3 * (len(methods) + 1)))
+
+    # original
+    axes[0].plot(x)
+    axes[0].set_title("Original")
+    axes[0].grid(True)
+
+    # normalized versions
+    for i, method in enumerate(methods, start=1):
+        x_norm = normalize_signal(x, method)
+        axes[i].plot(x_norm)
+        axes[i].set_title(method)
+        axes[i].grid(True)
+
+    plt.tight_layout()
+    if save_path is not None:
+        plt.savefig(save_path, dpi=300, bbox_inches="tight")
+
+    plt.close()
+
+
 args = parse_args()
 args.data_dir = DATA_DIRS[args.data_name][0]
 
-train, test = data_loading(args)
-
-plot_each_class(test, save_path="figures/data_vis/all_samples")
+train, test = build_dataset(data_name = args.data_name, data_dir=args.data_dir, augmentation="normal")
 
 
+#plot_normalizations(train, save_path ="figures/data_vis/PU_all_normalizations.pdf",  target_class=0)
+#plot_each_class(train, save_path="figures/data_vis/PU_all_samples.pdf")
+
+plot_all_augmentations( args,  target_class=0, save_path="figures/data_vis/PU_augmentations.pdf")
+
+
+#plot_all_augmentations_overlay(args, target_class=0, save_path="figures/data_vis/PU_augmentations_overlay.pdf")

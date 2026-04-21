@@ -104,7 +104,7 @@ class PU(object):
 
         return [data,lab]
 
-    def _data_load(self, filename, name, label, signal_size = 1024):
+    def _data_load(self, filename, name, label, signal_size = 256):
         '''
         This function is mainly used to generate test data and training data.
         filename:Data location
@@ -142,7 +142,7 @@ class PU(object):
             # stratified random split
             train_pd, temp_pd = train_test_split(
                 data_pd,
-                test_size=0.30,
+                test_size=0.50,
                 random_state=self.random_state,
                 stratify=data_pd["label"],
             )
@@ -152,17 +152,24 @@ class PU(object):
                 random_state=self.random_state,
                 stratify=temp_pd["label"],
             )
-            val_pd, classifier_pd = train_test_split(
+            val_pd, classifier_temp = train_test_split(
                 val_temp,
                 test_size=0.5,
                 random_state=self.random_state,
                 stratify=val_temp["label"],
             )
+            classifier_pd, classifier_val_pd = train_test_split(
+                classifier_temp,
+                test_size=0.2,
+                random_state=self.random_state,
+                stratify=classifier_temp["label"],
+            )
         elif split == "O_A":
             # ordered split (your custom)
             train_pd, temp_pd = train_test_split_order(data_pd, test_size=0.30)
             val_temp, test_pd   = train_test_split_order(temp_pd, test_size=0.5)
-            val_pd, classifier_pd   = train_test_split_order(val_temp, test_size=0.5)
+            val_pd, classifier_temp   = train_test_split_order(val_temp, test_size=0.5)
+            classifier_pd, classifier_val_pd   = train_test_split_order(classifier_temp, test_size=0.5)
          
         elif split =="O_N":   # Train on only normal dataset 
             "train: only normal"
