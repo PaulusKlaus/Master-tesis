@@ -170,3 +170,76 @@ def parse_training_log(path):
     # Keep only "real runs" (must have aug info + latent/blocks)
     df = df.dropna(subset=["latent_dim", "num_blocks_ssf", "aug_1", "aug_2", "hidden_channel"])  # removes the columbs with Nan
     return df
+
+
+def summarize(paths, group_col, group_by_blocks=False):
+    all_df = []
+    for path in paths:
+        df = parse_training_log(path)
+        df["model"] = path.split("/")[-2]
+        all_df.append(df)
+
+    all_df = pd.concat(all_df, ignore_index=True)
+
+    # -------------------------
+    # Summary per batch_size
+    # -------------------------
+    summary_main = (
+        all_df
+        .groupby([group_col], as_index=False)
+        .agg(
+            n_runs=("test_acc", "count"),
+
+            mean_acc=("test_acc", "mean"),
+            std_acc=("test_acc", "std"),
+
+            mean_loss=("test_loss", "mean"),
+            std_loss=("test_loss", "std"),
+
+            mean_bin_acc=("binary_acc", "mean"),
+            std_bin_acc=("binary_acc", "std"),
+
+            mean_val_acc=("best_val_acc", "mean"),
+            mean_val_loss=("best_val_loss", "mean"),
+
+            mean_f1=("macro_f1", "mean"), 
+            std_f1=("macro_f1", "std"),
+        )
+    )
+
+    # Optional: combined score (you can tweak weights)
+    summary_main["score"] = 0.5 * summary_main["mean_f1"] + 0.5 * summary_main["mean_acc"]
+
+    summary_main = summary_main.sort_values("score", ascending=False)
+
+    print(f"\n=== Summary by {group_col} ===")
+    print(summary_main.to_string(index=False))
+
+    # -------------------------
+    # Optional: per-block detail
+    # -------------------------
+    if group_by_blocks:
+        summary_blocks = (
+            all_df
+            .groupby([group_col], as_index=False)
+            .agg(
+                n_runs=("test_acc", "count"),
+
+                mean_acc=("test_acc", "mean"),
+                std_acc=("test_acc", "std"),
+
+                mean_bin_acc=("binary_acc", "mean"),
+                std_bin_acc=("binary_acc", "std"),
+
+                mean_f1=("macro_f1", "mean"),
+                std_f1=("macro_f1", "std"),
+            )
+            .sort_values(["batch_size", "num_blocks_ssf"])
+        )
+
+        print(f"\n=== Summary by {group_col} x Blocks ===")
+        print(summary_blocks.to_string(index=False))
+
+        return summary_main, summary_blocks
+
+    return summary_main

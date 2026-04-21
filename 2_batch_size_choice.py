@@ -1,76 +1,14 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from utils.log_parser import parse_training_log
+from utils.log_parser import parse_training_log, summarize
 
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 
 def batch_size_test(paths, group_by_blocks=False):
-    all_df = []
-    for path in paths:
-        df = parse_training_log(path)
-        df["model"] = path.split("/")[-2]
-        all_df.append(df)
-
-    all_df = pd.concat(all_df, ignore_index=True)
-
-    # -------------------------
-    # Summary per batch_size
-    # -------------------------
-    summary_norm = (
-        all_df
-        .groupby(["batch_size"], as_index=False)
-        .agg(
-            n_runs=("test_acc", "count"),
-
-            mean_acc=("test_acc", "mean"),
-            std_acc=("test_acc", "std"),
-
-            mean_loss=("test_loss", "mean"),
-            std_loss=("test_loss", "std"),
-
-            mean_bin_acc=("binary_acc", "mean"),
-            std_bin_acc=("binary_acc", "std"),
-
-            mean_val_acc=("best_val_acc", "mean"),
-            mean_val_loss=("best_val_loss", "mean"),
-        )
-    )
-
-    # Optional: combined score (you can tweak weights)
-    summary_norm["score"] = 0.5 * summary_norm["mean_bin_acc"] + 0.5 * summary_norm["mean_acc"]
-
-    summary_norm = summary_norm.sort_values("score", ascending=False)
-
-    print("\n=== Batch Size  Summary ===")
-    print(summary_norm.to_string(index=False))
-
-    # -------------------------
-    # Optional: per-block detail
-    # -------------------------
-    if group_by_blocks:
-        summary_blocks = (
-            all_df
-            .groupby(["batch_size"], as_index=False)
-            .agg(
-                n_runs=("test_acc", "count"),
-
-                mean_acc=("test_acc", "mean"),
-                std_acc=("test_acc", "std"),
-
-                mean_bin_acc=("binary_acc", "mean"),
-                std_bin_acc=("binary_acc", "std"),
-            )
-            .sort_values(["batch_size", "num_blocks_ssf"])
-        )
-
-        print("\n=== Batch Size x Blocks ===")
-        print(summary_blocks.to_string(index=False))
-
-        return summary_norm, summary_blocks
-
-    return summary_norm
+    summary_batch_size = summarize(paths, "batch_size", group_by_blocks)
+    return summary_batch_size
 
 def plot_bs(df):
 
@@ -90,10 +28,10 @@ def plot_bs(df):
 
 
 
-paths =["checkpoint/SSF_PU_0416-122923/training.log",
-        "checkpoint/SSF_PU_0416-163602/training.log" # 128 batch size
-       # "checkpoint/SSF_CWRU_0416-155803/training.log",
-       # "checkpoint/SSF_CWRU_0416-120355/training.log",  # not sure if itis the same augmentetion
+paths =[#"checkpoint/SSF_PU_0416-122923/training.log",
+        #"checkpoint/SSF_PU_0416-163602/training.log" # 128 batch size
+        "checkpoint/SSF_CWRU_0416-155803/training.log",
+       ########## "checkpoint/SSF_CWRU_0416-120355/training.log",  # not sure if itis the same augmentetion
         ]
 batch_size_test(paths)
 
