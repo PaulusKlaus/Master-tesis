@@ -359,8 +359,8 @@ if __name__ == "__main__":
                                 args.latent_space = features
                                 args.hidden_channel = hidden_size
                                 args.num_blocks_ssf=blocks
-                                args.per_class_samples = 100
-                                args.classifier_samples = 10
+                                args.per_class_samples = 1000
+                                args.classifier_samples = 100
                                 args.batch_size = batch_size
                                 args.normlizetype=normalization
                                 run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
