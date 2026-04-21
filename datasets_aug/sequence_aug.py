@@ -151,14 +151,11 @@ class RandomCrop(object):
         self.crop_len = crop_len
 
     def __call__(self, seq):
-        if np.random.randint(2):
-            return seq
-        else:
-            max_index = seq.shape[1] - self.crop_len
-            random_index = np.random.randint(max_index)
-            seq[:, random_index:random_index+self.crop_len] = 0
-            return seq
-        
+        max_index = seq.shape[1] - self.crop_len
+        random_index = np.random.randint(max_index)
+        seq[:, random_index:random_index+self.crop_len] = 0
+        return seq
+    
 
 # TODO: Add forth and back flipping (flips the signal up forth and back)
 # TODO: ADD Tructation ( Tranctation masks a random part of the signal with aero values)
