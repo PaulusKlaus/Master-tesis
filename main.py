@@ -94,7 +94,7 @@ def parse_args():
         "--data_name", # SEU, JNU ,PU , CWRU
         type=str,
         choices=DATA_DIRS.keys(),
-        default="CWRU",  # SEU, JNU ,PU , CWRU
+        default="PU",  # SEU, JNU ,PU , CWRU
         help="The name of the dataset",
     )
 
@@ -336,19 +336,19 @@ if __name__ == "__main__":
 
     ]
     latent_space = [256]
-    hidden_channel =[256]
+    hidden_channel =[32,64,128,160,256]
     #number_blocks=[1,2,3,4,5,6,7,8,9,10]
 
    # latent_space = [192]
    # hidden_channel =[128]
-    number_blocks=[1,2,3,4,5,6,7,8,9,10]
+    number_blocks=[8]
     batch_sizes =[64]
     
      #"--data_name", # SEU, JNU ,PU , CWRU
 
     norm = ["mean_std"]
 
-    for pair in aug_pairs_best_pu:  
+    for pair in random_pairs:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
