@@ -129,7 +129,7 @@ def test_JNU_dataset():
 
 # ---------- Run tests ----------
 if __name__ == "__main__":
-    #test_CWRU_dataset()
+    test_CWRU_dataset()
     #test_PU_dataset()
     #test_XJTU_dataset()
-    test_JNU_dataset()
+    #test_JNU_dataset()
