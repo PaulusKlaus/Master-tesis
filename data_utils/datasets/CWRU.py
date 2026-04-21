@@ -139,27 +139,35 @@ class CWRU(object):
             # stratified random split
             train_pd, temp_pd = train_test_split(
                 data_pd,
-                test_size=0.69,
+                test_size=0.50,
                 random_state=self.random_state,
                 stratify=data_pd["label"],
             )
             val_temp, test_pd = train_test_split(
                 temp_pd,
-                test_size=0.50,
+                test_size=0.5,
                 random_state=self.random_state,
                 stratify=temp_pd["label"],
             )
-            val_pd, classifier_pd = train_test_split(
+            val_pd, classifier_temp = train_test_split(
                 val_temp,
-                test_size=0.15,
+                test_size=0.5,
                 random_state=self.random_state,
                 stratify=val_temp["label"],
+            )
+            classifier_pd, classifier_val_pd = train_test_split(
+                classifier_temp,
+                test_size=0.2,
+                random_state=self.random_state,
+                stratify=classifier_temp["label"],
             )
         elif split == "O_A":
             # ordered split (your custom)
             train_pd, temp_pd = train_test_split_order(data_pd, test_size=0.30)
             val_temp, test_pd   = train_test_split_order(temp_pd, test_size=0.5)
-            val_pd, classifier_pd   = train_test_split_order(val_temp, test_size=0.5)
+            val_pd, classifier_temp   = train_test_split_order(val_temp, test_size=0.5)
+            classifier_pd, classifier_val_pd   = train_test_split_order(classifier_temp, test_size=0.5)
+         
         elif split =="O_N":   # Train on only normal dataset 
             "train: only normal"
             "val: only normal "
@@ -171,7 +179,7 @@ class CWRU(object):
             # split normal into train/val and rest for test and classifier
             train_pd, temp = train_test_split(
                 normal_pd,
-                test_size=0.40,  # 70% normal -> train, 30% normal -> rest
+                test_size=0.50,  # 70% normal -> train, 30% normal -> rest
                 random_state=self.random_state,
                 shuffle=True,
             )
@@ -183,7 +191,7 @@ class CWRU(object):
             ) 
             test_normals, classifier_normals = train_test_split(
                 test_classifier_normals,
-                test_size=0.50,
+                test_size=0.20,
                 random_state=self.random_state,
                 shuffle=True,
             )
@@ -191,7 +199,7 @@ class CWRU(object):
             #    Stratify by label so each fault type appears in both sets
             test_faults, classifier_faults = train_test_split(
                 faults_pd,
-                test_size=0.50,
+                test_size=0.20,
                 random_state=self.random_state,
                 stratify=faults_pd["label"] if len(faults_pd["label"].unique()) > 1 else None,
             )
@@ -211,7 +219,6 @@ class CWRU(object):
                 stratify=classifier_temp["label"] if len(classifier_temp["label"].unique()) > 1 else None,
             )
         
-
         else:
             raise ValueError(f"Unknown split='{split}'. Use 'RA', 'R_NA', or 'O_A'.")
 

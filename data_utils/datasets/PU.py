@@ -104,7 +104,7 @@ class PU(object):
 
         return [data,lab]
 
-    def _data_load(self, filename, name, label, signal_size = 256):
+    def _data_load(self, filename, name, label, signal_size = 1024):
         '''
         This function is mainly used to generate test data and training data.
         filename:Data location

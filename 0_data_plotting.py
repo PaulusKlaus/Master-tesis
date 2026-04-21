@@ -7,6 +7,16 @@ import data_utils.datasets as datasets
 import datasets_aug.sequence_dataset as views
 from datasets_aug.sequence_aug import *
 
+plt.rcParams.update({
+    "font.size": 12,          # base font size
+    "axes.titlesize": 16,     # subplot title
+    "axes.labelsize": 15,     # x and y labels
+    "xtick.labelsize": 12,    # x-axis numbers
+    "ytick.labelsize": 12,    # y-axis numbers
+    "legend.fontsize": 15,    # legend
+    "figure.titlesize": 16    # overall figure title
+})
+
 
 DATA_DIRS = {
     "CWRU": [r"raw_data/CWRU", 4],
@@ -22,7 +32,7 @@ def parse_args():
             "--data_name", # SEU, JNU ,PU , CWRU
             type=str,
             choices=DATA_DIRS.keys(),
-            default="PU",  # SEU, JNU ,PU , CWRU
+            default="CWRU",  # SEU, JNU ,PU , CWRU
             help="The name of the dataset",
         )
 
@@ -39,7 +49,7 @@ def parse_args():
 args = parse_args()
 args.data_dir = DATA_DIRS[args.data_name][0]
 
-AUGMENTATIONS = ["normal", "gaussian", "scale", "randomstrech", "randomcrop"]
+AUGMENTATIONS = [ "gaussian", "scale", "randomstrech", "randomcrop"]
 
 
 
@@ -112,7 +122,7 @@ def plot_all_augmentations(args, target_class=0, save_path=None):
     if torch.is_tensor(x_ref):
         x_ref = x_ref.detach().cpu().squeeze().numpy()
 
-    x_ref = x_ref[:512]
+   # x_ref = x_ref[:512]
 
     fig, axes = plt.subplots(
         len(AUGMENTATIONS), 1,
@@ -126,7 +136,7 @@ def plot_all_augmentations(args, target_class=0, save_path=None):
         if torch.is_tensor(x_aug):
             x_aug = x_aug.detach().cpu().squeeze().numpy()
 
-        x_aug = x_aug[:512]
+        #x_aug = x_aug[:512]
 
         ax = axes[row, 0]
 
@@ -222,7 +232,7 @@ def plot_each_class(dataset, save_path):
         axes = [axes]
 
     for ax, (label, signal) in zip(axes, sorted(class_samples.items())):
-        ax.plot(signal)
+        ax.plot(signal, color= "royalblue")
         ax.set_title(f"Class {label}")
         ax.set_xlabel("Time step")
         ax.set_ylabel("Amplitude")
@@ -262,7 +272,7 @@ def plot_normalizations(dataset, save_path, target_class=0):
     # normalized versions
     for i, method in enumerate(methods, start=1):
         x_norm = normalize_signal(x, method)
-        axes[i].plot(x_norm)
+        axes[i].plot(x_norm, color= "royalblue")
         axes[i].set_title(method)
         axes[i].grid(True)
 
@@ -279,10 +289,10 @@ args.data_dir = DATA_DIRS[args.data_name][0]
 train, test = build_dataset(data_name = args.data_name, data_dir=args.data_dir, augmentation="normal")
 
 
+
+plot_each_class(train, save_path="figures/data_vis/CWRU_all_samples.pdf")
+
+plot_all_augmentations( args,  target_class=0, save_path="figures/data_vis/CWRU_augmentations.pdf")
+
 #plot_normalizations(train, save_path ="figures/data_vis/PU_all_normalizations.pdf",  target_class=0)
-#plot_each_class(train, save_path="figures/data_vis/PU_all_samples.pdf")
-
-plot_all_augmentations( args,  target_class=0, save_path="figures/data_vis/PU_augmentations.pdf")
-
-
 #plot_all_augmentations_overlay(args, target_class=0, save_path="figures/data_vis/PU_augmentations_overlay.pdf")

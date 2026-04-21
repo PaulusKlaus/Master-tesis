@@ -35,11 +35,14 @@ def normalization_test(paths, group_by_blocks=False):
 
             mean_val_acc=("best_val_acc", "mean"),
             mean_val_loss=("best_val_loss", "mean"),
+
+            mean_f1=("macro_f1", "mean"),
+            std_f1=("macro_f1", "std"),
         )
     )
 
     # Optional: combined score (you can tweak weights)
-    summary_norm["score"] = 0.5 * summary_norm["mean_bin_acc"] + 0.5 * summary_norm["mean_acc"]
+    summary_norm["score"] = 0.5 * summary_norm["mean_f1"] + 0.5 * summary_norm["mean_acc"]
 
     summary_norm = summary_norm.sort_values("score", ascending=False)
 
@@ -61,6 +64,9 @@ def normalization_test(paths, group_by_blocks=False):
 
                 mean_bin_acc=("binary_acc", "mean"),
                 std_bin_acc=("binary_acc", "std"),
+
+                mean_f1=("macro_f1", "mean"),
+                std_f1=("macro_f1", "std"),
             )
             .sort_values(["normalization", "num_blocks_ssf"])
         )
@@ -90,12 +96,12 @@ def plot_normalization(df):
 
 
 
-paths =[#"checkpoint/SSF_PU_0415-141949/training.log", # aug pu 
+paths =["checkpoint/SSF_PU_0415-141949/training.log", # aug pu 
         #"checkpoint/SSF_CWRU_0415-161214/training.log",
-        "checkpoint/SSF_CWRU_0416-105859/training.log"  # aug pu
+       # "checkpoint/SSF_CWRU_0416-105859/training.log"  # aug pu
         ]
 normalization_test(paths)
 
 
 df = parse_training_log("checkpoint/SSF_CWRU_0416-105859/training.log")
-plot_normalization(df)
+#plot_normalization(df)
