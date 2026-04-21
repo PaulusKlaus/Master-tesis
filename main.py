@@ -328,10 +328,10 @@ if __name__ == "__main__":
     ]
     aug_pairs_best_pu = [
         ("normal", "scale"),        # 0.7622
-        ("gaussian", "scale"),       # 0.7511
-        ("randomstrech", "randomcrop"),   # 0.7474
-        ("randomstrech", "randomstrech"),           # 0.7452
-        ("randomstrech", "scale"),      # 0.7452
+        ("gaussian", "normal"),       # 0.7511
+        ("randomcrop", "randomcrop"),   # 0.7474
+        ("normal", "randomstrech"),           # 0.7452
+        ("normal", "normal"),      # 0.7452
       #  ("scale", "scale"),           # 0.7437
 
     ]
@@ -348,7 +348,7 @@ if __name__ == "__main__":
 
     norm = ["mean_std"]
 
-    for pair in random_pairs:  
+    for pair in aug_pairs_best_pu:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
