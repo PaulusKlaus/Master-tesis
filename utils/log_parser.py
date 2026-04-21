@@ -210,7 +210,7 @@ def summarize(paths, group_col, group_by_blocks=False):
     # Optional: combined score (you can tweak weights)
     summary_main["score"] = 0.5 * summary_main["mean_f1"] + 0.5 * summary_main["mean_acc"]
 
-    summary_main = summary_main.sort_values("score", ascending=False)
+    summary_main = summary_main.sort_values(group_col, ascending=True)
 
     print(f"\n=== Summary by {group_col} ===")
     print(summary_main.to_string(index=False))

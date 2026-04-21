@@ -1,4 +1,3 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 from utils.log_parser import parse_training_log, summarize
 
