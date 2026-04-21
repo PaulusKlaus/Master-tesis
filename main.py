@@ -94,7 +94,7 @@ def parse_args():
         "--data_name", # SEU, JNU ,PU , CWRU
         type=str,
         choices=DATA_DIRS.keys(),
-        default="PU",  # SEU, JNU ,PU , CWRU
+        default="CWRU",  # SEU, JNU ,PU , CWRU
         help="The name of the dataset",
     )
 
@@ -341,7 +341,7 @@ if __name__ == "__main__":
 
    # latent_space = [192]
    # hidden_channel =[128]
-    number_blocks=[1,2,3,4,5]
+    number_blocks=[1,2,3,4,5,6,7,8,9,10]
     batch_sizes =[64]
     
      #"--data_name", # SEU, JNU ,PU , CWRU
@@ -359,8 +359,8 @@ if __name__ == "__main__":
                                 args.latent_space = features
                                 args.hidden_channel = hidden_size
                                 args.num_blocks_ssf=blocks
-                                args.per_class_samples = 1000
-                                args.classifier_samples = 100
+                                args.per_class_samples = 100
+                                args.classifier_samples = 10
                                 args.batch_size = batch_size
                                 args.normlizetype=normalization
                                 run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
@@ -375,7 +375,7 @@ if __name__ == "__main__":
                                 encoder = trainer.train(pretrained=False, pretrained_dir="./anomaly_detection/SSF_PU_0310-131203/best_pt")
                                 device = next(encoder.parameters()).device  # gets cuda or cpu automatically
                                 
-                                tsne(device, encoder, trainer.test_loader)
+                                
 
                                 test_pred, test_labels, threshold = run_anomaly_detection(
                                     device, encoder, trainer.train_loader, trainer.test_loader,
@@ -394,5 +394,7 @@ if __name__ == "__main__":
 
                                 # Classification 
                                 trainer.train_classifier(encoder)
+                            tsne(device, encoder, trainer.test_loader)
+            
 
 
