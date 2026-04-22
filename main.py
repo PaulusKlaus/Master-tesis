@@ -94,7 +94,7 @@ def parse_args():
         "--data_name", # SEU, JNU ,PU , CWRU
         type=str,
         choices=DATA_DIRS.keys(),
-        default="PU",  # SEU, JNU ,PU , CWRU
+        default="CWRU",  # SEU, JNU ,PU , CWRU
         help="The name of the dataset",
     )
 
@@ -317,26 +317,27 @@ if __name__ == "__main__":
     random_pairs = random.sample(pairs, 5)
 
     print(random_pairs)
-    aug_pairs_best_cwru = [
+    aug_pairs_best_hiden = [
         ("gaussian", "scale"),        # 0.7622
-        ("normal", "gaussian"),       # 0.7511
-        ("gaussian", "randomstrech"),   # 0.7474
-        ("normal", "randomcrop"),           # 0.7452
-        ("randomcrop", "scale"),      # 0.7452
-        ("scale", "scale"),           # 0.7437
+        ("randomstrech", "gaussian"),       # 0.7511
+        ("randomcrop", "randomstrech"),   # 0.7474
+        ("randomcrop", "randomcrop"),      # 0.7452
+        ("scale", "randomstrech"),           # 0.7437
 
     ]
-    aug_pairs_best_pu = [
-        ("normal", "scale"),        # 0.7622
-        ("gaussian", "normal"),       # 0.7511
-        ("randomcrop", "randomcrop"),   # 0.7474
-        ("normal", "randomstrech"),           # 0.7452
-        ("normal", "normal"),      # 0.7452
+    aug_pairs_latent = [
+        ("gaussian", "gaussian"),        # 0.7622
+        ("scale", "randomstrech"),       # 0.7511
+        ("scale", "randomcrop"),   # 0.7474
+        ("randomstrech", "randomcrop"),           # 0.7452
+        ("gaussian", "randomstrech"),      # 0.7452
       #  ("scale", "scale"),           # 0.7437
 
     ]
     latent_space = [32,64,128,160,256, 512]
-    hidden_channel =[160]
+    #latent_space = [256]
+    hidden_channel=[160]
+    #hidden_channel =[32,64,128,160,256]
     #number_blocks=[1,2,3,4,5,6,7,8,9,10]
 
    # latent_space = [192]
@@ -348,7 +349,7 @@ if __name__ == "__main__":
 
     norm = ["mean_std"]
 
-    for pair in random_pairs:  
+    for pair in aug_pairs_latent:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
@@ -359,8 +360,8 @@ if __name__ == "__main__":
                                 args.latent_space = features
                                 args.hidden_channel = hidden_size
                                 args.num_blocks_ssf=blocks
-                                args.per_class_samples = 1000
-                                args.classifier_samples = 100
+                                args.per_class_samples = 100
+                                args.classifier_samples = 10
                                 args.batch_size = batch_size
                                 args.normlizetype=normalization
                                 run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
