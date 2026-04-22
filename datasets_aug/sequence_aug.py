@@ -45,7 +45,7 @@ class AddGaussian(object):
 
 class Scale(object):
     "Ranbdomly multiplies the input signal with a scaler, distributed (1, 0.01)"
-    def __init__(self, sigma=0.01):
+    def __init__(self, sigma=0.1):
         self.sigma = sigma
 
     def __call__(self, seq):

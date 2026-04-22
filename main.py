@@ -335,8 +335,8 @@ if __name__ == "__main__":
       #  ("scale", "scale"),           # 0.7437
 
     ]
-    latent_space = [256]
-    hidden_channel =[32,64,128,160,256]
+    latent_space = [32,64,128,160,256, 512]
+    hidden_channel =[160]
     #number_blocks=[1,2,3,4,5,6,7,8,9,10]
 
    # latent_space = [192]
