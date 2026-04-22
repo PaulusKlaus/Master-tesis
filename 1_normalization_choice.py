@@ -29,8 +29,11 @@ def plot_normalization(df):
 
 
 paths =[#"checkpoint/SSF_PU_0415-141949/training.log", # aug pu 
+
+        "checkpoint/SSF_PU_0422-145545/training.log",
+
         #"checkpoint/SSF_CWRU_0415-161214/training.log",
-        "checkpoint/SSF_CWRU_0416-105859/training.log"  # aug pu
+        #"checkpoint/SSF_CWRU_0416-105859/training.log"  # aug pu
         ]
 normalization_test(paths)
 
