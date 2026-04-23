@@ -402,8 +402,9 @@ paths_augmentetion = [
 
 
  # Blcok sizes 
-  "checkpoint/SSF_PU_0420-145721/training.log",
-
+ # "checkpoint/SSF_PU_0421-085011/training.log",
+  #"checkpoint/SSF_PU_0421-150551/training.log", 
+"checkpoint/SSF_CWRU_0422-084318/training.log",
 ]
 
 aug_pair_vs_blocks_accuracy(paths_augmentetion)
@@ -414,7 +415,7 @@ aug_pair_vs_blocks_accuracy(paths_augmentetion)
 #blocks_vs_binary_acc_with_threshold(paths_augmentetion)
 
 
-df = parse_training_log("checkpoint/SSF_CWRU_0416-105859/training.log" )
+df = parse_training_log("checkpoint/SSF_CWRU_0421-130608/training.log" )
 
 top5_lp = df.sort_values(["test_acc", "binary_acc"], ascending=[False, False]).head(5)
 top5_bin = df.sort_values(["binary_acc", "test_acc"], ascending=[False, False]).head(5)
@@ -428,7 +429,7 @@ show_cols = [
 ]
 
 print("\nTop 5 by TEST linear-probe accuracy")
-print(top5_lp[show_cols].to_string(index=False))
+#print(top5_lp[show_cols].to_string(index=False))
 
 print("\nTop 5 by Binary accuracy")
-print(top5_bin[show_cols].to_string(index=False))
+#print(top5_bin[show_cols].to_string(index=False))

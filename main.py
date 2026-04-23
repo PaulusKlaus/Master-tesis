@@ -326,12 +326,11 @@ if __name__ == "__main__":
 
     ]
     aug_pairs_latent = [
-        ("gaussian", "gaussian"),        # 0.7622
-        ("scale", "randomstrech"),       # 0.7511
-        ("scale", "randomcrop"),   # 0.7474
-        ("randomstrech", "randomcrop"),           # 0.7452
-        ("gaussian", "randomstrech"),      # 0.7452
-      #  ("scale", "scale"),           # 0.7437
+        ("gaussian", "gaussian"),       
+        ("scale", "randomstrech"),     
+        ("scale", "randomcrop"),  
+        ("randomstrech", "randomcrop"),          
+        ("gaussian", "randomstrech"),    
     ]
 
     aug_pairs_normalization = [
@@ -342,9 +341,19 @@ if __name__ == "__main__":
         ("gaussian", "normal"),      # 0.7452
       #  ("scale", "scale"),           # 0.7437
     ]
+    #latent_space = [32,64,128,160,256, 512]
+    aug_pairs_batch_size = [
+        ("normal", "scale"),        # 0.7622
+        ("randomcrop", "randomstrech"),       # 0.7511
+        ("randomstrech", "randomstrech"),   # 0.7474
+        ("randomstrech", "scale"),           # 0.7452
+        ("gaussian", "scale"),      # 0.7452
+      #  ("scale", "scale"),           # 0.7437
+    ]
+    
     latent_space = [32,64,128,160,256, 512]
     #latent_space = [256]
-    #hidden_channel=[256]
+    hidden_channel=[256]
     #hidden_channel =[32,64,128,160,256]
     #number_blocks=[1,2,3,4,5,6,7,8,9,10]
 

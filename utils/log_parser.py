@@ -196,11 +196,11 @@ def summarize(paths, group_col, group_by_blocks=False):
             mean_loss=("test_loss", "mean"),
             std_loss=("test_loss", "std"),
 
-            mean_bin_acc=("binary_acc", "mean"),
-            std_bin_acc=("binary_acc", "std"),
+            #mean_bin_acc=("binary_acc", "mean"),
+            #std_bin_acc=("binary_acc", "std"),
 
-            mean_val_acc=("best_val_acc", "mean"),
-            mean_val_loss=("best_val_loss", "mean"),
+           # mean_val_acc=("best_val_acc", "mean"),
+            #mean_val_loss=("best_val_loss", "mean"),
 
             mean_f1=("macro_f1", "mean"), 
             std_f1=("macro_f1", "std"),
@@ -228,8 +228,8 @@ def summarize(paths, group_col, group_by_blocks=False):
                 mean_acc=("test_acc", "mean"),
                 std_acc=("test_acc", "std"),
 
-                mean_bin_acc=("binary_acc", "mean"),
-                std_bin_acc=("binary_acc", "std"),
+             #   mean_bin_acc=("binary_acc", "mean"),
+               # std_bin_acc=("binary_acc", "std"),
 
                 mean_f1=("macro_f1", "mean"),
                 std_f1=("macro_f1", "std"),
