@@ -94,7 +94,7 @@ def parse_args():
         "--data_name", # SEU, JNU ,PU , CWRU
         type=str,
         choices=DATA_DIRS.keys(),
-        default="CWRU",  # SEU, JNU ,PU , CWRU
+        default="PU",  # SEU, JNU ,PU , CWRU
         help="The name of the dataset",
     )
 
@@ -333,7 +333,7 @@ if __name__ == "__main__":
         ("gaussian", "randomstrech"),    
     ]
 
-    aug_pairs_normalization = [
+    aug_pairs_normalization_and_cb = [
         ("normal", "scale"),        # 0.7622
         ("randomcrop", "randomstrech"),       # 0.7511
         ("randomstrech", "randomstrech"),   # 0.7474
@@ -351,23 +351,20 @@ if __name__ == "__main__":
       #  ("scale", "scale"),           # 0.7437
     ]
     
-    latent_space = [32,64,128,160,256, 512]
+    latent_space = [256]
     #latent_space = [256]
-    hidden_channel=[256]
     #hidden_channel =[32,64,128,160,256]
-    #number_blocks=[1,2,3,4,5,6,7,8,9,10]
-
    # latent_space = [192]
     hidden_channel =[128]
-    number_blocks=[8]
+    number_blocks=[5,6,7,8,9]
     batch_sizes =[64]
     
      #"--data_name", # SEU, JNU ,PU , CWRU
 
     #norm = ["zero_one", "minus_one_one", "mean_std", "mean", None]
-    norm = ["mean_std"]
+    norm = [None]
 
-    for pair in aug_pairs_latent:  
+    for pair in aug_pairs_normalization_and_cb:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
@@ -378,8 +375,8 @@ if __name__ == "__main__":
                                 args.latent_space = features
                                 args.hidden_channel = hidden_size
                                 args.num_blocks_ssf=blocks
-                                args.per_class_samples = 100
-                                args.classifier_samples = 10
+                                args.per_class_samples = 1000
+                                args.classifier_samples = 100
                                 args.batch_size = batch_size
                                 args.normlizetype=normalization
                                 run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"

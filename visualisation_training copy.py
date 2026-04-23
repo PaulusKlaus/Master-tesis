@@ -404,7 +404,8 @@ paths_augmentetion = [
  # Blcok sizes 
  # "checkpoint/SSF_PU_0421-085011/training.log",
   #"checkpoint/SSF_PU_0421-150551/training.log", 
-"checkpoint/SSF_CWRU_0422-084318/training.log",
+#"checkpoint/SSF_CWRU_0422-084318/training.log",
+"checkpoint/SSF_CWRU_0421-130608/training.log"
 ]
 
 aug_pair_vs_blocks_accuracy(paths_augmentetion)
