@@ -342,22 +342,23 @@ if __name__ == "__main__":
         ("gaussian", "normal"),      # 0.7452
       #  ("scale", "scale"),           # 0.7437
     ]
-    #latent_space = [32,64,128,160,256, 512]
-    latent_space = [256]
-    hidden_channel=[256]
+    latent_space = [32,64,128,160,256, 512]
+    #latent_space = [256]
+    #hidden_channel=[256]
     #hidden_channel =[32,64,128,160,256]
     #number_blocks=[1,2,3,4,5,6,7,8,9,10]
 
    # latent_space = [192]
-   # hidden_channel =[128]
-    number_blocks=[7]
+    hidden_channel =[128]
+    number_blocks=[8]
     batch_sizes =[64]
     
      #"--data_name", # SEU, JNU ,PU , CWRU
 
-    norm = ["zero_one", "minus_one_one", "mean_std", "mean", None]
+    #norm = ["zero_one", "minus_one_one", "mean_std", "mean", None]
+    norm = ["mean_std"]
 
-    for pair in aug_pairs_normalization:  
+    for pair in aug_pairs_latent:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
