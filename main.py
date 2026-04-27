@@ -375,7 +375,7 @@ if __name__ == "__main__":
 
 
 
-    for pair in aug_pairs_normalization_and_cb:  
+    for pair in all_augmentation_pairs:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
