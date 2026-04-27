@@ -316,7 +316,7 @@ if __name__ == "__main__":
     # pick 3 random pairs
     random_pairs = random.sample(pairs, 5)
 
-    print(random_pairs)
+    #print(random_pairs)
     aug_pairs_best_hiden = [
         ("gaussian", "scale"),        # 0.7622
         ("randomstrech", "gaussian"),       # 0.7511
@@ -359,10 +359,21 @@ if __name__ == "__main__":
     number_blocks=[3, 4]
     batch_sizes =[64]
     
-     #"--data_name", # SEU, JNU ,PU , CWRU
 
     #norm = ["zero_one", "minus_one_one", "mean_std", "mean", None]
     norm = [None]
+
+    # augmentation Testing 
+    # PU
+    norm = [None]
+    batch_sizes =[64]
+    number_blocks=[7] # or 8
+    hidden_channel = [128]
+    latent_space  = [160] # or 128
+    augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
+    all_augmentation_pairs = list(combinations_with_replacement(augmentations, 2))
+
+
 
     for pair in aug_pairs_normalization_and_cb:  
         for hidden_size in hidden_channel:
