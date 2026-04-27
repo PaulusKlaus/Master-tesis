@@ -1,8 +1,6 @@
-import matplotlib.pyplot as plt
 from utils.log_parser import summarize
+from visualisation_training import aug_pair_vs_blocks_accuracy, augmentation_test, scatter_plots
 
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 
 def block_size_test(paths, group_by_blocks=False):
@@ -22,3 +20,7 @@ paths =[#"checkpoint/SSF_PU_0420-145721/training.log", #6-10 blocks
       # "checkpoint/SSF_CWRU_0421-130608/training.log",
         ]
 block_size_test(paths)
+
+aug_pair_vs_blocks_accuracy(paths, top_k = 5 )
+
+scatter_plots(paths)

@@ -145,7 +145,7 @@ def scatter_plots(paths, save_dir="figures/training_vis"):
     plt.savefig("figures/training_vis/6_hidden_channel_vs_test_loss.pdf", bbox_inches="tight")
 
 
-def augmentation_test(paths, order_invariant):
+def augmentation_test(paths, order_invariant=True):
     all_df = []
     for path in paths:
         df = parse_training_log(path)
