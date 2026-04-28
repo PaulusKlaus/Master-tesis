@@ -94,7 +94,7 @@ def parse_args():
         "--data_name", # SEU, JNU ,PU , CWRU
         type=str,
         choices=DATA_DIRS.keys(),
-        default="CWRU",  # SEU, JNU ,PU , CWRU
+        default="PU",  # SEU, JNU ,PU , CWRU
         help="The name of the dataset",
     )
 
@@ -365,9 +365,9 @@ if __name__ == "__main__":
 
     # augmentation Testing 
     # PU
-    norm = ["mean_std"]
+    norm = [None]
     batch_sizes =[64]
-    number_blocks=[7] # or 8
+    number_blocks=[5,6,8,9] # or 8
     hidden_channel = [128]
     latent_space  = [160] # or 128
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
@@ -386,8 +386,8 @@ if __name__ == "__main__":
                                 args.latent_space = features
                                 args.hidden_channel = hidden_size
                                 args.num_blocks_ssf=blocks
-                                args.per_class_samples = 100
-                                args.classifier_samples = 10
+                                args.per_class_samples = 1000
+                                args.classifier_samples = 100
                                 args.batch_size = batch_size
                                 args.normlizetype=normalization
                                 run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
