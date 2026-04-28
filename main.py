@@ -365,7 +365,7 @@ if __name__ == "__main__":
 
     # augmentation Testing 
     # PU
-    norm = [None]
+    norm = ["mean_std"]
     batch_sizes =[64]
     number_blocks=[7] # or 8
     hidden_channel = [128]
