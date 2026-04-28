@@ -167,12 +167,17 @@ def augmentation_test(paths, order_invariant=True):
         .groupby(["aug_a", "aug_b", "num_blocks_ssf"], as_index=False)
         .agg(
             n_runs=("test_acc", "count"),
+
             mean_acc=("test_acc", "mean"),
             std_acc=("test_acc", "std"),
+
             mean_loss=("test_loss", "mean"),
             std_loss=("test_loss", "std"),
-            mean_bin_acc=("binary_acc", "mean"),
-            std_bin_acc=("binary_acc", "std"),
+            #mean_bin_acc=("binary_acc", "mean"),
+            #std_bin_acc=("binary_acc", "std"),
+
+            mean_f1=("macro_f1", "mean"), 
+            std_f1=("macro_f1", "std"),
 
         )
         .sort_values(["aug_a", "aug_b", "num_blocks_ssf"])
@@ -183,16 +188,24 @@ def augmentation_test(paths, order_invariant=True):
         .groupby(["aug_a", "aug_b"], as_index=False)
         .agg(
             n_runs=("test_acc", "count"),
+
             mean_acc=("test_acc", "mean"),
             std_acc=("test_acc", "std"),
-            mean_loss=("test_loss", "mean"),
-            std_loss=("test_loss", "std"),
-            mean_bin_acc=("binary_acc", "mean"),
-            std_bin_acc=("binary_acc", "std"),
-        )
-        .sort_values("mean_acc", ascending=False)
-    )
 
+            #mean_loss=("test_loss", "mean"),
+            #std_loss=("test_loss", "std"),
+
+            #mean_bin_acc=("binary_acc", "mean"),
+            #std_bin_acc=("binary_acc", "std"),
+            mean_f1=("macro_f1", "mean"), 
+            std_f1=("macro_f1", "std"),
+        )
+    )
+    # Optional: combined score (you can tweak weights)
+    summary_aug["score"] = 0.5 * summary_aug["mean_f1"] + 0.5 * summary_aug["mean_acc"]
+
+    summary_aug = summary_aug.sort_values("aug_a", ascending=True)
+    print(f"\n=== Summary by Augmentation  ===")
     print(summary_aug.to_string(index=False))
     return summary
 
@@ -408,7 +421,7 @@ paths_augmentetion = [
 "checkpoint/SSF_CWRU_0421-130608/training.log"
 ]
 
-aug_pair_vs_blocks_accuracy(paths_augmentetion)
+#aug_pair_vs_blocks_accuracy(paths_augmentetion)
 
 #augmentation_test(paths_augmentetion)
 
@@ -416,21 +429,21 @@ aug_pair_vs_blocks_accuracy(paths_augmentetion)
 #blocks_vs_binary_acc_with_threshold(paths_augmentetion)
 
 
-df = parse_training_log("checkpoint/SSF_CWRU_0421-130608/training.log" )
+#df = parse_training_log("checkpoint/SSF_CWRU_0421-130608/training.log" )
 
-top5_lp = df.sort_values(["test_acc", "binary_acc"], ascending=[False, False]).head(5)
-top5_bin = df.sort_values(["binary_acc", "test_acc"], ascending=[False, False]).head(5)
+# top5_lp = df.sort_values(["test_acc", "binary_acc"], ascending=[False, False]).head(5)
+# top5_bin = df.sort_values(["binary_acc", "test_acc"], ascending=[False, False]).head(5)
 
-show_cols = [
-    "aug_1", "aug_2",
-    "hidden_channel", "latent_dim", "num_blocks_ssf",
-    "best_val_acc", "best_val_loss",
-    "test_acc", "test_loss",
-    "binary_acc", "threshold"
-]
+# show_cols = [
+#     "aug_1", "aug_2",
+#     "hidden_channel", "latent_dim", "num_blocks_ssf",
+#     "best_val_acc", "best_val_loss",
+#     "test_acc", "test_loss",
+#     "binary_acc", "threshold"
+# ]
 
-print("\nTop 5 by TEST linear-probe accuracy")
-#print(top5_lp[show_cols].to_string(index=False))
+# print("\nTop 5 by TEST linear-probe accuracy")
+# #print(top5_lp[show_cols].to_string(index=False))
 
-print("\nTop 5 by Binary accuracy")
+# print("\nTop 5 by Binary accuracy")
 #print(top5_bin[show_cols].to_string(index=False))
