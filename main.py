@@ -353,21 +353,21 @@ if __name__ == "__main__":
     
     
     #norm = ["zero_one", "minus_one_one", "mean_std", "mean", None]
-    norm = [None]
+
 
     # augmentation Testing 
     # PU
     norm = [None]
     batch_sizes =[64]
     number_blocks=[8] # or 8
-    hidden_channel = [160]
-    latent_space  = [32,64, 128, 160, 256, 512] # or 128
+    hidden_channel = [64, 128, 160, 256, 512]
+    latent_space  = [256] # or 128
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
     all_augmentation_pairs = list(combinations_with_replacement(augmentations, 2))
 
 
 
-    for pair in aug_pairs_latent:  
+    for pair in aug_pairs_normalization_and_cb:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
