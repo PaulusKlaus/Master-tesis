@@ -17,6 +17,8 @@ paths =[#"checkpoint/SSF_PU_0420-145721/training.log", #6-10 blocks
         "checkpoint/SSF_PU_0427-140057/training.log",  # No normalization pu 3- 4 blocks
         
 
+        
+
       # "checkpoint/SSF_CWRU_0421-130608/training.log",
         ]
 block_size_test(paths)
