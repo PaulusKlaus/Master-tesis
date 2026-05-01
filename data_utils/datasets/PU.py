@@ -168,9 +168,10 @@ class PU(object):
 
         elif split == "O_A":
             # ordered split (your custom)
-            train_pd, temp_pd = train_test_split_order(data_pd, test_size=0.30)
-            val_temp, test_pd   = train_test_split_order(temp_pd, test_size=0.5)
-            val_pd, classifier_pd   = train_test_split_order(val_temp, test_size=0.5)
+            train_pd, temp = train_test_split_order(data_pd, test_size=0.60)
+            val_pd, test_class_temp   = train_test_split_order(temp, test_size=0.5)
+            test_pd, classifier_temp   = train_test_split_order(test_class_temp, test_size=0.5)
+            classifer_val_pd, classifier_pd   = train_test_split_order(classifier_temp, test_size=0.5)
          
         elif split =="O_N":   # Train on only normal dataset 
             "train: only normal"
