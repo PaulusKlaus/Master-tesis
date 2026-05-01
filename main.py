@@ -147,7 +147,7 @@ def parse_args():
         "--processing_type",
         type=str,
         choices=["RA", "R_NA", "O_A", "O_N"],
-        default="RA",
+        default="O_A",
         help=(
             "RA: random split with augmentation | "
             "R_NA: random split without augmentation | "

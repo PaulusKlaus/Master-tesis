@@ -170,8 +170,8 @@ class PU(object):
             # ordered split (your custom)
             train_pd, temp = train_test_split_order(data_pd, test_size=0.60)
             val_pd, test_class_temp   = train_test_split_order(temp, test_size=0.5)
-            test_pd, classifier_temp   = train_test_split_order(test_class_temp, test_size=0.5)
-            classifer_val_pd, classifier_pd   = train_test_split_order(classifier_temp, test_size=0.5)
+            test_pd, classifier_temp   = train_test_split_order(test_class_temp, test_size=0.2)
+            classifier_pd, classifier_val_pd  = train_test_split_order(classifier_temp, test_size=0.5)
          
         elif split =="O_N":   # Train on only normal dataset 
             "train: only normal"

@@ -1,0 +1,43 @@
+05-01 15:00:14 ================================================================================
+05-01 15:00:14 RUN: aug=('gaussian', 'gaussian') hidden=128 latent=160 blocks=7 seed=0
+05-01 15:00:14 model_name: SSF
+05-01 15:00:14 data_name: PU
+05-01 15:00:14 aug_1: gaussian
+05-01 15:00:14 aug_2: gaussian
+05-01 15:00:14 data_view: TwoViewDataset
+05-01 15:00:14 data_dir: raw_data/PU
+05-01 15:00:14 out_channel: 6
+05-01 15:00:14 normlizetype: None
+05-01 15:00:14 processing_type: O_A
+05-01 15:00:14 max_epoch: 50
+05-01 15:00:14 classifier_epoch: 50
+05-01 15:00:14 batch_size: 64
+05-01 15:00:14 cuda_device: 0
+05-01 15:00:14 checkpoint_dir: ./checkpoint
+05-01 15:00:14 opt: sgd
+05-01 15:00:14 lr: 0.05
+05-01 15:00:14 momentum: 0.9
+05-01 15:00:14 weight_decay: 0.0001
+05-01 15:00:14 lr_scheduler: cos
+05-01 15:00:14 gamma: 0.95
+05-01 15:00:14 eta_min: 1e-05
+05-01 15:00:14 latent_space: 160
+05-01 15:00:14 num_blocks_ssf: 7
+05-01 15:00:14 hidden_channel: 128
+05-01 15:00:14 per_class_samples: 1000
+05-01 15:00:14 classifier_samples: 100
+05-01 15:00:14 task: self_supervised
+05-01 15:00:14 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+05-01 15:00:14 using 1 gpus
+05-01 15:00:14 Dataset class: <class 'data_utils.datasets.PU.PU'>
+05-01 15:00:16 Split sizes: train=6000 val=6000 test=6000, classier=600
+05-01 15:00:16 Label counts train: Counter({0: 1000, 1: 1000, 2: 1000, 3: 1000, 4: 1000, 5: 1000})
+05-01 15:00:16 Label counts val:   Counter({0: 1000, 1: 1000, 2: 1000, 3: 1000, 4: 1000, 5: 1000})
+05-01 15:00:16 Label counts test:  Counter({0: 1000, 1: 1000, 2: 1000, 3: 1000, 4: 1000, 5: 1000})
+05-01 15:00:16 Label counts classifier:  Counter({4: 100, 3: 100, 5: 100, 0: 100, 2: 100, 1: 100})
+05-01 15:00:16 Label counts classifier validation:  Counter({5: 100, 2: 100, 0: 100, 3: 100, 1: 100, 4: 100})
+05-01 15:00:18 -----Epoch 0/49-----
+05-01 15:00:27 current lr: 0.05
+05-01 15:00:27 Saved best checkpoint to ./checkpoint\SSF_PU_0501-150014\best_pt (val_loss=-0.9113)
+05-01 15:00:27 Epoch 000 Train loss -0.9456 | Val loss -0.9113
+05-01 15:00:27 -----Epoch 1/49-----
