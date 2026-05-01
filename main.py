@@ -147,7 +147,7 @@ def parse_args():
         "--processing_type",
         type=str,
         choices=["RA", "R_NA", "O_A", "O_N"],
-        default="O_N",
+        default="RA",
         help=(
             "RA: random split with augmentation | "
             "R_NA: random split without augmentation | "
@@ -359,15 +359,21 @@ if __name__ == "__main__":
     # PU
     norm = [None]
     batch_sizes =[64]
-    number_blocks=[8] # or 8
-    hidden_channel = [64, 128, 160, 256, 512]
-    latent_space  = [256] # or 128
+    number_blocks=[7] # or 8
+    hidden_channel = [128]
+    latent_space  = [160] # or 128
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
     all_augmentation_pairs = list(combinations_with_replacement(augmentations, 2))
 
+    best_augmentations_pu =[('gaussian', 'gaussian'),
+                            ('normal', 'randomstrech'),
+                              ('randomstrech', 'randomstrech'),
+                              ('normal', 'normal'),
+                              ('normal', 'gaussian'),] 
 
 
-    for pair in aug_pairs_normalization_and_cb:  
+
+    for pair in best_augmentations_pu:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
