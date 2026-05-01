@@ -113,8 +113,6 @@ def predict_anomaly_labels(features, normal_features, threshold):
     """
     X = np.asarray(features, dtype=np.float32)
     # Compute min distance from each test point to the normal set
-    # (M, N, D) may be large; this is simple but can be memory-heavy.
-    # For big data, chunk it (see below).
     dmins = np.linalg.norm(normal_features[None, :, :] - X[:, None, :], axis=2).min(axis=1)
     return (dmins > threshold).astype(np.int64)
 
@@ -145,8 +143,7 @@ def run_anomaly_detection(
     normal_feats = train_feats[train_labels == normal_class]
 
     # 3) Fit threshold via 1-NN distances within normal set ----
-    #threshold_1, _ = fit_nn_threshold(normal_feats, k=1, std_factor=2.0)
-    # Using knn
+
     nn = NearestNeighbors(n_neighbors=k_neighbors, metric=metric, n_jobs=n_jobs).fit(normal_feats)
     dists, _ = nn.kneighbors(normal_feats, return_distance=True)
     nn1 = dists[:, 1]  # exclude self-distance

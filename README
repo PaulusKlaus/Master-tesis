@@ -5,8 +5,24 @@ Hi, this is my master tesis.
     PU 
 
 
+Checkpoints:
 
-- 
+checkpoint/SSF_PU_0415-141949       # 1 normlization aug pu
+checkpoint/SSF_PU_0416-122923       # 2 Batch size 
+checkpoint/SSF_PU_0416-163602       # 2 Batch size 
+checkpoint/SSF_PU_0420-145721       # 3 CB 6-10              
+checkpoint/SSF_PU_0421-150551       # 3 CB 1-5
+checkpoint/SSF_PU_0421-085011       # 4 hidden layer 256 latnt space 8 blocks, mean std 
+checkpoint/SSF_PU_0422-095246       # 5 Latent space (dont know what wrong, but it is not used)
+checkpoint/SSF_PU_0422-145545       # 1 normalization
+checkpoint/SSF_PU_0423-100558       # 5 latent space; hidden channel 128
+checkpoint/SSF_PU_0423-152012       # 3 CB 5-9 (no normalization, hidden size 128)
+checkpoint/SSF_PU_0427-140057       # 3 CB 3-4 (no-normalization )
+checkpoint/SSF_PU_0427-144302       # 6 augmentation, no normalization 
+checkpoint/SSF_PU_0428-101427       # 5 latent space ; hidden layer 160, no normalization 
+checkpoint/SSF_PU_0428-154042       # 6 augmentation; no normalization, different block sizes 
+checkpoint/SSF_PU_0429-112909       # 4 hidden layer; laten space 256, no nomalization 
+
 
 
 

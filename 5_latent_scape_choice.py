@@ -11,13 +11,13 @@ def latent_space_test(paths, group_by_blocks=False):
 
 
 
-paths =["checkpoint/SSF_PU_0422-095246/training.log", # hidden channel 160 
+paths =[# # hidden channel 160 
         #"checkpoint/SSF_PU_0423-100558/training.log",  # hidden channel 128 
 
         # No normalization testing (hidden layer 160)
-        #"checkpoint/SSF_PU_0428-154042/training.log",
+        "checkpoint/SSF_PU_0428-154042/training.log",
 
        #"checkpoint/SSF_CWRU_0422-091220/training.log", # hidden channel 160 
-       "checkpoint/SSF_CWRU_0423-140218/training.log" # hidden channel 128
+       #"checkpoint/SSF_CWRU_0423-140218/training.log" # hidden channel 128
         ]
 latent_space_test(paths)

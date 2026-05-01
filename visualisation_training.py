@@ -7,20 +7,6 @@ from pathlib import Path
 from utils.log_parser import parse_training_log
 
 
-#path = "checkpoint/SSF_PU_0226-130304/training.log"   # <-- adjust path if needed
-paths_latent = [
-    #"checkpoint/SSF_PU_0224-134536/training.log",  #Not working
-   # "checkpoint_old/SSF_PU_0224-154807/training.log", # Correlation between latent space and depth of the model on all of the data hidden size 258          normal , random crop
-    #"checkpoint/SSF_PU_0226-083310/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE hidden size 258
-    "checkpoint_old/SSF_PU_0226-131358/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 128       --------------STANDARD--------------------
-   # "checkpoint/SSF_PU_0226-132229/training.log",  # Correlation between latent space and depth of the model ONLY REAL DAMAGE (without combined damage) Hidden size 128 
-    "checkpoint_old/SSF_PU_0302-085542/training.log",  # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 128          NORMAL Gausian
-    "checkpoint_old/SSF_PU_0302-141641/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 96 
-    "checkpoint_old/SSF_PU_0302-174623/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 64
-    #"checkpoint/SSF_PU_0302-214830/training.log", # Correlation between latent space and depth of the model ONLY REAL DAMAGE Hidden size 32
-]
-
-
 
 
 def scatter_plots(paths, save_dir="figures/training_vis"):
@@ -173,8 +159,8 @@ def augmentation_test(paths, order_invariant=True):
 
             mean_loss=("test_loss", "mean"),
             std_loss=("test_loss", "std"),
-            #mean_bin_acc=("binary_acc", "mean"),
-            #std_bin_acc=("binary_acc", "std"),
+            mean_bin_acc=("binary_acc", "mean"),
+            std_bin_acc=("binary_acc", "std"),
 
             mean_f1=("macro_f1", "mean"), 
             std_f1=("macro_f1", "std"),
@@ -192,11 +178,11 @@ def augmentation_test(paths, order_invariant=True):
             mean_acc=("test_acc", "mean"),
             std_acc=("test_acc", "std"),
 
-            #mean_loss=("test_loss", "mean"),
-            #std_loss=("test_loss", "std"),
+            mean_loss=("test_loss", "mean"),
+            std_loss=("test_loss", "std"),
 
-            #mean_bin_acc=("binary_acc", "mean"),
-            #std_bin_acc=("binary_acc", "std"),
+            mean_bin_acc=("binary_acc", "mean"),
+            std_bin_acc=("binary_acc", "std"),
             mean_f1=("macro_f1", "mean"), 
             std_f1=("macro_f1", "std"),
         )
