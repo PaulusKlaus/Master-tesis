@@ -90,7 +90,7 @@ class PU(object):
             bearing = ALL_DATA[k]
             label = ALL_LABEL[k]
 
-            for i in range(1, 10):
+            for i in range(1, 20):
                 name = f"{state}_{bearing}_{i}"
                 d, l = self._data_load(
                     os.path.join(self.data_dir, bearing, f"{name}.mat"),
@@ -142,22 +142,30 @@ class PU(object):
             # stratified random split
             train_pd, temp_pd = train_test_split(
                 data_pd,
-                test_size=0.30,
+                test_size=0.60,
                 random_state=self.random_state,
                 stratify=data_pd["label"],
             )
-            val_temp, test_pd = train_test_split(
+            val_pd, test_classiferier_temp = train_test_split(
                 temp_pd,
                 test_size=0.5,
                 random_state=self.random_state,
                 stratify=temp_pd["label"],
             )
-            val_pd, classifier_pd = train_test_split(
-                val_temp,
-                test_size=0.5,
+            test_pd, classifier_temp = train_test_split(
+                test_classiferier_temp,
+                test_size=0.20,
                 random_state=self.random_state,
-                stratify=val_temp["label"],
+                stratify=test_classiferier_temp["label"],
             )
+
+            classifier_pd, classifier_val_pd = train_test_split(
+                classifier_temp,
+                test_size=0.50,
+                random_state=self.random_state,
+                stratify=classifier_temp["label"],
+            )
+
         elif split == "O_A":
             # ordered split (your custom)
             train_pd, temp_pd = train_test_split_order(data_pd, test_size=0.30)
@@ -169,12 +177,12 @@ class PU(object):
             "val: only normal "
             "test: all classes"
             "classifier: all classes"
-            normal_pd = data_pd[data_pd["label"] == 0].reset_index(drop=True)
-            faults_pd = data_pd[data_pd["label"] != 0].reset_index(drop=True)   
+            normal_temp = data_pd[data_pd["label"] == 0].reset_index(drop=True)
+            faults_temp = data_pd[data_pd["label"] != 0].reset_index(drop=True)   
 
             # split normal into train/val and rest for test and classifier
             train_pd, temp = train_test_split(
-                normal_pd,
+                normal_temp,
                 test_size=0.50,  # 70% normal -> train, 30% normal -> rest
                 random_state=self.random_state,
                 shuffle=True,
@@ -194,10 +202,10 @@ class PU(object):
             # Split FAULTS into test/classifier (both contain all fault classes)
             #    Stratify by label so each fault type appears in both sets
             test_faults, classifier_faults = train_test_split(
-                faults_pd,
+                faults_temp,
                 test_size=0.20,
                 random_state=self.random_state,
-                stratify=faults_pd["label"] if len(faults_pd["label"].unique()) > 1 else None,
+                stratify=faults_temp["label"] if len(faults_temp["label"].unique()) > 1 else None,
             )
             # Add normal samples to test/classifier 
             test_pd = pd.concat([test_normals, test_faults], ignore_index=True).sample(
