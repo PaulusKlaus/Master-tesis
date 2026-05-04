@@ -83,7 +83,7 @@ def parse_args():
         "--model_name",
         type=str,
         choices=MODEL_CONFIG.keys(),
-        default="SSF",
+        default="CNN_1d",
         help="The name of the model",
     )
 
@@ -147,7 +147,7 @@ def parse_args():
         "--processing_type",
         type=str,
         choices=["RA", "R_NA", "O_A", "O_N"],
-        default="RA",
+        default="O_N",
         help=(
             "RA: random split with augmentation | "
             "R_NA: random split without augmentation | "
@@ -383,7 +383,7 @@ if __name__ == "__main__":
                                 args.aug_1, args.aug_2 = pair
                                 args.latent_space = features
                                 args.hidden_channel = hidden_size
-                                args.num_blocks_ssf=blocks
+                                args.num_blocks_ssf=None
                                 args.per_class_samples = 1000
                                 args.classifier_samples = 100
                                 args.batch_size = batch_size
@@ -418,7 +418,7 @@ if __name__ == "__main__":
                                 logging.info("Rates: %s", rates)
 
                                 # Classification 
-                                trainer.train_classifier(encoder)
+                                #trainer.train_classifier(encoder)
                             tsne(device, encoder, trainer.test_loader)
             
 

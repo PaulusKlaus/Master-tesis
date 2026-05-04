@@ -27,49 +27,6 @@ Anomaly detection pipeline :
 """
 
 
-def extract_features_from_encoder(device, encoder, loader, use_head="z1", l2_normalize=False):
-    encoder.eval()
-    feats_list = []
-    labels_list = []
-
-    with torch.no_grad():
-        for batch in loader:
-            if len(batch) == 3:
-                x1, x2, y = batch
-            elif len(batch) == 2:
-                x1, y = batch
-                x2 = x1   # use same input twice
-            else:
-                raise ValueError(f"Expected batch of length 2 or 3, got {len(batch)}")
-
-            x1 = x1.to(device)
-            x2 = x2.to(device)
-
-            z1, z2, p1, p2 = encoder(x1, x2)
-
-            if use_head == "z1":
-                f = z1
-            elif use_head == "z2":
-                f = z2
-            elif use_head == "p1":
-                f = p1
-            elif use_head == "p2":
-                f = p2
-            else:
-                raise ValueError("use_head must be one of: z1, z2, p1, p2")
-
-            feats_list.append(f.detach().cpu())
-            labels_list.append(y.detach().cpu())
-
-    feats = torch.cat(feats_list, dim=0).numpy().astype(np.float32)
-    labels = torch.cat(labels_list, dim=0).numpy()
-
-    if l2_normalize:
-        norms = np.linalg.norm(feats, axis=1, keepdims=True)
-        feats = feats / np.maximum(norms, 1e-12)
-
-    return feats, labels
-
 
 def extract_features_from_encoder(device, encoder, loader, l2_normalize=False):
     """

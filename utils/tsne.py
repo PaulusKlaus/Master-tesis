@@ -4,16 +4,28 @@ from mpl_toolkits.mplot3d import Axes3D  # needed for 3D projection
 import torch
 import os
 
+
 def tsne(device, encoder, loader, plot="1_axis"): # plot = " 3_axis"
     all_features = []
     all_labels = []
 
     encoder.eval()
     with torch.no_grad():
-        for x1, x2, y in loader:
-            z1, z2, p1, p2 = encoder(x1.to(device), x2.to(device))
-            all_features.append(z1)
-            all_labels.append(y)
+        for batch in loader:
+            if len(batch) == 3:
+                x1, x2, y = batch
+                x1 = x1.to(device)
+                x2 = x2.to(device)
+                f, z2, p1, p2 = encoder(x1, x2)
+            elif len(batch) == 2:
+                x1, y = batch
+                x1 = x1.to(device)
+                f = encoder(x1)
+            else:
+                raise ValueError(f"Expected batch of length 2 or 3, got {len(batch)}")
+
+            all_features.append(f.detach().cpu())
+            all_labels.append(y.detach().cpu())
 
     features = torch.cat(all_features).cpu().numpy()
     labels = torch.cat(all_labels).cpu().numpy()
