@@ -162,7 +162,7 @@ class Trainer(object):
         self._data_loading()
 
         # ---- Define model -----
-        # For the self-supervised models the latent space is 16 dimentional features, 
+        # For the self-supervised models the latent space is defined by the latent space size , 
         # while for the traditional models output the classes 
 
         if args.model_name in {"CNN_1d", "resnet18_1d", "MLP"}:
@@ -299,8 +299,13 @@ class Trainer(object):
         total_loss = 0.0
         total_correct = 0
         total_samples = 0
+        if args.task == "supervised":
+            loader = self.classifier_val_loader
+        else:
+            loader = self.val_loader if val else self.test_loader
+            
 
-        loader = self.val_loader if val else self.test_loader
+        
         device = self.device
         prefix = "val" if val else "test"
 

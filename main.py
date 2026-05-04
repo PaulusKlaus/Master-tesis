@@ -365,11 +365,11 @@ if __name__ == "__main__":
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
     all_augmentation_pairs = list(combinations_with_replacement(augmentations, 2))
 
-    best_augmentations_pu =[#('gaussian', 'gaussian'),
-                            #('normal', 'randomstrech'),
-                           #   ('randomstrech', 'randomstrech'),
-                          # #   ('normal', 'normal'),
-                              ('normal', 'gaussian'),] 
+    best_augmentations_pu =[('gaussian', 'gaussian'),
+                            ('normal', 'randomstrech'),
+                            ('randomstrech', 'randomstrech'),
+                            ('normal', 'normal'),
+                            ('normal', 'gaussian'),] 
 
 
 
