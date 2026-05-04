@@ -147,7 +147,7 @@ def parse_args():
         "--processing_type",
         type=str,
         choices=["RA", "R_NA", "O_A", "O_N"],
-        default="O_N",
+        default="RA",
         help=(
             "RA: random split with augmentation | "
             "R_NA: random split without augmentation | "
@@ -365,10 +365,10 @@ if __name__ == "__main__":
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
     all_augmentation_pairs = list(combinations_with_replacement(augmentations, 2))
 
-    best_augmentations_pu =[('gaussian', 'gaussian'),
-                            ('normal', 'randomstrech'),
-                              ('randomstrech', 'randomstrech'),
-                              ('normal', 'normal'),
+    best_augmentations_pu =[#('gaussian', 'gaussian'),
+                            #('normal', 'randomstrech'),
+                           #   ('randomstrech', 'randomstrech'),
+                          # #   ('normal', 'normal'),
                               ('normal', 'gaussian'),] 
 
 
