@@ -83,7 +83,7 @@ def parse_args():
         "--model_name",
         type=str,
         choices=MODEL_CONFIG.keys(),
-        default="CNN_1d",
+        default="SSF",
         help="The name of the model",
     )
 
@@ -400,24 +400,17 @@ if __name__ == "__main__":
     #             device = next(encoder.parameters()).device  # gets cuda or cpu automatically
     #             tsne(device, encoder, trainer.test_loader)
 
-    args.model_name = "SSF"
-    sub_dir = args.model_name+'_'+args.data_name + '_' + datetime.strftime(datetime.now(), '%m%d-%H%M%S')
-    save_dir = os.path.join(args.checkpoint_dir, sub_dir)
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
 
-    # set the logger
-    setlogger(os.path.join(save_dir, 'training.log'))
     nr_sampels = [100, 250, 500, 1000] 
     for pair in best_augmentations_pu:  
-        for nr_sampels in nr_sampels:
+        for samples in nr_sampels:
             for seed in range (1):  # seeds 
                 args.aug_1, args.aug_2 = pair
                 args.latent_space = 160
                 args.hidden_channel = 128
                 args.num_blocks_ssf=7
-                args.per_class_samples = nr_sampels
-                args.classifier_samples = int(nr_sampels/10)
+                args.per_class_samples = samples
+                args.classifier_samples = int(samples/10)
                 args.batch_size = 64
                 args.normlizetype=None
                 run_id = f"aug={pair} hidden={128} latent={160} blocks={None} seed={seed}"
