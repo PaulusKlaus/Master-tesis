@@ -32,6 +32,8 @@ def parse_training_log(path):
 
     bs_re = re.compile(r'batch_size.*?(\d+)', re.IGNORECASE) # batch size
 
+    split_type_re = re.compile(r'processing_type\s*:\s*([A-Za-z_]+)', re.IGNORECASE)
+    
     #f1-score and recall 
     macro_avg_re = re.compile(
         r'macro avg\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+(\d+)',
@@ -67,6 +69,8 @@ def parse_training_log(path):
                     "aug_1": None,          
                     "aug_2": None,  
 
+                    "split_type": None,
+
                     # binary test (your anomaly/normal evaluation)
                     "binary_acc": None,
 
@@ -99,6 +103,11 @@ def parse_training_log(path):
             m_aug2 = aug2_re.search(line)
             if m_aug2 and current["aug_2"] is None:
                 current["aug_2"] = m_aug2.group(1).lower()
+
+            split_type = split_type_re.search(line)
+            if split_type: 
+                current["split_type"] = split_type.group(1)
+
 
             m_latent = latent_re.search(line)
             if m_latent and current["latent_dim"] is None:
@@ -161,7 +170,7 @@ def parse_training_log(path):
                 current["anomaly_recall"] = float(m_anomaly.group(2))
                 current["anomaly_f1"] = float(m_anomaly.group(3))
 
-
+            
 
     if current is not None:
         runs.append(current)
