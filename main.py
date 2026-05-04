@@ -366,60 +366,72 @@ if __name__ == "__main__":
     all_augmentation_pairs = list(combinations_with_replacement(augmentations, 2))
 
     best_augmentations_pu =[('gaussian', 'gaussian'),
-                            ('normal', 'randomstrech'),
-                            ('randomstrech', 'randomstrech'),
-                            ('normal', 'normal'),
-                            ('normal', 'gaussian'),] 
+                             ('gaussian', 'scale'),
+                           # ('normal', 'randomstrech'),
+                            #('randomstrech', 'randomstrech'),
+                            #('normal', 'normal'),
+                            #('normal', 'gaussian')
+                            ] 
 
 
-
+    nr_sampels = [100, 50, 25, 10] 
     for pair in best_augmentations_pu:  
-        for hidden_size in hidden_channel:
-            for features in latent_space:
-                for blocks in number_blocks:
-                    for normalization in norm: 
-                        for batch_size in batch_sizes:
-                            for seed in range (3):  # seeds 
-                                args.aug_1, args.aug_2 = pair
-                                args.latent_space = features
-                                args.hidden_channel = hidden_size
-                                args.num_blocks_ssf=None
-                                args.per_class_samples = 1000
-                                args.classifier_samples = 100
-                                args.batch_size = batch_size
-                                args.normlizetype=normalization
-                                run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
-                                logging.info("=" * 80)
-                                logging.info("RUN: %s", run_id)
+        for nr_sampels in nr_sampels:
+            for seed in range (1):  # seeds 
+                args.model_name = "CNN_1d"
+                args.aug_1, args.aug_2 = pair
+                args.latent_space = 160
+                args.hidden_channel = 128
+                args.num_blocks_ssf=None
+                args.per_class_samples = 1000
+                args.classifier_samples = nr_sampels
+                args.batch_size = 64
+                args.normlizetype=None
+                run_id = f"aug={pair} hidden={128} latent={160} blocks={None} seed={seed}"
+                logging.info("=" * 80)
+                logging.info("RUN: %s", run_id)
 
-                                # save the args
-                                for k, v in args.__dict__.items():
-                                    logging.info("{}: {}".format(k, v))
+                # save the args
+                for k, v in args.__dict__.items():
+                    logging.info("{}: {}".format(k, v))
 
-                                trainer = Trainer(args, save_dir)
-                                encoder = trainer.train(pretrained=False, pretrained_dir="./anomaly_detection/SSF_PU_0310-131203/best_pt")
-                                device = next(encoder.parameters()).device  # gets cuda or cpu automatically
-                                
-                                
+                trainer = Trainer(args, save_dir)
+                encoder = trainer.train(pretrained=False)
+                device = next(encoder.parameters()).device  # gets cuda or cpu automatically
+                tsne(device, encoder, trainer.test_loader)
 
-                                test_pred, test_labels, threshold = run_anomaly_detection(
-                                    device, encoder, trainer.train_loader, trainer.test_loader,
-                                    normal_class=0, std_factor=2.0, metric="euclidean",
-                                    n_jobs=-1, verbose=True,
-                                )
+    args.model_name = "SSF"
+    sub_dir = args.model_name+'_'+args.data_name + '_' + datetime.strftime(datetime.now(), '%m%d-%H%M%S')
+    save_dir = os.path.join(args.checkpoint_dir, sub_dir)
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
 
-                                acc, cm, report = anomaly_metrics_from_multiclass(test_labels, test_pred, normal_class=0)
-                                logging.info("Threshold: %s", threshold)
-                                logging.info("Binary accuracy: %.6f", acc)
-                                logging.info("Confusion matrix:\n%s", cm)
-                                logging.info("Report:\n%s", report)
+    # set the logger
+    setlogger(os.path.join(save_dir, 'training.log'))
+    nr_sampels = [100, 250, 500, 1000] 
+    for pair in best_augmentations_pu:  
+        for nr_sampels in nr_sampels:
+            for seed in range (1):  # seeds 
+                args.model_name = "SSF"
+                args.aug_1, args.aug_2 = pair
+                args.latent_space = 160
+                args.hidden_channel = 128
+                args.num_blocks_ssf=7
+                args.per_class_samples = nr_sampels
+                args.classifier_samples = nr_sampels/10
+                args.batch_size = 64
+                args.normlizetype=None
+                run_id = f"aug={pair} hidden={128} latent={160} blocks={None} seed={seed}"
+                logging.info("=" * 80)
+                logging.info("RUN: %s", run_id)
 
-                                rates = per_fault_detection_rate(test_labels, test_pred, normal_class=0)
-                                logging.info("Rates: %s", rates)
+                # save the args
+                for k, v in args.__dict__.items():
+                    logging.info("{}: {}".format(k, v))
 
-                                # Classification 
-                                #trainer.train_classifier(encoder)
-                            tsne(device, encoder, trainer.test_loader)
-            
-
-
+                trainer = Trainer(args, save_dir)
+                encoder = trainer.train(pretrained=False, pretrained_dir="./anomaly_detection/SSF_PU_0310-131203/best_pt")
+                device = next(encoder.parameters()).device  # gets cuda or cpu automatically
+                # Classification 
+                trainer.train_classifier(encoder)
+                tsne(device, encoder, trainer.test_loader)
