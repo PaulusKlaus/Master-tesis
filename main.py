@@ -374,31 +374,31 @@ if __name__ == "__main__":
                             ] 
 
 
-    nr_sampels = [100, 50, 25, 10] 
-    for pair in best_augmentations_pu:  
-        for nr_sampels in nr_sampels:
-            for seed in range (1):  # seeds 
-                args.model_name = "CNN_1d"
-                args.aug_1, args.aug_2 = pair
-                args.latent_space = 160
-                args.hidden_channel = 128
-                args.num_blocks_ssf=None
-                args.per_class_samples = 1000
-                args.classifier_samples = nr_sampels
-                args.batch_size = 64
-                args.normlizetype=None
-                run_id = f"aug={pair} hidden={128} latent={160} blocks={None} seed={seed}"
-                logging.info("=" * 80)
-                logging.info("RUN: %s", run_id)
+    # nr_sampels = [100, 50, 25, 10] 
+    # for pair in best_augmentations_pu:  
+    #     for nr_sampels in nr_sampels:
+    #         for seed in range (1):  # seeds 
+    #             args.model_name = "CNN_1d"
+    #             args.aug_1, args.aug_2 = pair
+    #             args.latent_space = 160
+    #             args.hidden_channel = 128
+    #             args.num_blocks_ssf=None
+    #             args.per_class_samples = 1000
+    #             args.classifier_samples = nr_sampels
+    #             args.batch_size = 64
+    #             args.normlizetype=None
+    #             run_id = f"aug={pair} hidden={128} latent={160} blocks={None} seed={seed}"
+    #             logging.info("=" * 80)
+    #             logging.info("RUN: %s", run_id)
 
-                # save the args
-                for k, v in args.__dict__.items():
-                    logging.info("{}: {}".format(k, v))
+    #             # save the args
+    #             for k, v in args.__dict__.items():
+    #                 logging.info("{}: {}".format(k, v))
 
-                trainer = Trainer(args, save_dir)
-                encoder = trainer.train(pretrained=False)
-                device = next(encoder.parameters()).device  # gets cuda or cpu automatically
-                tsne(device, encoder, trainer.test_loader)
+    #             trainer = Trainer(args, save_dir)
+    #             encoder = trainer.train(pretrained=False)
+    #             device = next(encoder.parameters()).device  # gets cuda or cpu automatically
+    #             tsne(device, encoder, trainer.test_loader)
 
     args.model_name = "SSF"
     sub_dir = args.model_name+'_'+args.data_name + '_' + datetime.strftime(datetime.now(), '%m%d-%H%M%S')
@@ -412,13 +412,12 @@ if __name__ == "__main__":
     for pair in best_augmentations_pu:  
         for nr_sampels in nr_sampels:
             for seed in range (1):  # seeds 
-                args.model_name = "SSF"
                 args.aug_1, args.aug_2 = pair
                 args.latent_space = 160
                 args.hidden_channel = 128
                 args.num_blocks_ssf=7
                 args.per_class_samples = nr_sampels
-                args.classifier_samples = nr_sampels/10
+                args.classifier_samples = int(nr_sampels/10)
                 args.batch_size = 64
                 args.normlizetype=None
                 run_id = f"aug={pair} hidden={128} latent={160} blocks={None} seed={seed}"
