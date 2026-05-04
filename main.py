@@ -83,7 +83,7 @@ def parse_args():
         "--model_name",
         type=str,
         choices=MODEL_CONFIG.keys(),
-        default="SSF",
+        default="CNN_1d",
         help="The name of the model",
     )
 
@@ -378,7 +378,6 @@ if __name__ == "__main__":
     for pair in best_augmentations_pu:  
         for sampels in nr_sampels:
             for seed in range (1):  # seeds 
-                args.model_name = "CNN_1d"
                 args.aug_1, args.aug_2 = pair
                 args.latent_space = 160
                 args.hidden_channel = 128
