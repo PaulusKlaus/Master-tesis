@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D  # needed for 3D projection
 import torch
 import os
 
-def tsne(device, encoder, loader):
+def tsne(device, encoder, loader, plot="1_axis"): # plot = " 3_axis"
     all_features = []
     all_labels = []
 
@@ -26,25 +26,51 @@ def tsne(device, encoder, loader):
     path = "figures/tsne"
     os.makedirs(path, exist_ok=True)
 
-    # 3D plot
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+    if plot == "3_axis":
+        # 3D plot
+        fig, axes = plt.subplots(1, 3, figsize=(15, 4))
 
-    pairs = [(0, 1), (0, 2), (1, 2)]
-    titles = ["Dim 1 vs 2", "Dim 1 vs 3", "Dim 2 vs 3"]
+        pairs = [(0, 1), (0, 2), (1, 2)]
+        titles = ["Dim 1 vs 2", "Dim 1 vs 3", "Dim 2 vs 3"]
 
-    for ax, (i, j), title in zip(axes, pairs, titles):
-        sc = ax.scatter(features_3d[:, i], features_3d[:, j],
-                        c=labels, cmap="tab10", s=20)
-        ax.set_title(title)
+        for ax, (i, j), title in zip(axes, pairs, titles):
+            sc = ax.scatter(features_3d[:, i], features_3d[:, j],
+                            c=labels, cmap="tab10", s=20)
+            ax.set_title(title)
+            legend = ax.legend(*sc.legend_elements(), title="Classes")
+            ax.add_artist(legend)
+
+
+        plt.tight_layout()
+        plt.savefig(f"{path}/tsne_3d.pdf", format="pdf", dpi=300)
+        plt.close()
+
+        print(f"3D t-SNE plot saved to {path}")
+    else:
+        # 3D plot
+        fig = plt.figure(figsize=(8, 6))
+        ax = fig.add_subplot(111, projection="3d")
+
+        sc = ax.scatter(
+            features_3d[:, 0],
+            features_3d[:, 1],
+            features_3d[:, 2],
+            c=labels,
+            cmap="tab10",
+            s=20
+        )
+
+        ax.set_title("3D t-SNE")
+        ax.set_xlabel("Dim 1")
+        ax.set_ylabel("Dim 2")
+        ax.set_zlabel("Dim 3")
+
         legend = ax.legend(*sc.legend_elements(), title="Classes")
         ax.add_artist(legend)
 
-
-    plt.tight_layout()
-    plt.savefig(f"{path}/tsne_3d.pdf", format="pdf", dpi=300)
-    plt.close()
-
-    print(f"3D t-SNE plot saved to {path}")
+        plt.tight_layout()
+        plt.savefig(f"{path}/tsne_3d.pdf", format="pdf", dpi=300)
+        plt.close()
 
 
 

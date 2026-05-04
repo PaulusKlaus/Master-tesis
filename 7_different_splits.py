@@ -10,7 +10,7 @@ def latent_space_test(paths, group_by_blocks=False):
 
 
 paths =["checkpoint/SSF_PU_0501-150014/training.log",# Ordered Split 
-    #"checkpoint/SSF_PU_0504-102859/training.log",  # Only normal split 
+    "checkpoint/SSF_PU_0504-102859/training.log",  # Only normal split 
     "checkpoint/SSF_PU_0501-130723/training.log", # Random Split 
     ]
 augmentation_test(paths)
