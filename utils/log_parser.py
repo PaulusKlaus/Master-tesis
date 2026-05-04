@@ -10,6 +10,9 @@ def parse_training_log(path):
 
 
     # -------------1------------
+    per_class_sample_re = latent_re = re.compile(r'per_class_samples.*?(\d+)', re.IGNORECASE)
+    classifier_sample_re = latent_re = re.compile(r'classifier_samples.*?(\d+)', re.IGNORECASE)
+
 
     latent_re = re.compile(r'latent.*?(\d+)', re.IGNORECASE)
     blocks_re = re.compile(r'num_blocks_ssf.*?(\d+)', re.IGNORECASE)
@@ -64,6 +67,8 @@ def parse_training_log(path):
                 current = {
 
                     # ------------------ 2---------------
+                    "class_sample":None,
+                    "classifier_sample": None,
                     "latent_dim": None,
                     "num_blocks_ssf": None,
                     "aug_1": None,          
@@ -94,6 +99,15 @@ def parse_training_log(path):
                     "anomaly_f1": None,
                 }
             # -------------------- 3 -------------------
+            m_sample = per_class_sample_re.search(line)
+            if m_sample and current["class_sample"] is None:
+                current["class_sample"] = int(m_sample.group(1))
+
+            m_samlpe_classifier = classifier_sample_re.search(line)
+            if m_samlpe_classifier and current["classifier_sample"] is None:
+                current["classifier_sample"] = int(m_samlpe_classifier.group(1))
+
+
             if current is None:
                 continue
             m_aug1 = aug1_re.search(line)
