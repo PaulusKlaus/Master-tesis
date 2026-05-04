@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D  # needed for 3D projection
 import torch
 import os
 
-def tsne(device, encoder, loader, plot="1_axis"): # plot = " 3_axis"
+def tsne(device, encoder, loader, path = "figures/tsne/tsne_3d.pdf", plot="3_axis"): # plot = " 3_axis"
     all_features = []
     all_labels = []
 
@@ -23,8 +23,7 @@ def tsne(device, encoder, loader, plot="1_axis"): # plot = " 3_axis"
     features_3d = tsne.fit_transform(features)
 
     # Make sure output folder exists
-    path = "figures/tsne"
-    os.makedirs(path, exist_ok=True)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
 
     if plot == "3_axis":
         # 3D plot
@@ -42,7 +41,7 @@ def tsne(device, encoder, loader, plot="1_axis"): # plot = " 3_axis"
 
 
         plt.tight_layout()
-        plt.savefig(f"{path}/tsne_3d.pdf", format="pdf", dpi=300)
+        plt.savefig(f"{path}", format="pdf", dpi=300)
         plt.close()
 
         print(f"3D t-SNE plot saved to {path}")
@@ -69,7 +68,7 @@ def tsne(device, encoder, loader, plot="1_axis"): # plot = " 3_axis"
         ax.add_artist(legend)
 
         plt.tight_layout()
-        plt.savefig(f"{path}/tsne_3d.pdf", format="pdf", dpi=300)
+        plt.savefig(f"{path}", format="pdf", dpi=300)
         plt.close()
 
 
