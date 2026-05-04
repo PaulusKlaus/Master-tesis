@@ -1161,3 +1161,128 @@
 05-04 15:31:44 TEST (last): loss 1.3327 acc 0.5533
 05-04 15:31:44 Loaded best checkpoint from ./checkpoint\CNN_1d_PU_0504-152809\best_pt (val_acc=0.7733333333333333)
 05-04 15:31:44 TEST (best): loss 0.5370 acc 0.7733
+05-04 15:32:36 ================================================================================
+05-04 15:32:36 RUN: aug=('gaussian', 'scale') hidden=128 latent=160 blocks=None seed=0
+05-04 15:32:36 model_name: CNN_1d
+05-04 15:32:36 data_name: PU
+05-04 15:32:36 aug_1: gaussian
+05-04 15:32:36 aug_2: scale
+05-04 15:32:36 data_view: OneViewDataset
+05-04 15:32:36 data_dir: raw_data/PU
+05-04 15:32:36 out_channel: 6
+05-04 15:32:36 normlizetype: None
+05-04 15:32:36 processing_type: O_N
+05-04 15:32:36 max_epoch: 50
+05-04 15:32:36 classifier_epoch: 50
+05-04 15:32:36 batch_size: 64
+05-04 15:32:36 cuda_device: 0
+05-04 15:32:36 checkpoint_dir: ./checkpoint
+05-04 15:32:36 opt: sgd
+05-04 15:32:36 lr: 0.05
+05-04 15:32:36 momentum: 0.9
+05-04 15:32:36 weight_decay: 0.0001
+05-04 15:32:36 lr_scheduler: cos
+05-04 15:32:36 gamma: 0.95
+05-04 15:32:36 eta_min: 1e-05
+05-04 15:32:36 latent_space: 160
+05-04 15:32:36 num_blocks_ssf: None
+05-04 15:32:36 hidden_channel: 128
+05-04 15:32:36 per_class_samples: 1000
+05-04 15:32:36 classifier_samples: 10
+05-04 15:32:36 task: supervised
+05-04 15:32:36 critetion: <class 'torch.nn.modules.loss.CrossEntropyLoss'>
+05-04 15:32:36 using 1 gpus
+05-04 15:32:36 Dataset class: <class 'data_utils.datasets.PU.PU'>
+05-04 15:32:38 Split sizes: train=1000 val=1000 test=6000, classier=60
+05-04 15:32:38 Label counts train: Counter({0: 1000})
+05-04 15:32:38 Label counts val:   Counter({0: 1000})
+05-04 15:32:38 Label counts test:  Counter({1: 1000, 4: 1000, 3: 1000, 5: 1000, 2: 1000, 0: 1000})
+05-04 15:32:38 Label counts classifier:  Counter({2: 10, 1: 10, 3: 10, 5: 10, 0: 10, 4: 10})
+05-04 15:32:38 Label counts classifier validation:  Counter({0: 10, 3: 10, 2: 10, 4: 10, 1: 10, 5: 10})
+05-04 15:32:38 -----Epoch 0/49-----
+05-04 15:32:38 current lr: 0.05
+05-04 15:32:38 Saved best checkpoint to ./checkpoint\CNN_1d_PU_0504-152809\best_pt (val_acc=0.2167)
+05-04 15:32:38 Epoch 000 Train loss 1.7322 acc 0.2667 | Val loss 1.7878 acc 0.2167
+05-04 15:32:38 -----Epoch 1/49-----
+05-04 15:32:38 current lr: 0.0499507
+05-04 15:32:38 Saved best checkpoint to ./checkpoint\CNN_1d_PU_0504-152809\best_pt (val_acc=0.2667)
+05-04 15:32:38 Epoch 001 Train loss 1.5034 acc 0.4167 | Val loss 1.7699 acc 0.2667
+05-04 15:32:38 -----Epoch 2/49-----
+05-04 15:32:38 current lr: 0.0498029
+05-04 15:32:38 Saved best checkpoint to ./checkpoint\CNN_1d_PU_0504-152809\best_pt (val_acc=0.3000)
+05-04 15:32:38 Epoch 002 Train loss 1.2638 acc 0.5667 | Val loss 1.7194 acc 0.3000
+05-04 15:32:38 -----Epoch 3/49-----
+05-04 15:32:38 current lr: 0.0495573
+05-04 15:32:38 Saved best checkpoint to ./checkpoint\CNN_1d_PU_0504-152809\best_pt (val_acc=0.3500)
+05-04 15:32:38 Epoch 003 Train loss 1.1293 acc 0.5333 | Val loss 1.6433 acc 0.3500
+05-04 15:32:38 -----Epoch 4/49-----
+05-04 15:32:38 current lr: 0.0492147
+05-04 15:32:38 Saved best checkpoint to ./checkpoint\CNN_1d_PU_0504-152809\best_pt (val_acc=0.3667)
+05-04 15:32:38 Epoch 004 Train loss 0.9885 acc 0.7000 | Val loss 1.5616 acc 0.3667
+05-04 15:32:38 -----Epoch 5/49-----
+05-04 15:32:38 current lr: 0.0487767
+05-04 15:32:38 Saved best checkpoint to ./checkpoint\CNN_1d_PU_0504-152809\best_pt (val_acc=0.4000)
+05-04 15:32:38 Epoch 005 Train loss 0.8266 acc 0.6833 | Val loss 1.4689 acc 0.4000
+05-04 15:32:38 -----Epoch 6/49-----
+05-04 15:32:38 current lr: 0.0482448
+05-04 15:32:38 Saved best checkpoint to ./checkpoint\CNN_1d_PU_0504-152809\best_pt (val_acc=0.4833)
+05-04 15:32:38 Epoch 006 Train loss 0.7954 acc 0.7333 | Val loss 1.3453 acc 0.4833
+05-04 15:32:38 -----Epoch 7/49-----
+05-04 15:32:38 current lr: 0.0476212
+05-04 15:32:38 No improvement in val_acc for 1/10 epochs.
+05-04 15:32:38 Epoch 007 Train loss 0.5263 acc 0.9000 | Val loss 1.2420 acc 0.4667
+05-04 15:32:38 -----Epoch 8/49-----
+05-04 15:32:38 current lr: 0.0469083
+05-04 15:32:38 Saved best checkpoint to ./checkpoint\CNN_1d_PU_0504-152809\best_pt (val_acc=0.5000)
+05-04 15:32:38 Epoch 008 Train loss 0.4520 acc 0.8667 | Val loss 1.2357 acc 0.5000
+05-04 15:32:38 -----Epoch 9/49-----
+05-04 15:32:39 current lr: 0.046109
+05-04 15:32:39 Saved best checkpoint to ./checkpoint\CNN_1d_PU_0504-152809\best_pt (val_acc=0.6833)
+05-04 15:32:39 Epoch 009 Train loss 0.3573 acc 0.9000 | Val loss 0.9954 acc 0.6833
+05-04 15:32:39 -----Epoch 10/49-----
+05-04 15:32:39 current lr: 0.0452264
+05-04 15:32:39 Saved best checkpoint to ./checkpoint\CNN_1d_PU_0504-152809\best_pt (val_acc=0.7333)
+05-04 15:32:39 Epoch 010 Train loss 0.3123 acc 0.9000 | Val loss 0.9030 acc 0.7333
+05-04 15:32:39 -----Epoch 11/49-----
+05-04 15:32:39 current lr: 0.044264
+05-04 15:32:39 No improvement in val_acc for 1/10 epochs.
+05-04 15:32:39 Epoch 011 Train loss 0.1731 acc 0.9333 | Val loss 0.8726 acc 0.6833
+05-04 15:32:39 -----Epoch 12/49-----
+05-04 15:32:39 current lr: 0.0432256
+05-04 15:32:39 No improvement in val_acc for 2/10 epochs.
+05-04 15:32:39 Epoch 012 Train loss 0.2397 acc 0.9167 | Val loss 0.8336 acc 0.7000
+05-04 15:32:39 -----Epoch 13/49-----
+05-04 15:32:39 current lr: 0.0421153
+05-04 15:32:39 No improvement in val_acc for 3/10 epochs.
+05-04 15:32:39 Epoch 013 Train loss 0.1499 acc 0.9833 | Val loss 0.7447 acc 0.7167
+05-04 15:32:39 -----Epoch 14/49-----
+05-04 15:32:39 current lr: 0.0409374
+05-04 15:32:39 No improvement in val_acc for 4/10 epochs.
+05-04 15:32:39 Epoch 014 Train loss 0.2362 acc 0.9000 | Val loss 0.7345 acc 0.7333
+05-04 15:32:39 -----Epoch 15/49-----
+05-04 15:32:39 current lr: 0.0396967
+05-04 15:32:39 No improvement in val_acc for 5/10 epochs.
+05-04 15:32:39 Epoch 015 Train loss 0.1887 acc 0.9167 | Val loss 0.7231 acc 0.7000
+05-04 15:32:39 -----Epoch 16/49-----
+05-04 15:32:39 current lr: 0.038398
+05-04 15:32:39 No improvement in val_acc for 6/10 epochs.
+05-04 15:32:39 Epoch 016 Train loss 0.1241 acc 0.9500 | Val loss 0.6733 acc 0.7000
+05-04 15:32:39 -----Epoch 17/49-----
+05-04 15:32:39 current lr: 0.0370464
+05-04 15:32:39 No improvement in val_acc for 7/10 epochs.
+05-04 15:32:39 Epoch 017 Train loss 0.2637 acc 0.8667 | Val loss 0.8447 acc 0.6167
+05-04 15:32:39 -----Epoch 18/49-----
+05-04 15:32:39 current lr: 0.0356474
+05-04 15:32:39 No improvement in val_acc for 8/10 epochs.
+05-04 15:32:39 Epoch 018 Train loss 0.1199 acc 0.9500 | Val loss 0.9347 acc 0.7167
+05-04 15:32:39 -----Epoch 19/49-----
+05-04 15:32:39 current lr: 0.0342063
+05-04 15:32:39 No improvement in val_acc for 9/10 epochs.
+05-04 15:32:39 Epoch 019 Train loss 0.1214 acc 0.9667 | Val loss 0.9344 acc 0.6833
+05-04 15:32:39 -----Epoch 20/49-----
+05-04 15:32:39 current lr: 0.0327289
+05-04 15:32:39 No improvement in val_acc for 10/10 epochs.
+05-04 15:32:39 Early stopping at epoch 20 (best val_acc=0.7333).
+05-04 15:32:39 TEST (last): loss 0.9112 acc 0.6833
+05-04 15:32:39 Loaded best checkpoint from ./checkpoint\CNN_1d_PU_0504-152809\best_pt (val_acc=0.7333333333333333)
+05-04 15:32:39 TEST (best): loss 0.9030 acc 0.7333
