@@ -367,14 +367,14 @@ if __name__ == "__main__":
 
     best_augmentations_pu =[('gaussian', 'gaussian'),
                              ('gaussian', 'scale'),
-                           # ('normal', 'randomstrech'),
-                            #('randomstrech', 'randomstrech'),
-                            #('normal', 'normal'),
+                           ('normal', 'randomstrech'),
+                            ('randomstrech', 'randomstrech'),
+                            ('normal', 'normal'),
                             #('normal', 'gaussian')
                             ] 
 
 
-    nr_sampels = [100, 50, 25, 10] 
+    nr_sampels = [1000, 100, 50, 25, 10] 
     for pair in best_augmentations_pu:  
         for sampels in nr_sampels:
             for seed in range (1):  # seeds 
