@@ -9,11 +9,11 @@ def classifier_for_SSF_space_test(paths, group_by_blocks=False):
     summary_batch_size = summarize(paths, "class_sample", group_by_blocks)
     return summary_batch_size
 
-paths_CNN =[#"checkpoint/SSF_PU_0501-150014/training.log",# Ordered Split 
+paths_CNN =["checkpoint/CNN_1d_PU_0504-152809/training.log", 
 
     ]
 
-paths_SSF =[#"checkpoint/SSF_PU_0501-150014/training.log",# Ordered Split 
+paths_SSF =["checkpoint/SSF_PU_0504-150630/training.log",
 
     ]
 #augmentation_test(paths)

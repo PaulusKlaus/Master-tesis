@@ -83,7 +83,7 @@ def parse_args():
         "--model_name",
         type=str,
         choices=MODEL_CONFIG.keys(),
-        default="CNN_1d",
+        default="SSF",
         help="The name of the model",
     )
 
@@ -374,42 +374,16 @@ if __name__ == "__main__":
                             ] 
 
 
-    nr_sampels = [1000, 100, 50, 25, 10] 
-    for pair in best_augmentations_pu:  
-        for sampels in nr_sampels:
-            for seed in range (1):  # seeds 
-                args.aug_1, args.aug_2 = pair
-                args.latent_space = 160
-                args.hidden_channel = 128
-                args.num_blocks_ssf=None
-                args.per_class_samples = 1000
-                args.classifier_samples = sampels
-                args.batch_size = 64
-                args.normlizetype=None
-                run_id = f"aug={pair} hidden={128} latent={160} blocks={None} seed={seed}"
-                logging.info("=" * 80)
-                logging.info("RUN: %s", run_id)
-
-                # save the args
-                for k, v in args.__dict__.items():
-                    logging.info("{}: {}".format(k, v))
-
-                trainer = Trainer(args, save_dir)
-                encoder = trainer.train(pretrained=False)
-                device = next(encoder.parameters()).device  # gets cuda or cpu automatically
-                tsne(device, encoder, trainer.test_loader)
-
-
-    # nr_sampels = [100, 250, 500, 1000] 
+    nr_sampels = [10000, 1000, 100, 50, 25, 10] 
     # for pair in best_augmentations_pu:  
-    #     for samples in nr_sampels:
+    #     for sampels in nr_sampels:
     #         for seed in range (1):  # seeds 
     #             args.aug_1, args.aug_2 = pair
     #             args.latent_space = 160
     #             args.hidden_channel = 128
-    #             args.num_blocks_ssf=7
-    #             args.per_class_samples = samples
-    #             args.classifier_samples = int(samples/10)
+    #             args.num_blocks_ssf=None
+    #             args.per_class_samples = 1000
+    #             args.classifier_samples = sampels
     #             args.batch_size = 64
     #             args.normlizetype=None
     #             run_id = f"aug={pair} hidden={128} latent={160} blocks={None} seed={seed}"
@@ -421,8 +395,32 @@ if __name__ == "__main__":
     #                 logging.info("{}: {}".format(k, v))
 
     #             trainer = Trainer(args, save_dir)
-    #             encoder = trainer.train(pretrained=False, pretrained_dir="./anomaly_detection/SSF_PU_0310-131203/best_pt")
+    #             encoder = trainer.train(pretrained=False)
     #             device = next(encoder.parameters()).device  # gets cuda or cpu automatically
-    #             # Classification 
-    #             trainer.train_classifier(encoder)
     #             tsne(device, encoder, trainer.test_loader)
+
+    for pair in best_augmentations_pu:  
+        for samples in nr_sampels:
+            for seed in range (1):  # seeds 
+                args.aug_1, args.aug_2 = pair
+                args.latent_space = 160
+                args.hidden_channel = 128
+                args.num_blocks_ssf=7
+                args.per_class_samples = samples
+                args.classifier_samples = int(samples/10)
+                args.batch_size = 64
+                args.normlizetype=None
+                run_id = f"aug={pair} hidden={128} latent={160} blocks={None} seed={seed}"
+                logging.info("=" * 80)
+                logging.info("RUN: %s", run_id)
+
+                # save the args
+                for k, v in args.__dict__.items():
+                    logging.info("{}: {}".format(k, v))
+
+                trainer = Trainer(args, save_dir)
+                encoder = trainer.train(pretrained=False, pretrained_dir="./anomaly_detection/SSF_PU_0310-131203/best_pt")
+                device = next(encoder.parameters()).device  # gets cuda or cpu automatically
+                # Classification 
+                trainer.train_classifier(encoder)
+                tsne(device, encoder, trainer.test_loader)
