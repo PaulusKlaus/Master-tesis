@@ -374,7 +374,7 @@ if __name__ == "__main__":
                             ] 
 
 
-    nr_sampels = [10000, 1000, 100, 50, 25, 10] 
+    nr_sampels = [500, 250] #10000, 1000, 100
     # for pair in best_augmentations_pu:  
     #     for sampels in nr_sampels:
     #         for seed in range (1):  # seeds 
