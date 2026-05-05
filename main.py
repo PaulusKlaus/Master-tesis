@@ -374,7 +374,7 @@ if __name__ == "__main__":
                             ] 
 
 
-    nr_sampels = [500, 250] #10000, 1000, 100
+    nr_sampels = [500, 250, 10000, 1000, 100 ] 
     # for pair in best_augmentations_pu:  
     #     for sampels in nr_sampels:
     #         for seed in range (1):  # seeds 
@@ -406,7 +406,7 @@ if __name__ == "__main__":
                 args.latent_space = 160
                 args.hidden_channel = 128
                 args.num_blocks_ssf=7
-                args.per_class_samples = samples
+                args.per_class_samples = 1000
                 args.classifier_samples = int(samples/10)
                 args.batch_size = 64
                 args.normlizetype=None
