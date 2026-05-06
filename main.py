@@ -318,11 +318,11 @@ if __name__ == "__main__":
 
     #print(random_pairs)
     aug_pairs_best_hiden = [
-        ("gaussian", "scale"),        # 0.7622
-        ("randomstrech", "gaussian"),       # 0.7511
-        ("randomcrop", "randomstrech"),   # 0.7474
-        ("randomcrop", "randomcrop"),      # 0.7452
-        ("scale", "randomstrech"),           # 0.7437
+        ("gaussian", "scale"),        
+        ("randomstrech", "gaussian"),       
+        ("randomcrop", "randomstrech"),  
+        ("randomcrop", "randomcrop"),     
+        ("scale", "randomstrech"),           
 
     ]
     aug_pairs_latent = [
@@ -334,21 +334,20 @@ if __name__ == "__main__":
     ]
 
     aug_pairs_normalization_and_cb = [
-        ("normal", "scale"),        # 0.7622
-        ("randomcrop", "randomstrech"),       # 0.7511
-        ("randomstrech", "randomstrech"),   # 0.7474
-        ("normal", "normal"),           # 0.7452
-        ("gaussian", "normal"),      # 0.7452
-      #  ("scale", "scale"),           # 0.7437
+        ("normal", "scale"),        
+        ("randomcrop", "randomstrech"),      
+        ("randomstrech", "randomstrech"), 
+        ("normal", "normal"),           
+        ("gaussian", "normal"),      
+      #  ("scale", "scale"),           
     ]
     #latent_space = [32,64,128,160,256, 512]
     aug_pairs_batch_size = [
-        ("normal", "scale"),        # 0.7622
-        ("randomcrop", "randomstrech"),       # 0.7511
-        ("randomstrech", "randomstrech"),   # 0.7474
-        ("randomstrech", "scale"),           # 0.7452
-        ("gaussian", "scale"),      # 0.7452
-      #  ("scale", "scale"),           # 0.7437
+        ("normal", "scale"),        
+        ("randomcrop", "randomstrech"),      
+        ("randomstrech", "randomstrech"),  
+        ("randomstrech", "scale"),          
+        ("gaussian", "scale"),    
     ]
     
     
@@ -369,7 +368,7 @@ if __name__ == "__main__":
                             #('normal', 'randomstrech'),
                            #   ('randomstrech', 'randomstrech'),
                           # #   ('normal', 'normal'),
-                              ('normal', 'gaussian'),] 
+                              ('scale', 'gaussian'),] 
 
 
 
@@ -379,7 +378,7 @@ if __name__ == "__main__":
                 for blocks in number_blocks:
                     for normalization in norm: 
                         for batch_size in batch_sizes:
-                            for seed in range (3):  # seeds 
+                            for seed in range (1):  # seeds 
                                 args.aug_1, args.aug_2 = pair
                                 args.latent_space = features
                                 args.hidden_channel = hidden_size
