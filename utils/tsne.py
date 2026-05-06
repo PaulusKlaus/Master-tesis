@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D  # needed for 3D projection
 import torch
 import os
 
-def tsne(device, encoder, loader, plot="1_axis"): # plot = " 3_axis"
+def tsne(device, encoder, loader, plot="3_axis"): # plot = " 3_axis"
     all_features = []
     all_labels = []
 

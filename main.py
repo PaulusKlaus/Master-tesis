@@ -94,7 +94,7 @@ def parse_args():
         "--data_name", # SEU, JNU ,PU , CWRU
         type=str,
         choices=DATA_DIRS.keys(),
-        default="PU",  # SEU, JNU ,PU , CWRU
+        default="CWRU",  # SEU, JNU ,PU , CWRU
         help="The name of the dataset",
     )
 
@@ -147,7 +147,7 @@ def parse_args():
         "--processing_type",
         type=str,
         choices=["RA", "R_NA", "O_A", "O_N"],
-        default="RA",
+        default="O_N",
         help=(
             "RA: random split with augmentation | "
             "R_NA: random split without augmentation | "
@@ -396,7 +396,7 @@ if __name__ == "__main__":
                                     logging.info("{}: {}".format(k, v))
 
                                 trainer = Trainer(args, save_dir)
-                                encoder = trainer.train(pretrained=False, pretrained_dir="./anomaly_detection/SSF_PU_0310-131203/best_pt")
+                                encoder = trainer.train(pretrained=True, pretrained_dir="./checkpoint/SSF_CWRU_transfer_source/best_pt")
                                 device = next(encoder.parameters()).device  # gets cuda or cpu automatically
                                 
                                 

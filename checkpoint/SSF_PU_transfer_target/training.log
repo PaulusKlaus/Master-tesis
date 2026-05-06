@@ -1,0 +1,109 @@
+05-06 10:28:47 ================================================================================
+05-06 10:28:47 RUN: aug=('scale', 'gaussian') hidden=128 latent=160 blocks=7 seed=0
+05-06 10:28:47 model_name: SSF
+05-06 10:28:47 data_name: PU
+05-06 10:28:47 aug_1: scale
+05-06 10:28:47 aug_2: gaussian
+05-06 10:28:47 data_view: TwoViewDataset
+05-06 10:28:47 data_dir: raw_data/PU
+05-06 10:28:47 out_channel: 6
+05-06 10:28:47 normlizetype: None
+05-06 10:28:47 processing_type: O_N
+05-06 10:28:47 max_epoch: 50
+05-06 10:28:47 classifier_epoch: 50
+05-06 10:28:47 batch_size: 64
+05-06 10:28:47 cuda_device: 0
+05-06 10:28:47 checkpoint_dir: ./checkpoint
+05-06 10:28:47 opt: sgd
+05-06 10:28:47 lr: 0.05
+05-06 10:28:47 momentum: 0.9
+05-06 10:28:47 weight_decay: 0.0001
+05-06 10:28:47 lr_scheduler: cos
+05-06 10:28:47 gamma: 0.95
+05-06 10:28:47 eta_min: 1e-05
+05-06 10:28:47 latent_space: 160
+05-06 10:28:47 num_blocks_ssf: 7
+05-06 10:28:47 hidden_channel: 128
+05-06 10:28:47 per_class_samples: 1000
+05-06 10:28:47 classifier_samples: 100
+05-06 10:28:47 task: self_supervised
+05-06 10:28:47 critetion: <class 'utils.loss_SSL.SimSiamLoss'>
+05-06 10:28:47 using 1 gpus
+05-06 10:28:47 Dataset class: <class 'data_utils.datasets.PU.PU'>
+05-06 10:28:49 Split sizes: train=1000 val=1000 test=6000, classier=600
+05-06 10:28:49 Label counts train: Counter({0: 1000})
+05-06 10:28:49 Label counts val:   Counter({0: 1000})
+05-06 10:28:49 Label counts test:  Counter({1: 1000, 4: 1000, 3: 1000, 5: 1000, 2: 1000, 0: 1000})
+05-06 10:28:49 Label counts classifier:  Counter({2: 100, 5: 100, 4: 100, 3: 100, 0: 100, 1: 100})
+05-06 10:28:49 Label counts classifier validation:  Counter({3: 100, 5: 100, 4: 100, 2: 100, 0: 100, 1: 100})
+05-06 10:28:50 Loaded best checkpoint from ./checkpoint/SSF_CWRU_transfer_source/best_pt (val_loss=-0.9370512677823669)
+05-06 10:28:50 Loaded best checkpoint from ./checkpoint/SSF_CWRU_transfer_source/best_pt (val_loss=-0.9370512677823669)
+05-06 10:28:53 TEST (best): loss -0.7752
+05-06 10:28:59 Threshold: 3.602215707673262
+05-06 10:28:59 Binary accuracy: 0.781000
+05-06 10:28:59 Confusion matrix:
+[[1000    0]
+ [1314 3686]]
+05-06 10:28:59 Report:
+              precision    recall  f1-score   support
+
+      normal       0.43      1.00      0.60      1000
+     anomaly       1.00      0.74      0.85      5000
+
+    accuracy                           0.78      6000
+   macro avg       0.72      0.87      0.73      6000
+weighted avg       0.91      0.78      0.81      6000
+
+05-06 10:28:59 Rates: {1: 0.438, 2: 0.282, 3: 0.98, 4: 1.0, 5: 0.986}
+05-06 10:29:00 [LP epoch 00] train_loss=1.6032 train_acc=0.3850 | val_loss=1.5898 val_acc=0.2950 | 
+05-06 10:29:01 [LP epoch 01] train_loss=1.4348 train_acc=0.5150 | val_loss=1.4275 val_acc=0.4650 | 
+05-06 10:29:01 [LP epoch 02] train_loss=1.3683 train_acc=0.5283 | val_loss=1.4219 val_acc=0.4517 | 
+05-06 10:29:02 [LP epoch 03] train_loss=1.3307 train_acc=0.5917 | val_loss=1.4107 val_acc=0.4467 | 
+05-06 10:29:02 [LP epoch 04] train_loss=1.2534 train_acc=0.6583 | val_loss=1.3464 val_acc=0.5767 | 
+05-06 10:29:03 [LP epoch 05] train_loss=1.2044 train_acc=0.6650 | val_loss=1.2288 val_acc=0.6017 | 
+05-06 10:29:03 [LP epoch 06] train_loss=1.1654 train_acc=0.6300 | val_loss=1.2075 val_acc=0.6300 | 
+05-06 10:29:04 [LP epoch 07] train_loss=1.1174 train_acc=0.6667 | val_loss=1.2175 val_acc=0.6233 | 
+05-06 10:29:04 [LP epoch 08] train_loss=1.1331 train_acc=0.6883 | val_loss=1.2728 val_acc=0.5200 | 
+05-06 10:29:05 [LP epoch 09] train_loss=1.1430 train_acc=0.6950 | val_loss=1.1785 val_acc=0.6500 | 
+05-06 10:29:06 [LP epoch 10] train_loss=1.0824 train_acc=0.7083 | val_loss=1.0868 val_acc=0.7317 | 
+05-06 10:29:06 [LP epoch 11] train_loss=1.0262 train_acc=0.7650 | val_loss=1.2124 val_acc=0.5033 | 
+05-06 10:29:07 [LP epoch 12] train_loss=1.0273 train_acc=0.7333 | val_loss=1.0778 val_acc=0.7200 | 
+05-06 10:29:07 [LP epoch 13] train_loss=1.0062 train_acc=0.7467 | val_loss=1.1937 val_acc=0.5167 | 
+05-06 10:29:08 [LP epoch 14] train_loss=1.0127 train_acc=0.7500 | val_loss=1.1717 val_acc=0.6117 | 
+05-06 10:29:08 [LP epoch 15] train_loss=1.0128 train_acc=0.7600 | val_loss=1.2261 val_acc=0.5750 | 
+05-06 10:29:09 [LP epoch 16] train_loss=0.9751 train_acc=0.7767 | val_loss=1.1018 val_acc=0.7567 | 
+05-06 10:29:09 [LP epoch 17] train_loss=0.9299 train_acc=0.7967 | val_loss=1.1491 val_acc=0.6450 | 
+05-06 10:29:10 [LP epoch 18] train_loss=0.9522 train_acc=0.7650 | val_loss=1.0526 val_acc=0.8000 | 
+05-06 10:29:10 [LP epoch 19] train_loss=0.9390 train_acc=0.7633 | val_loss=1.3500 val_acc=0.3883 | 
+05-06 10:29:11 [LP epoch 20] train_loss=0.9082 train_acc=0.7783 | val_loss=0.9760 val_acc=0.7983 | 
+05-06 10:29:11 [LP epoch 21] train_loss=0.9472 train_acc=0.7717 | val_loss=1.0880 val_acc=0.6767 | 
+05-06 10:29:12 [LP epoch 22] train_loss=0.9613 train_acc=0.7217 | val_loss=1.2588 val_acc=0.4900 | 
+05-06 10:29:12 [LP epoch 23] train_loss=0.9201 train_acc=0.7883 | val_loss=1.0214 val_acc=0.7150 | 
+05-06 10:29:13 [LP epoch 24] train_loss=0.9159 train_acc=0.7800 | val_loss=1.0533 val_acc=0.7183 | 
+05-06 10:29:13 [LP epoch 25] train_loss=0.9029 train_acc=0.7783 | val_loss=0.9759 val_acc=0.7283 | 
+05-06 10:29:14 [LP epoch 26] train_loss=0.8890 train_acc=0.7833 | val_loss=0.9584 val_acc=0.7683 | 
+05-06 10:29:14 [LP epoch 27] train_loss=0.8545 train_acc=0.8117 | val_loss=1.0913 val_acc=0.6867 | 
+05-06 10:29:15 [LP epoch 28] train_loss=0.8983 train_acc=0.7867 | val_loss=1.0485 val_acc=0.6867 | 
+05-06 10:29:15 [LP epoch 29] train_loss=0.8735 train_acc=0.8117 | val_loss=1.1041 val_acc=0.6817 | 
+05-06 10:29:16 [LP epoch 30] train_loss=0.9025 train_acc=0.7767 | val_loss=1.1434 val_acc=0.6350 | 
+05-06 10:29:16 [LP epoch 31] train_loss=0.9185 train_acc=0.7733 | val_loss=1.6193 val_acc=0.5450 | 
+05-06 10:29:17 [LP epoch 32] train_loss=0.9268 train_acc=0.7867 | val_loss=1.0114 val_acc=0.7833 | 
+05-06 10:29:17 [LP epoch 33] train_loss=0.8744 train_acc=0.8033 | val_loss=1.6139 val_acc=0.2600 | 
+05-06 10:29:18 [LP epoch 34] train_loss=0.8792 train_acc=0.8067 | val_loss=1.0870 val_acc=0.6617 | 
+05-06 10:29:19 [LP epoch 35] train_loss=0.8423 train_acc=0.8217 | val_loss=1.1403 val_acc=0.5933 | 
+05-06 10:29:19 [LP epoch 36] train_loss=0.8280 train_acc=0.8233 | val_loss=0.9028 val_acc=0.7550 | 
+05-06 10:29:20 [LP epoch 37] train_loss=0.8265 train_acc=0.8033 | val_loss=1.0069 val_acc=0.6717 | 
+05-06 10:29:20 [LP epoch 38] train_loss=0.8389 train_acc=0.8267 | val_loss=1.0615 val_acc=0.6233 | 
+05-06 10:29:21 [LP epoch 39] train_loss=0.8259 train_acc=0.8217 | val_loss=1.1133 val_acc=0.6350 | 
+05-06 10:29:21 [LP epoch 40] train_loss=0.8464 train_acc=0.8050 | val_loss=1.0265 val_acc=0.6867 | 
+05-06 10:29:22 [LP epoch 41] train_loss=0.8294 train_acc=0.8250 | val_loss=0.8934 val_acc=0.7767 | 
+05-06 10:29:22 [LP epoch 42] train_loss=0.8124 train_acc=0.8333 | val_loss=0.9812 val_acc=0.7033 | 
+05-06 10:29:23 [LP epoch 43] train_loss=0.8204 train_acc=0.8083 | val_loss=0.9254 val_acc=0.7583 | 
+05-06 10:29:23 [LP epoch 44] train_loss=0.8715 train_acc=0.7883 | val_loss=1.4711 val_acc=0.5383 | 
+05-06 10:29:24 [LP epoch 45] train_loss=0.8978 train_acc=0.7817 | val_loss=1.0084 val_acc=0.6650 | 
+05-06 10:29:24 [LP epoch 46] train_loss=0.8786 train_acc=0.7883 | val_loss=1.0058 val_acc=0.6733 | 
+05-06 10:29:25 [LP epoch 47] train_loss=0.8884 train_acc=0.7983 | val_loss=0.9603 val_acc=0.8017 | 
+05-06 10:29:25 [LP epoch 48] train_loss=0.8615 train_acc=0.8067 | val_loss=0.9736 val_acc=0.7283 | 
+05-06 10:29:26 [LP epoch 49] train_loss=0.8807 train_acc=0.7817 | val_loss=1.0516 val_acc=0.6367 | 
+05-06 10:29:26 Saved linear-probe checkpoint: ./checkpoint\SSF_PU_0506-102847\linear_probe_best.pt (best_val_acc=0.8017)
+05-06 10:29:28 TEST linear-probe: loss=1.0175 acc=0.6572
