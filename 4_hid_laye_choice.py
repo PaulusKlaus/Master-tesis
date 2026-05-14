@@ -13,10 +13,11 @@ def hidden_layer_test(paths, group_by_blocks=False):
 
 paths =[
         #"checkpoint/SSF_PU_0421-150551/training.log", #Latent space 256 meanstd 8 blocks 
-        "checkpoint/SSF_PU_0429-112909/training.log",  # latent space 256 no normalization 8 blocks 
+        #"checkpoint/SSF_PU_0429-112909/training.log",  # latent space 256 no normalization 8 blocks 
 
 
 
        # "checkpoint/SSF_CWRU_0422-084318/training.log",
+       "checkpoint/SSF_CWRU_0514-123741/training.log",
         ]
 hidden_layer_test(paths)

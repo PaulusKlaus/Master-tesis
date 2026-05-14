@@ -358,9 +358,9 @@ if __name__ == "__main__":
     # PU
     norm = [None]
     batch_sizes =[64]
-    number_blocks=[7] # or 8
-    hidden_channel = [128]
-    latent_space  = [160] # or 128
+    number_blocks=[8] # or 8
+    hidden_channel = [32,64,128,160,256,512]
+    latent_space  = [256] # or 128
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
     all_augmentation_pairs = list(combinations_with_replacement(augmentations, 2))
 
@@ -372,19 +372,19 @@ if __name__ == "__main__":
 
 
 
-    for pair in best_augmentations_pu:  
+    for pair in aug_pairs_best_hiden:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
                     for normalization in norm: 
                         for batch_size in batch_sizes:
-                            for seed in range (1):  # seeds 
+                            for seed in range (3):  # seeds 
                                 args.aug_1, args.aug_2 = pair
                                 args.latent_space = features
                                 args.hidden_channel = hidden_size
                                 args.num_blocks_ssf=blocks
-                                args.per_class_samples = 1000
-                                args.classifier_samples = 100
+                                args.per_class_samples = 100
+                                args.classifier_samples = 10
                                 args.batch_size = batch_size
                                 args.normlizetype=normalization
                                 run_id = f"aug={pair} hidden={hidden_size} latent={features} blocks={blocks} seed={seed}"
@@ -396,7 +396,7 @@ if __name__ == "__main__":
                                     logging.info("{}: {}".format(k, v))
 
                                 trainer = Trainer(args, save_dir)
-                                encoder = trainer.train(pretrained=True, pretrained_dir="./checkpoint/SSF_CWRU_transfer_source/best_pt")
+                                encoder = trainer.train(pretrained=False, pretrained_dir="./checkpoint/SSF_CWRU_transfer_source/best_pt")
                                 device = next(encoder.parameters()).device  # gets cuda or cpu automatically
                                 
                                 
