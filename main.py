@@ -333,6 +333,14 @@ if __name__ == "__main__":
         ("gaussian", "randomstrech"),    
     ]
 
+    aug_pairs_cb = [
+        ("normal", "gaussian"),        
+        ("normal", "randomstrech"),      
+        ("randomcrop", "randomcrop"), 
+        ("normal", "normal"),             
+        ("normal", "scale"),           
+    ]
+
     aug_pairs_normalization_and_cb = [
         ("normal", "scale"),        
         ("randomcrop", "randomstrech"),      
@@ -358,9 +366,9 @@ if __name__ == "__main__":
     # PU
     norm = [None]
     batch_sizes =[64]
-    number_blocks=[7] # or 8
-    hidden_channel = [128]
-    latent_space  = [160] # or 128
+    number_blocks=[1,2,3,4,5,6,7,8,9,10] # or 8
+    hidden_channel = [256]
+    latent_space  = [256] # or 128
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
     all_augmentation_pairs = list(combinations_with_replacement(augmentations, 2))
 
@@ -372,7 +380,7 @@ if __name__ == "__main__":
 
 
 
-    for pair in all_augmentation_pairs:  
+    for pair in aug_pairs_cb:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
