@@ -19,5 +19,9 @@ paths =[# # hidden channel 160
 
        #"checkpoint/SSF_CWRU_0422-091220/training.log", # hidden channel 160 
        #"checkpoint/SSF_CWRU_0423-140218/training.log" # hidden channel 128
+
+       # No normalisation 
+        # hidden layer 128, block size 7 
+        
         ]
 latent_space_test(paths)
