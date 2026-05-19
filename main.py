@@ -364,11 +364,11 @@ if __name__ == "__main__":
 
     # augmentation Testing 
     # PU
-    norm = [None]
+    norm = ["mean_std"]
     batch_sizes =[64]
     number_blocks=[7] # or 8
     hidden_channel = [128]
-    latent_space  = [32,64,128,160,256, 512] # or 128
+    latent_space  = [160] # or 128
     augmentations = ['gaussian', 'normal', 'scale', 'randomstrech', 'randomcrop']
     all_augmentation_pairs = list(combinations_with_replacement(augmentations, 2))
 
@@ -380,7 +380,7 @@ if __name__ == "__main__":
 
 
 
-    for pair in aug_pairs_latent:  
+    for pair in all_augmentation_pairs:  
         for hidden_size in hidden_channel:
             for features in latent_space:
                 for blocks in number_blocks:
