@@ -13,7 +13,7 @@ paths =[#"checkpoint/SSF_PU_0427-144302/training.log", # no normalization, all a
        #"checkpoint/SSF_CWRU_0428-084416/training.log", # No normalization 
        #"checkpoint/SSF_CWRU_0428-094703/training.log"   # mean-std normalization 
 
-       "checkpoint/SSF_PU_0427-140057/training.log"
+       "checkpoint/SSF_PU_0519-122407/training.log" # Pu with normalization 
 
         ]
 augmentation_test(paths)

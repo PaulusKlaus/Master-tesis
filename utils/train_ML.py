@@ -141,6 +141,24 @@ class Trainer(object):
         else:
             raise Exception("lr schedule not implement")
         
+    def _print_model_parameters(self, model, model_name="Model"):
+        """
+        Print parameter statistics for a model.
+        """
+        total_params = sum(p.numel() for p in model.parameters())
+        trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        frozen_params = total_params - trainable_params
+
+        logging.info(f"{model_name} parameter count:")
+        logging.info(f"  Total parameters     : {total_params:,}")
+        logging.info(f"  Trainable parameters : {trainable_params:,}")
+        logging.info(f"  Frozen parameters    : {frozen_params:,}")
+
+        print(f"\n{model_name} parameter count:")
+        print(f"  Total parameters     : {total_params:,}")
+        print(f"  Trainable parameters : {trainable_params:,}")
+        print(f"  Frozen parameters    : {frozen_params:,}")
+            
     def setup(self):
         """
         Initialise model, dataset, loss, and optimizer from the argparse arguments
@@ -196,6 +214,12 @@ class Trainer(object):
 
         # This need to be different for different models !!!!!
         self.criterion = args.critetion()
+
+        if self.device_count > 1:
+            self.model = torch.nn.DataParallel(self.model)
+
+        self._print_model_parameters(self.model, "Encoder")
+
 
     def _train_epoch(self, epoch):
         """
