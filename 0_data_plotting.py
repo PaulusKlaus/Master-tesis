@@ -53,13 +53,13 @@ AUGMENTATIONS = [ "gaussian", "scale", "randomstrech", "randomcrop"]
 
 
 
-def build_dataset(data_name,  data_dir, augmentation = "normal"):
+def build_dataset(data_name,  data_dir, augmentation = "normal", norm= None):
     Dataset = getattr(datasets, data_name)
     dataset_view = views.OneViewDataset
 
     train_ds, val_ds, test_ds, classifier_ds, classifier_val_ds = Dataset(
          data_dir=data_dir,
-        normlizetype=None,
+        normlizetype=norm,
         augmentype_1=augmentation,
         rand=1,
     ).data_prepare(
@@ -286,13 +286,13 @@ def plot_normalizations(dataset, save_path, target_class=0):
 args = parse_args()
 args.data_dir = DATA_DIRS[args.data_name][0]
 
-train, test = build_dataset(data_name = args.data_name, data_dir=args.data_dir, augmentation="normal")
+train, test = build_dataset(data_name = args.data_name, data_dir=args.data_dir, augmentation="randomcrop", norm= "mean_std")
 
 
 
-plot_each_class(train, save_path="figures/data_vis/CWRU_all_samples.pdf")
+plot_each_class(train, save_path="figures/data_vis/CWRU_all_samples_randomcrop_mean_std.pdf")
 
-plot_all_augmentations( args,  target_class=0, save_path="figures/data_vis/CWRU_augmentations.pdf")
+#plot_all_augmentations( args,  target_class=0, save_path="figures/data_vis/CWRU_augmentations_mean_std.pdf")
 
 #plot_normalizations(train, save_path ="figures/data_vis/PU_all_normalizations.pdf",  target_class=0)
 #plot_all_augmentations_overlay(args, target_class=0, save_path="figures/data_vis/PU_augmentations_overlay.pdf")

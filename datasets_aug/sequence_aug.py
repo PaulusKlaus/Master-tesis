@@ -1,8 +1,13 @@
 import numpy as np 
 import random 
 from scipy.signal import resample
+import torch
 
+SEED = 42
 
+np.random.seed(SEED)
+random.seed(SEED)
+torch.manual_seed(SEED)
 # ---- Preprocessing of the data ----
 
 class Compose(object):
