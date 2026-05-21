@@ -3,7 +3,7 @@
 from visualisation_training import aug_pair_vs_blocks_accuracy, augmentation_test, scatter_plots
 
 
-paths =[#"checkpoint/SSF_PU_0427-144302/training.log", # no normalization, all augmentations 3 times  block size 7 
+paths =["checkpoint/SSF_PU_0427-144302/training.log", # no normalization, all augmentations 3 times  block size 7 
 
       # "checkpoint/SSF_PU_0428-101427/training.log",  #  no normalization, different blck sizes  5,6,8,9
                 # Another hidden layer was used for this 256 was changed to  128
@@ -13,7 +13,7 @@ paths =[#"checkpoint/SSF_PU_0427-144302/training.log", # no normalization, all a
        #"checkpoint/SSF_CWRU_0428-084416/training.log", # No normalization 
        #"checkpoint/SSF_CWRU_0428-094703/training.log"   # mean-std normalization 
 
-       "checkpoint/SSF_PU_0519-122407/training.log" # Pu with normalization 
+      # "checkpoint/SSF_PU_0519-122407/training.log" # Pu with normalization 
 
         ]
 augmentation_test(paths)
